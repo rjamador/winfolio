@@ -9,6 +9,7 @@ type Button95Props = {
   type?: 'button' | 'submit'
   className?: string
   'aria-label'?: string
+  ref?: React.Ref<HTMLButtonElement>
 }
 
 /**
@@ -23,9 +24,11 @@ export function Button95({
   type = 'button',
   className,
   'aria-label': ariaLabel,
+  ref,
 }: Button95Props) {
   return (
     <button
+      ref={ref}
       type={type}
       onClick={onClick}
       disabled={disabled}

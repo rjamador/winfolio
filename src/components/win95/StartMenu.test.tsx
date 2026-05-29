@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { StartMenu } from './StartMenu'
@@ -43,5 +44,28 @@ describe('StartMenu', () => {
 
     await user.click(screen.getByRole('button', { name: 'outside' }))
     expect(onClose).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not treat a click on the trigger as an outside click', async () => {
+    const user = userEvent.setup()
+    const onClose = vi.fn()
+
+    function Harness() {
+      const triggerRef = useRef<HTMLButtonElement>(null)
+      return (
+        <div>
+          <button type="button" ref={triggerRef}>
+            Start
+          </button>
+          <StartMenu open onClose={onClose} triggerRef={triggerRef}>
+            <li>About</li>
+          </StartMenu>
+        </div>
+      )
+    }
+
+    render(<Harness />)
+    await user.click(screen.getByRole('button', { name: 'Start' }))
+    expect(onClose).not.toHaveBeenCalled()
   })
 })

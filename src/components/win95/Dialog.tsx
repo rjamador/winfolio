@@ -22,6 +22,7 @@ const FOCUSABLE =
 export function Dialog({ open, title, onClose, children, footer }: DialogProps) {
   const panelRef = useRef<HTMLDivElement>(null)
   const titleId = useId()
+  const bodyId = useId()
 
   useEffect(() => {
     if (!open) return
@@ -71,11 +72,12 @@ export function Dialog({ open, title, onClose, children, footer }: DialogProps) 
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
+        aria-describedby={bodyId}
         tabIndex={-1}
         className="bevel-raised min-w-64 max-w-md bg-w95-bg p-0.5 outline-none"
       >
-        <TitleBar title={title} onClose={onClose} />
-        <div id={titleId} className="px-3 py-4 text-[11px]">
+        <TitleBar title={title} titleId={titleId} onClose={onClose} />
+        <div id={bodyId} className="px-3 py-4 text-[11px]">
           {children}
         </div>
         {footer && (

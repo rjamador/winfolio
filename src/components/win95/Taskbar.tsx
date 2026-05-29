@@ -7,6 +7,8 @@ type TaskbarProps = {
   onStartClick?: () => void
   /** Whether the Start menu is open, for the pressed Start-button look. */
   startActive?: boolean
+  /** Forwarded to the Start button so a StartMenu can exclude it from outside-click. */
+  startButtonRef?: React.Ref<HTMLButtonElement>
   /** Clock/tray node; Phase 3 supplies a live clock. */
   clock?: React.ReactNode
 }
@@ -15,10 +17,17 @@ type TaskbarProps = {
  * Fixed bottom taskbar: Start button, open-window buttons, and a clock tray.
  * Presentational only — the live clock and window list are wired in Phase 3.
  */
-export function Taskbar({ children, onStartClick, startActive, clock }: TaskbarProps) {
+export function Taskbar({
+  children,
+  onStartClick,
+  startActive,
+  startButtonRef,
+  clock,
+}: TaskbarProps) {
   return (
     <footer className="bevel-raised flex h-[var(--taskbar-height)] w-full items-center gap-1 bg-w95-bg px-0.5">
       <Button95
+        ref={startButtonRef}
         onClick={onStartClick}
         aria-label="Start"
         className={clsx('font-bold', startActive && 'bevel-sunken')}

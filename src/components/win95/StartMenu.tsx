@@ -7,6 +7,12 @@ type StartMenuProps = {
   children: React.ReactNode
   /** Text shown vertically on the navy side stripe. */
   brand?: string
+  /**
+   * The toggle button that opens this menu. Clicks on it are not treated as
+   * "outside", so the trigger can close the menu itself without the
+   * outside-click handler reopening it.
+   */
+  triggerRef?: React.RefObject<HTMLElement | null>
 }
 
 /**
@@ -14,7 +20,13 @@ type StartMenuProps = {
  * on outside click. Pure UI: it knows nothing about which sections exist —
  * callers pass items as children. Renders nothing while closed.
  */
-export function StartMenu({ open, onClose, children, brand = 'Winfolio' }: StartMenuProps) {
+export function StartMenu({
+  open,
+  onClose,
+  children,
+  brand = 'Winfolio',
+  triggerRef,
+}: StartMenuProps) {
   const panelRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -24,19 +36,21 @@ export function StartMenu({ open, onClose, children, brand = 'Winfolio' }: Start
       if (e.key === 'Escape') onClose()
     }
     const handlePointerDown = (e: PointerEvent) => {
-      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+      const target = e.target as Node
+      const insidePanel = panelRef.current?.contains(target)
+      const onTrigger = triggerRef?.current?.contains(target)
+      if (!insidePanel && !onTrigger) {
         onClose()
       }
     }
 
     document.addEventListener('keydown', handleKeyDown)
-    // Use capture so the Start button's own toggle still works predictably.
     document.addEventListener('pointerdown', handlePointerDown, true)
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
       document.removeEventListener('pointerdown', handlePointerDown, true)
     }
-  }, [open, onClose])
+  }, [open, onClose, triggerRef])
 
   if (!open) return null
 

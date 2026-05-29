@@ -2,6 +2,8 @@ import { clsx } from 'clsx'
 
 type TitleBarProps = {
   title: string
+  /** id applied to the title text, so a Dialog can label itself by it. */
+  titleId?: string
   /** Optional pixel icon shown left of the title. */
   icon?: React.ReactNode
   /** Active windows get the navy→blue gradient; inactive get flat gray. */
@@ -19,6 +21,7 @@ type TitleBarProps = {
  */
 export function TitleBar({
   title,
+  titleId,
   icon,
   active = true,
   onMinimize,
@@ -33,7 +36,9 @@ export function TitleBar({
       )}
     >
       {icon && <span className="flex h-4 w-4 items-center">{icon}</span>}
-      <span className="flex-1 truncate px-1 text-[11px] font-bold">{title}</span>
+      <span id={titleId} className="flex-1 truncate px-1 text-[11px] font-bold">
+        {title}
+      </span>
 
       <div className="flex items-center gap-0.5">
         {onMinimize && (
