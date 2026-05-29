@@ -1,0 +1,56 @@
+/*
+ * Entry stylesheet (imported once in main.tsx).
+ * Order matters: all @import rules must come first (CSS spec), and the Tailwind
+ * import must precede the @theme block (Tailwind v4 CSS-first config).
+ */
+@import 'tailwindcss';
+@import './tokens.css';
+@import './win95.css';
+
+/*
+ * Alias the canonical tokens (tokens.css) into Tailwind so utilities like
+ * `bg-w95-desktop`, `text-w95-text`, and `font-sans` are generated.
+ * These reference the tokens; they are not a second source of truth.
+ */
+@theme {
+  --color-w95-bg: var(--w95-bg);
+  --color-w95-desktop: var(--w95-desktop);
+  --color-w95-shadow: var(--w95-shadow);
+  --color-w95-light: var(--w95-light);
+  --color-w95-titlebar: var(--w95-titlebar);
+  --color-w95-titlebar-text: var(--w95-titlebar-text);
+  --color-w95-text: var(--w95-text);
+
+  --font-sans: 'Pixelify Sans', Tahoma, sans-serif;
+  --font-mono: 'Fixedsys', monospace;
+
+  /* Win95 has no rounded corners — flatten Tailwind's radius scale. */
+  --radius-none: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+}
+
+/* --- Global base ----------------------------------------------------------- */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--w95-font-size);
+  color: var(--w95-text);
+  background: var(--w95-desktop);
+  /* Keep the pixel font crisp; no smoothing/antialiasing. */
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+  text-rendering: optimizeSpeed;
+}

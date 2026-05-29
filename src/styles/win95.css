@@ -1,0 +1,86 @@
+/*
+ * Win95 "chrome": the signature 3D bevels, focus ring, title-bar gradient, and
+ * chunky scrollbars. These are reusable CSS classes because the
+ * multi-shadow bevel recipe is awkward to express in pure Tailwind utilities.
+ *
+ * Consumes tokens from tokens.css. No business logic, no border-radius.
+ */
+
+/* --- Bevels ---------------------------------------------------------------- */
+
+/* Raised (button/panel): light top-left edge, dark bottom-right edge. */
+.bevel-raised {
+  border: var(--w95-border-width) solid;
+  border-color: var(--w95-light) var(--w95-darkshadow) var(--w95-darkshadow) var(--w95-light);
+  box-shadow:
+    inset 1px 1px 0 var(--w95-bg),
+    inset -1px -1px 0 var(--w95-shadow);
+}
+
+/* Sunken (input/well): inverse of raised — content looks recessed. */
+.bevel-sunken {
+  border: var(--w95-border-width) solid;
+  border-color: var(--w95-shadow) var(--w95-light) var(--w95-light) var(--w95-shadow);
+  box-shadow:
+    inset 1px 1px 0 var(--w95-darkshadow),
+    inset -1px -1px 0 var(--w95-bg);
+}
+
+/* Pressed button: flip a raised bevel to look pushed in. */
+.bevel-raised:active {
+  border-color: var(--w95-darkshadow) var(--w95-light) var(--w95-light) var(--w95-darkshadow);
+  box-shadow:
+    inset 1px 1px 0 var(--w95-shadow),
+    inset -1px -1px 0 var(--w95-bg);
+}
+
+/* --- Focus ----------------------------------------------------------------- */
+
+/* Classic Win95 dotted focus rectangle, drawn inside the control's padding.
+   Phase 2 primitives opt in via :focus-visible to keep mouse clicks ring-free. */
+.focus-ring:focus-visible {
+  outline: 1px dotted var(--w95-text);
+  outline-offset: -4px;
+}
+
+/* --- Title bar ------------------------------------------------------------- */
+
+.titlebar {
+  display: flex;
+  align-items: center;
+  color: var(--w95-titlebar-text);
+  background: linear-gradient(90deg,
+      var(--w95-titlebar) 0%,
+      var(--w95-titlebar-active-end) 100%);
+}
+
+.titlebar--inactive {
+  color: var(--w95-titlebar-text-inactive);
+  background: var(--w95-titlebar-inactive);
+}
+
+/* --- Scrollbars ------------------------------------------------------------ */
+
+/* Chunky beveled scrollbars (Chromium/WebKit). Firefox falls back to its
+   native scrollbar gracefully — no rule needed. */
+.win95-scroll::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+.win95-scroll::-webkit-scrollbar-track {
+  background: var(--w95-bg);
+}
+
+.win95-scroll::-webkit-scrollbar-thumb {
+  background: var(--w95-bg);
+  border: var(--w95-border-width) solid;
+  border-color: var(--w95-light) var(--w95-darkshadow) var(--w95-darkshadow) var(--w95-light);
+  box-shadow:
+    inset 1px 1px 0 var(--w95-bg),
+    inset -1px -1px 0 var(--w95-shadow);
+}
+
+.win95-scroll::-webkit-scrollbar-corner {
+  background: var(--w95-bg);
+}

@@ -1,0 +1,38 @@
+/*
+ * Canonical Win95 design tokens.
+ * This is the SINGLE source of truth for the palette and core metrics.
+ * styles/index.css aliases these into Tailwind via @theme; never redefine the
+ * values elsewhere.
+ */
+:root {
+  /* Surfaces & palette */
+  --w95-bg: #c0c0c0;
+  /* classic silver panel/button surface */
+  --w95-desktop: #008080;
+  /* teal desktop background */
+  --w95-shadow: #808080;
+  /* mid-gray bevel shadow */
+  --w95-darkshadow: #000000;
+  /* outer-most dark bevel edge */
+  --w95-light: #ffffff;
+  /* bright bevel highlight */
+
+  /* Title bar */
+  --w95-titlebar: #000080;
+  /* active gradient start (navy) */
+  --w95-titlebar-active-end: #1084d0;
+  /* active gradient end (blue) */
+  --w95-titlebar-inactive: #808080;
+  /* inactive flat gray */
+  --w95-titlebar-text: #ffffff;
+  --w95-titlebar-text-inactive: #c0c0c0;
+
+  /* Text */
+  --w95-text: #000000;
+  --w95-text-disabled: #808080;
+
+  /* Metrics (named — no magic numbers */
+  --w95-border-width: 2px;
+  --w95-font-size: 11px;
+  --taskbar-height: 28px;
+}
