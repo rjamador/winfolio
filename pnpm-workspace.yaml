@@ -1,0 +1,6 @@
+# pnpm settings (pnpm v11+ reads build-approval config from here, not package.json).
+# msw's only build script generates the browser service worker, which we don't
+# need for jsdom/node tests. Marking it explicitly clears the ignored-builds
+# check so `pnpm <script>` runs without failing.
+allowBuilds:
+  msw: false
