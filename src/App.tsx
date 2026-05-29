@@ -1,34 +1,36 @@
+import { useState } from 'react'
+import { Button95, MessageBox, Window } from '@/components/win95'
+
 function App() {
-  // TEMPORARY Phase 1 visual check: exercises the design tokens and Win95 chrome
-  // (bevels, title-bar gradient, focus ring, scrollbars) on the teal desktop.
-  // Replaced by the real DesktopShell in Phase 3.
+  // TEMPORARY Phase 2a visual check: exercises the core primitives on the teal
+  // desktop. Replaced by the real DesktopShell + window manager in Phase 3.
+  const [dialogOpen, setDialogOpen] = useState(false)
+
   return (
-    <main className="flex min-h-screen items-center justify-center p-8">
-      <div className="bevel-raised bg-w95-bg w-80 p-1">
-        <div className="titlebar px-1 py-0.5">
-          <span className="font-bold">Win95 chrome check</span>
-        </div>
+    <main className="flex min-h-screen items-start justify-center gap-6 p-8">
+      <Window
+        title="About — Winfolio"
+        className="w-80"
+        onMinimize={() => {}}
+        onMaximize={() => {}}
+        onClose={() => {}}
+      >
+        <p className="mb-3">
+          A Windows 95–styled portfolio. These are the Phase 2a primitives:
+          window chrome, buttons, and a modal message box.
+        </p>
+        <Button95 variant="primary" onClick={() => setDialogOpen(true)}>
+          Show message
+        </Button95>
+      </Window>
 
-        <div className="p-3">
-          <p className="mb-2">Raised panel surface with a sunken well below.</p>
-
-          <div className="bevel-sunken win95-scroll bg-w95-light h-24 overflow-auto p-2">
-            <p>
-              This well is recessed. It scrolls to show the chunky beveled
-              scrollbar. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-              Vestibulum id ligula porta felis euismod semper.
-            </p>
-          </div>
-
-          <button
-            type="button"
-            className="bevel-raised focus-ring bg-w95-bg mt-3 px-4 py-1"
-          >
-            Tab to me
-          </button>
-        </div>
-      </div>
+      <MessageBox
+        open={dialogOpen}
+        title="Information"
+        message="An error has occurred. Just kidding — everything works."
+        onOk={() => setDialogOpen(false)}
+        onClose={() => setDialogOpen(false)}
+      />
     </main>
   )
 }
