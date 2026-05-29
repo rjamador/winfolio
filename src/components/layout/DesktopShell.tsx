@@ -7,8 +7,9 @@ import {
   Button95,
   DesktopIcon,
 } from '@/components/win95'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { useTaskbarClock } from '@/hooks/useTaskbarClock'
-import { useWindowManager, type WindowState } from './windowManager'
+import { useWindowManager } from './windowManager'
 
 /**
  * A launchable section of the portfolio. The body is a placeholder in Phase 3;
@@ -49,6 +50,7 @@ const CASCADE_STEP = 28
 export function DesktopShell() {
   const wm = useWindowManager()
   const clock = useTaskbarClock()
+  const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [startOpen, setStartOpen] = useState(false)
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null)
   const startButtonRef = useRef<HTMLButtonElement>(null)
@@ -72,9 +74,23 @@ export function DesktopShell() {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-w95-desktop">
-      {/* Desktop: icons + floating windows */}
-      <div className="relative flex-1 overflow-hidden">
-        <div className="flex flex-col flex-wrap gap-4 p-2">
+      {/*
+        Desktop: icons + windows. On desktop, windows float (react-rnd, absolute)
+        over a column of icons. On mobile, icons collapse to a launcher row and
+        windows stack full-bleed in a scrollable column.
+      */}
+      <div
+        className={clsx(
+          'relative flex-1',
+          isDesktop ? 'overflow-hidden' : 'flex flex-col gap-2 overflow-auto p-2',
+        )}
+      >
+        <div
+          className={clsx(
+            'gap-3',
+            isDesktop ? 'flex flex-col flex-wrap p-2' : 'flex flex-row flex-wrap',
+          )}
+        >
           {APPS.map((app) => (
             <DesktopIcon
               key={app.id}
@@ -90,7 +106,27 @@ export function DesktopShell() {
         {wm.windows
           .filter((w) => !w.minimized)
           .map((w) => (
-            <FloatingWindow key={w.id} window={w} body={bodyFor(w.id)} />
+            <Window
+              key={w.id}
+              draggable
+              title={w.title}
+              icon={w.icon ? <span aria-hidden>{w.icon}</span> : undefined}
+              active={wm.focusedId === w.id}
+              x={w.x}
+              y={w.y}
+              width={w.width}
+              height={w.height}
+              zIndex={w.zIndex}
+              onFocus={() => wm.focusWindow(w.id)}
+              onMinimize={() => wm.minimizeWindow(w.id)}
+              onClose={() => wm.closeWindow(w.id)}
+              onDragStop={(x, y) => wm.moveWindow(w.id, x, y)}
+              onResizeStop={(width, height, x, y) =>
+                wm.resizeWindow(w.id, width, height, x, y)
+              }
+            >
+              {bodyFor(w.id)}
+            </Window>
           ))}
       </div>
 
@@ -144,38 +180,6 @@ export function DesktopShell() {
           </Button95>
         ))}
       </Taskbar>
-    </div>
-  )
-}
-
-type FloatingWindowProps = {
-  window: WindowState
-  body: React.ReactNode
-}
-
-/**
- * Positions a Window absolutely on the desktop using window-manager state.
- * Phase 4 replaces this wrapper with react-rnd for drag/resize.
- */
-function FloatingWindow({ window: w, body }: FloatingWindowProps) {
-  const wm = useWindowManager()
-  const active = wm.focusedId === w.id
-
-  return (
-    <div
-      className="absolute"
-      style={{ left: w.x, top: w.y, width: w.width, zIndex: w.zIndex }}
-      onMouseDown={() => wm.focusWindow(w.id)}
-    >
-      <Window
-        title={w.title}
-        icon={w.icon ? <span aria-hidden>{w.icon}</span> : undefined}
-        active={active}
-        onMinimize={() => wm.minimizeWindow(w.id)}
-        onClose={() => wm.closeWindow(w.id)}
-      >
-        {body}
-      </Window>
     </div>
   )
 }
