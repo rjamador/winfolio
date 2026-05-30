@@ -194,9 +194,14 @@ export function DesktopShell() {
         <Outlet />
       </div>
 
-      {/* Start menu, anchored above the Start button */}
+      {/* Start menu: compact anchored panel on desktop, full-width on mobile. */}
       {startOpen && (
-        <div className="absolute bottom-[var(--taskbar-height)] left-0 z-[1000]">
+        <div
+          className={clsx(
+            'absolute bottom-[var(--taskbar-height)] left-0 z-[1000]',
+            !isDesktop && 'right-0',
+          )}
+        >
           <StartMenu
             open
             onClose={() => setStartOpen(false)}

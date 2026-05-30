@@ -25,7 +25,8 @@
   --w95-titlebar-inactive: #808080;
   /* inactive flat gray */
   --w95-titlebar-text: #ffffff;
-  --w95-titlebar-text-inactive: #c0c0c0;
+  /* Dark enough to pass WCAG AA on the inactive gray bar while staying muted. */
+  --w95-titlebar-text-inactive: #2a2a2a;
 
   /* Text */
   --w95-text: #000000;

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { clsx } from 'clsx'
 import { Rnd } from 'react-rnd'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
@@ -63,12 +64,21 @@ export function Window({
 }: WindowProps) {
   const isDesktop = useMediaQuery(DESKTOP_QUERY)
   const floats = draggable && isDesktop
+  const surfaceRef = useRef<HTMLElement>(null)
+
+  // Move focus into a freshly opened window so keyboard/SR users land inside it.
+  useEffect(() => {
+    surfaceRef.current?.focus()
+  }, [])
 
   const surface = (
     <section
+      ref={surfaceRef}
+      tabIndex={-1}
+      aria-label={title}
       onMouseDown={onFocus}
       className={clsx(
-        'bevel-raised flex flex-col bg-w95-bg p-0.5',
+        'bevel-raised flex flex-col bg-w95-bg p-0.5 outline-none',
         floats ? 'h-full w-full' : 'w-full',
         className,
       )}

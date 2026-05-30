@@ -84,3 +84,28 @@
 .win95-scroll::-webkit-scrollbar-corner {
   background: var(--w95-bg);
 }
+
+/* --- Touch targets --------------------------------------------------------- */
+
+/* On touch devices, grow the tiny controls to at least 24px (WCAG 2.5.8 AA)
+   without changing the dense desktop (fine-pointer) look. */
+@media (pointer: coarse) {
+  .win95-titlebar {
+    height: 26px;
+  }
+
+  .win95-titlebar button {
+    width: 24px;
+    height: 24px;
+  }
+
+  .focus-ring {
+    min-height: 24px;
+  }
+
+  input[type='checkbox'].focus-ring,
+  input[type='radio'].focus-ring {
+    width: 24px;
+    height: 24px;
+  }
+}

@@ -59,14 +59,14 @@ export function StartMenu({
       ref={panelRef}
       role="menu"
       aria-label="Start menu"
-      className="bevel-raised flex bg-w95-bg"
+      className="bevel-raised flex w-full bg-w95-bg"
     >
       <div className="flex w-6 items-end justify-center bg-w95-titlebar pb-2">
         <span className="rotate-180 text-[11px] font-bold text-w95-titlebar-text [writing-mode:vertical-rl]">
           {brand}
         </span>
       </div>
-      <ul className="flex min-w-40 flex-col py-1">{children}</ul>
+      <ul className="flex min-w-40 flex-1 flex-col py-1">{children}</ul>
     </div>
   )
 }
