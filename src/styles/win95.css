@@ -26,8 +26,9 @@
     inset -1px -1px 0 var(--w95-bg);
 }
 
-/* Pressed button: flip a raised bevel to look pushed in. */
-.bevel-raised:active {
+/* Pressed look — scoped to BUTTONS only, so panels/windows/the taskbar (which
+   are also `.bevel-raised`) don't depress when clicked/held. */
+button.bevel-raised:active {
   border-color: var(--w95-darkshadow) var(--w95-light) var(--w95-light) var(--w95-darkshadow);
   box-shadow:
     inset 1px 1px 0 var(--w95-shadow),
@@ -35,8 +36,8 @@
 }
 
 /* Opt-out of the pressed look (e.g. taskbar buttons): stay raised on :active.
-   Defined after .bevel-raised:active so it wins by source order. */
-.bevel-no-press:active {
+   Same specificity as the rule above + defined later. */
+button.bevel-no-press:active {
   border-color: var(--w95-light) var(--w95-darkshadow) var(--w95-darkshadow) var(--w95-light);
   box-shadow:
     inset 1px 1px 0 var(--w95-bg),
