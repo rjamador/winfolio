@@ -28,7 +28,7 @@ export function DesktopIcon({
       aria-label={label}
       aria-pressed={selected}
       className={clsx(
-        'focus-ring flex w-16 flex-col items-center gap-1 p-1 text-center',
+        'focus-ring desktop-icon-legible flex w-16 flex-col items-center gap-1 p-1 text-center',
         'text-w95 text-w95-light',
         selected && 'desktop-icon-selected',
       )}

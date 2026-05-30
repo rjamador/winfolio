@@ -103,6 +103,18 @@
   background: var(--w95-bg);
 }
 
+/* --- Desktop icons --------------------------------------------------------- */
+
+/* White icons sit on a user-chosen desktop color; a dark shadow keeps the label
+   and glyph legible on light backgrounds. */
+.desktop-icon-legible {
+  text-shadow: 1px 1px 0 rgb(0 0 0 / 0.7);
+}
+
+.desktop-icon-legible svg {
+  filter: drop-shadow(1px 1px 0 rgb(0 0 0 / 0.7));
+}
+
 /* --- Desktop icon selection ------------------------------------------------ */
 
 /* A selection marquee that stays visible on any desktop color: white dotted
