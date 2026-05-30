@@ -9,8 +9,8 @@ import { z } from 'zod'
  * connects a real API via `VITE_API_BASE_URL`).
  */
 const envSchema = z.object({
-  // Optional until a real backend is wired up (hybrid data approach).
   VITE_API_BASE_URL: z.url().optional(),
+  VITE_GITHUB_USERNAME: z.string().min(1).default('rjamador'),
 })
 
 const parsed = envSchema.safeParse(import.meta.env)

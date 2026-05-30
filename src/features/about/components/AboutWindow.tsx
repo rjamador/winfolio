@@ -1,24 +1,37 @@
-const TECH = ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Node.js']
+const SKILLS = [
+  'UI/UX design',
+  'Git & version control',
+  'Design patterns',
+  'Web development',
+]
 
-/**
- * About section content.
- * and tech list. (User-facing content, kept separate from logic.)
- */
+/** About section — Roberto Amador's intro. (User-facing content.) */
 export function AboutWindow() {
   return (
     <article className="flex flex-col gap-3 text-[11px] leading-relaxed">
-      <h2 className="text-sm font-bold">Hi, I'm [Your Name] 👋</h2>
+      <header>
+        <h2 className="text-sm font-bold">Roberto Amador</h2>
+        <p className="opacity-80">Systems Engineer</p>
+      </header>
+
+      <p className="font-bold">Designing modern, functional web experiences.</p>
+
       <p>
-        I'm a frontend developer who loves building delightful, accessible
-        interfaces. This portfolio is a faux Windows 95 desktop — drag the
-        windows around, open a few, and poke at the Start menu.
+        My approach focuses on creating clean and minimalist designs that enhance
+        user experience.
       </p>
+      <p>
+        My technical skill set includes a solid understanding of UI/UX design
+        principles, experience with version control like Git, and knowledge of
+        design patterns.
+      </p>
+
       <div>
-        <h3 className="mb-1 font-bold">Tools I reach for</h3>
+        <h3 className="mb-1 font-bold">Skills</h3>
         <ul className="flex flex-wrap gap-1">
-          {TECH.map((tech) => (
-            <li key={tech} className="bevel-raised bg-w95-bg px-2 py-0.5">
-              {tech}
+          {SKILLS.map((skill) => (
+            <li key={skill} className="bevel-raised bg-w95-bg px-2 py-0.5">
+              {skill}
             </li>
           ))}
         </ul>

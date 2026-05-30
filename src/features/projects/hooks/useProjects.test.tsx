@@ -13,12 +13,17 @@ function makeWrapper() {
 }
 
 describe('useProjects', () => {
-  it('resolves to the validated project list', async () => {
+  it('returns mapped repos with forks/archived excluded, sorted by stars', async () => {
     const { result } = renderHook(() => useProjects(), { wrapper: makeWrapper() })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
-    expect(result.current.data!.length).toBeGreaterThan(0)
-    // Data is typed/validated: every item has a string id.
-    expect(result.current.data!.every((p) => typeof p.id === 'string')).toBe(true)
+
+    const projects = result.current.data!
+    // 3 of the 5 fixture repos remain (forked-lib + old-archived filtered out).
+    expect(projects.map((p) => p.id)).toEqual(['winfolio', 'pixel-paint', 'task-tray'])
+    // Sorted by stars desc.
+    expect(projects[0]!.stars).toBe(42)
+    // Top-starred is featured.
+    expect(projects[0]!.featured).toBe(true)
   })
 })
 
@@ -28,7 +33,7 @@ describe('useProject', () => {
       wrapper: makeWrapper(),
     })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
-    expect(result.current.data?.id).toBe('winfolio')
+    expect(result.current.data?.title).toBe('winfolio')
   })
 
   it('returns null for an unknown id', async () => {

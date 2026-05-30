@@ -55,7 +55,7 @@ describe('accessibility (axe, WCAG A/AA)', () => {
 
   it('ProjectsWindow (list) has no violations', async () => {
     const { container } = render(withProviders(<ProjectsWindow />))
-    await screen.findByText('Winfolio')
+    await screen.findByText('winfolio')
     expect(await axe(container, AXE_OPTIONS)).toHaveNoViolations()
   })
 

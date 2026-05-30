@@ -1,37 +1,81 @@
-import { projectSchema } from './schemas'
+import { githubRepoSchema, mapRepoToProject } from './schemas'
 
-const valid = {
-  id: 'winfolio',
-  title: 'Winfolio',
+const rawRepo = {
+  id: 1,
+  name: 'winfolio',
   description: 'A retro portfolio.',
-  tech: ['React', 'TypeScript'],
-  url: 'https://example.com',
-  featured: true,
-  year: 2026,
+  language: 'TypeScript',
+  topics: ['react', 'vite'],
+  html_url: 'https://github.com/rjamador/winfolio',
+  homepage: 'https://winfolio.example.com',
+  stargazers_count: 42,
+  forks_count: 5,
+  fork: false,
+  archived: false,
+  updated_at: '2026-05-01T12:00:00Z',
 }
 
-describe('projectSchema', () => {
-  it('parses a valid project', () => {
-    expect(() => projectSchema.parse(valid)).not.toThrow()
+describe('githubRepoSchema', () => {
+  it('parses a valid repo', () => {
+    expect(() => githubRepoSchema.parse(rawRepo)).not.toThrow()
   })
 
-  it('defaults featured to false when omitted', () => {
-    const { featured, ...withoutFeatured } = valid
-    void featured
-    expect(projectSchema.parse(withoutFeatured).featured).toBe(false)
+  it('accepts null description/language/homepage', () => {
+    const parsed = githubRepoSchema.parse({
+      ...rawRepo,
+      description: null,
+      language: null,
+      homepage: null,
+    })
+    expect(parsed.description).toBeNull()
   })
 
-  it('rejects a missing required field (title)', () => {
-    const { title, ...withoutTitle } = valid
-    void title
-    expect(() => projectSchema.parse(withoutTitle)).toThrow()
+  it('rejects a missing required field (name)', () => {
+    const { name, ...withoutName } = rawRepo
+    void name
+    expect(() => githubRepoSchema.parse(withoutName)).toThrow()
   })
 
-  it('rejects a wrong-typed field (year as string)', () => {
-    expect(() => projectSchema.parse({ ...valid, year: '2026' })).toThrow()
+  it('rejects a malformed html_url', () => {
+    expect(() => githubRepoSchema.parse({ ...rawRepo, html_url: 'nope' })).toThrow()
+  })
+})
+
+describe('mapRepoToProject', () => {
+  it('maps GitHub fields to the internal project shape', () => {
+    const project = mapRepoToProject(githubRepoSchema.parse(rawRepo))
+    expect(project).toMatchObject({
+      id: 'winfolio',
+      title: 'winfolio',
+      description: 'A retro portfolio.',
+      tech: ['TypeScript', 'react', 'vite'],
+      url: 'https://winfolio.example.com',
+      repoUrl: 'https://github.com/rjamador/winfolio',
+      stars: 42,
+      forks: 5,
+      language: 'TypeScript',
+      featured: false,
+      year: 2026,
+    })
   })
 
-  it('rejects a malformed url', () => {
-    expect(() => projectSchema.parse({ ...valid, url: 'not-a-url' })).toThrow()
+  it('drops an empty/invalid homepage', () => {
+    const project = mapRepoToProject(
+      githubRepoSchema.parse({ ...rawRepo, homepage: '' }),
+    )
+    expect(project.url).toBeUndefined()
+  })
+
+  it('falls back to an empty description and language-less tech', () => {
+    const project = mapRepoToProject(
+      githubRepoSchema.parse({
+        ...rawRepo,
+        description: null,
+        language: null,
+        topics: [],
+      }),
+    )
+    expect(project.description).toBe('')
+    expect(project.tech).toEqual([])
   })
 })

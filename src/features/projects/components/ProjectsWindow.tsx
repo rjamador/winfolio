@@ -34,7 +34,11 @@ function ProjectList() {
               {project.featured && <span aria-hidden>⭐ </span>}
               {project.title}
             </span>
-            <span className="shrink-0 tabular-nums opacity-80">{project.year}</span>
+            <span className="flex shrink-0 items-center gap-2 tabular-nums opacity-80">
+              {project.language && <span>{project.language}</span>}
+              <span>★ {project.stars}</span>
+              <span>⑂ {project.forks}</span>
+            </span>
           </button>
         </li>
       ))}
@@ -56,7 +60,14 @@ function ProjectDetail({ id }: { id: string }) {
       <h2 className="text-sm font-bold">
         {project.title} <span className="font-normal opacity-80">({project.year})</span>
       </h2>
-      <p className="leading-relaxed">{project.description}</p>
+      <div className="flex flex-wrap gap-3 tabular-nums opacity-80">
+        {project.language && <span>{project.language}</span>}
+        <span>★ {project.stars} stars</span>
+        <span>⑂ {project.forks} forks</span>
+      </div>
+      <p className="leading-relaxed">
+        {project.description || 'No description provided.'}
+      </p>
       <TechList tech={project.tech} />
       <Links project={project} />
     </article>
