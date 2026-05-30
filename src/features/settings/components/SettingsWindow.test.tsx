@@ -27,9 +27,15 @@ describe('SettingsWindow', () => {
   it('applies the text-size scale when a preset is chosen', async () => {
     const user = userEvent.setup()
     renderSettings()
+
     await user.click(screen.getByRole('radio', { name: 'Large' }))
     expect(document.documentElement.style.getPropertyValue('--w95-font-scale')).toBe(
-      '1.2',
+      '1.4',
+    )
+
+    await user.click(screen.getByRole('radio', { name: 'Small' }))
+    expect(document.documentElement.style.getPropertyValue('--w95-font-scale')).toBe(
+      '1',
     )
   })
 

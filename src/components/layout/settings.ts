@@ -6,7 +6,7 @@ export const settingsSchema = z.object({
   bgColor: z
     .string()
     .regex(/^#[0-9a-fA-F]{6}$/)
-    .default('#008080'),
+    .default('#000080'),
   /** Base text-size preset. */
   textSize: z.enum(['sm', 'md', 'lg']).default('md'),
 })
@@ -18,9 +18,9 @@ export const DEFAULT_SETTINGS: Settings = settingsSchema.parse({})
 
 /** Multiplier applied to the base text size (drives --w95-font-scale). */
 export const TEXT_SCALE: Record<TextSize, number> = {
-  sm: 0.9,
-  md: 1,
-  lg: 1.2,
+  sm: 1,
+  md: 1.2,
+  lg: 1.4,
 }
 
 /** Classic Win95 desktop colors offered as quick swatches. */

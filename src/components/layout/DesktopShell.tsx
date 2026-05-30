@@ -135,10 +135,11 @@ export function DesktopShell() {
       ? `/projects/${currentRoute.id}`
       : `/${id}`
 
-  // window → URL (push). The effect above performs the actual open.
+  // window → URL. Uses `replace` so window open/focus/close don't pile up history
+  // entries (pressing Back would otherwise replay them and re-open windows).
   const openApp = (app: AppDefinition) => {
     setStartOpen(false)
-    navigate(pathFor(app.id))
+    navigate(pathFor(app.id), { replace: true })
   }
 
   const focusWindow = (id: string) => {
@@ -148,7 +149,7 @@ export function DesktopShell() {
 
   const closeWindow = (id: string) => {
     wm.closeWindow(id)
-    if (currentRoute.section === id) navigate('/')
+    if (currentRoute.section === id) navigate('/', { replace: true })
   }
 
   const minimizeWindow = (id: string) => {
