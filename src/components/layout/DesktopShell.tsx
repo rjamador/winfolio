@@ -30,6 +30,9 @@ const ExperienceWindow = lazy(() =>
 const SettingsWindow = lazy(() =>
   import('@/features/settings').then((m) => ({ default: m.SettingsWindow })),
 )
+const ResumeWindow = lazy(() =>
+  import('@/features/resume').then((m) => ({ default: m.ResumeWindow })),
+)
 
 /** A launchable section of the portfolio (window metadata). */
 type AppDefinition = {
@@ -47,10 +50,35 @@ const APPS: AppDefinition[] = [
   { id: 'projects', title: 'Projects', icon: '📁', width: 380, height: 300, autoOpen: true },
   { id: 'stack', title: 'Stack', icon: '🧰', width: 380, height: 320, autoOpen: true },
   { id: 'experience', title: 'Experience', icon: '💼', width: 420, height: 380, autoOpen: true },
+  { id: 'resume', title: 'Resume', icon: '📄', width: 480, height: 600, autoOpen: false },
   { id: 'settings', title: 'Settings', icon: '⚙️', width: 320, height: 300, autoOpen: false },
 ]
 
 const CASCADE_STEP = 28
+
+// Initial layout: a 2-column grid with a small per-window jitter so the desktop
+// looks naturally arranged rather than perfectly aligned.
+const GRID_COLS = 2
+const GRID_BASE_X = 32
+const GRID_BASE_Y = 24
+const GRID_COL_GAP = 440
+const GRID_ROW_GAP = 290
+const GRID_JITTER: { dx: number; dy: number }[] = [
+  { dx: 0, dy: 0 },
+  { dx: 22, dy: -14 },
+  { dx: -16, dy: 18 },
+  { dx: 10, dy: 8 },
+]
+
+function gridPosition(index: number): { x: number; y: number } {
+  const col = index % GRID_COLS
+  const row = Math.floor(index / GRID_COLS)
+  const jitter = GRID_JITTER[index % GRID_JITTER.length]!
+  return {
+    x: GRID_BASE_X + col * GRID_COL_GAP + jitter.dx,
+    y: GRID_BASE_Y + row * GRID_ROW_GAP + jitter.dy,
+  }
+}
 
 /** Parses a pathname into the section id and optional sub-id (e.g. project id). */
 function parseRoute(pathname: string): { section: string | null; id: string | null } {
@@ -58,13 +86,13 @@ function parseRoute(pathname: string): { section: string | null; id: string | nu
   return { section: segments[0] ?? null, id: segments[1] ?? null }
 }
 
-function buildPayload(app: AppDefinition, offset: number): Omit<WindowState, 'zIndex'> {
+function buildPayload(app: AppDefinition, x: number, y: number): Omit<WindowState, 'zIndex'> {
   return {
     id: app.id,
     title: app.title,
     icon: app.icon,
-    x: 48 + offset,
-    y: 32 + offset,
+    x,
+    y,
     width: app.width,
     height: app.height,
     minimized: false,
@@ -79,6 +107,7 @@ function WindowBody({ id, selectedId }: { id: string; selectedId: string | null 
   else if (id === 'stack') body = <StackWindow />
   else if (id === 'experience') body = <ExperienceWindow />
   else if (id === 'settings') body = <SettingsWindow />
+  else if (id === 'resume') body = <ResumeWindow />
 
   return (
     <ErrorBoundary>
@@ -109,24 +138,27 @@ export function DesktopShell() {
     windowsRef.current = wm.windows
   }, [wm.windows])
 
-  // On first load, open all content windows in a tidy cascade (desktop) — on
+  // On first load, open all content windows in a jittered grid (desktop) — on
   // mobile they render full-bleed/stacked. Runs once; idempotent regardless.
   const openedAllRef = useRef(false)
   useEffect(() => {
     if (openedAllRef.current) return
     openedAllRef.current = true
     APPS.filter((app) => app.autoOpen).forEach((app, index) => {
-      openWindow(buildPayload(app, index * CASCADE_STEP))
+      const { x, y } = gridPosition(index)
+      openWindow(buildPayload(app, x, y))
     })
   }, [openWindow])
 
   // URL → window: opening is idempotent (openWindow focuses if already open).
+  // On-demand opens (e.g. Resume/Settings) cascade off the current window count.
   useEffect(() => {
     const { section } = parseRoute(location.pathname)
     if (!section) return
     const app = APPS.find((a) => a.id === section)
     if (!app) return
-    openWindow(buildPayload(app, windowsRef.current.length * CASCADE_STEP))
+    const offset = windowsRef.current.length * CASCADE_STEP
+    openWindow(buildPayload(app, 48 + offset, 32 + offset))
   }, [location.pathname, openWindow])
 
   /** Shareable path for a window; preserves the project id while on a project. */

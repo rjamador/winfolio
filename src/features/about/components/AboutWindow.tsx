@@ -1,3 +1,6 @@
+import { clsx } from 'clsx'
+import { useGithubUser } from '../hooks/useGithubUser'
+
 const SKILLS = [
   'UI/UX design',
   'Git & version control',
@@ -7,11 +10,16 @@ const SKILLS = [
 
 /** About section — Roberto Amador's intro. (User-facing content.) */
 export function AboutWindow() {
+  const { data: user, isPending, isError } = useGithubUser()
+
   return (
     <article className="flex flex-col gap-3 text-w95 leading-relaxed">
-      <header>
-        <h2 className="text-w95-lg font-bold">Roberto Amador</h2>
-        <p className="opacity-80">Systems Engineer</p>
+      <header className="flex items-center gap-3">
+        <Avatar src={isError ? undefined : user?.avatar_url} pending={isPending} />
+        <div>
+          <h2 className="text-w95-lg font-bold">Roberto Amador</h2>
+          <p className="opacity-80">Systems Engineer</p>
+        </div>
       </header>
 
       <p className="font-bold">Designing modern, functional web experiences.</p>
@@ -37,5 +45,23 @@ export function AboutWindow() {
         </ul>
       </div>
     </article>
+  )
+}
+
+function Avatar({ src, pending }: { src?: string; pending: boolean }) {
+  return (
+    <div className="bevel-sunken h-16 w-16 shrink-0 bg-w95-light p-0.5">
+      {src ? (
+        <img
+          src={src}
+          alt="Roberto Amador"
+          width={60}
+          height={60}
+          className="h-full w-full object-cover"
+        />
+      ) : (
+        <div aria-hidden className={clsx('h-full w-full bg-w95-bg', pending && 'animate-pulse')} />
+      )}
+    </div>
   )
 }

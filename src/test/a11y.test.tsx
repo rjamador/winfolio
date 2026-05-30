@@ -47,7 +47,8 @@ describe('accessibility (axe, WCAG A/AA)', () => {
   })
 
   it('AboutWindow has no violations', async () => {
-    const { container } = render(<AboutWindow />)
+    const { container } = render(withProviders(<AboutWindow />))
+    await screen.findByRole('img', { name: 'Roberto Amador' })
     expect(await axe(container, AXE_OPTIONS)).toHaveNoViolations()
   })
 

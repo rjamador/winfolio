@@ -30,7 +30,7 @@ export function DesktopIcon({
       className={clsx(
         'focus-ring flex w-16 flex-col items-center gap-1 p-1 text-center',
         'text-w95 text-w95-light',
-        selected && 'bg-w95-titlebar',
+        selected && 'desktop-icon-selected',
       )}
     >
       <span aria-hidden className="text-3xl leading-none">
@@ -39,7 +39,7 @@ export function DesktopIcon({
       <span
         className={clsx(
           'w-full break-words leading-tight',
-          selected ? 'bg-w95-titlebar text-w95-light' : 'text-w95-light',
+          selected && 'bg-w95-titlebar text-w95-titlebar-text',
         )}
       >
         {label}

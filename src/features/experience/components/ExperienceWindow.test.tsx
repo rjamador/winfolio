@@ -2,16 +2,21 @@ import { render, screen } from '@testing-library/react'
 import { ExperienceWindow } from './ExperienceWindow'
 
 describe('ExperienceWindow', () => {
-  it('renders both roles with their orgs and tech', () => {
+  it('renders all roles with their orgs and tech', () => {
     render(<ExperienceWindow />)
+    expect(
+      screen.getByRole('heading', { name: 'Full-Stack Developer' }),
+    ).toBeInTheDocument()
     expect(
       screen.getByRole('heading', { name: 'Front-End Development Leader' }),
     ).toBeInTheDocument()
     expect(
       screen.getByRole('heading', { name: 'Front-End Developer' }),
     ).toBeInTheDocument()
+    expect(screen.getByText(/Grupo Invercasa/)).toBeInTheDocument()
     expect(screen.getByText(/Fundación Movicáncer/)).toBeInTheDocument()
     expect(screen.getByText('Spring Boot')).toBeInTheDocument()
-    expect(screen.getByText('ASP.NET')).toBeInTheDocument()
+    // ASP.NET now appears in two roles (Invercasa + UCA).
+    expect(screen.getAllByText('ASP.NET').length).toBeGreaterThan(1)
   })
 })

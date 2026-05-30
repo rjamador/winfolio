@@ -39,6 +39,7 @@ export const routes: RouteObject[] = [
       { path: 'projects/:id', element: null },
       { path: 'stack', element: null },
       { path: 'experience', element: null },
+      { path: 'resume', element: null },
       { path: 'settings', element: null },
       { path: '*', element: withSuspense(<NotFound />) },
     ],
