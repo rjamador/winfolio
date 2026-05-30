@@ -27,7 +27,7 @@ export function ContactWindow() {
   })
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-3 text-[11px]" noValidate>
+    <form onSubmit={onSubmit} className="flex flex-col gap-3 text-w95" noValidate>
       <Field label="Name" htmlFor="contact-name" error={formState.errors.name?.message}>
         <Controller
           name="name"

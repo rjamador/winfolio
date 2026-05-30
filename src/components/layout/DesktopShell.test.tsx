@@ -1,7 +1,10 @@
+import { afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { routes } from '@/routes/router'
+
+afterEach(() => localStorage.clear())
 
 function renderApp(initialEntries: string[] = ['/']) {
   const router = createMemoryRouter(routes, { initialEntries })
@@ -9,29 +12,26 @@ function renderApp(initialEntries: string[] = ['/']) {
 }
 
 describe('DesktopShell', () => {
-  it('opens a window when a desktop icon is double-clicked', async () => {
-    const user = userEvent.setup()
+  it('opens all four content windows on first load', async () => {
     renderApp()
-
-    expect(screen.queryByRole('button', { name: 'Close' })).not.toBeInTheDocument()
-    await user.dblClick(screen.getByRole('button', { name: 'About' }))
-    expect(await screen.findByRole('button', { name: 'Close' })).toBeInTheDocument()
+    const closeButtons = await screen.findAllByRole('button', { name: 'Close' })
+    expect(closeButtons).toHaveLength(4)
   })
 
   it('closes a window via its title-bar close button', async () => {
     const user = userEvent.setup()
     renderApp()
+    const closeButtons = await screen.findAllByRole('button', { name: 'Close' })
+    expect(closeButtons).toHaveLength(4)
 
-    await user.dblClick(screen.getByRole('button', { name: 'Projects' }))
-    expect(await screen.findByRole('button', { name: 'Close' })).toBeInTheDocument()
-
-    await user.click(screen.getByRole('button', { name: 'Close' }))
-    expect(screen.queryByRole('button', { name: 'Close' })).not.toBeInTheDocument()
+    await user.click(closeButtons[0]!)
+    expect(screen.getAllByRole('button', { name: 'Close' })).toHaveLength(3)
   })
 
   it('toggles the Start menu open and closed', async () => {
     const user = userEvent.setup()
     renderApp()
+    await screen.findAllByRole('button', { name: 'Close' })
 
     expect(screen.queryByRole('menu', { name: 'Start menu' })).not.toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Start' }))

@@ -14,23 +14,24 @@ function wrap(ui: ReactNode) {
 }
 
 describe('ProjectsWindow', () => {
-  it('lists repos after load (forks/archived excluded)', async () => {
+  it('lists only allowlisted repos after load', async () => {
     wrap(<ProjectsWindow />)
-    expect(await screen.findByText('winfolio')).toBeInTheDocument()
-    expect(screen.getByText('pixel-paint')).toBeInTheDocument()
+    expect(await screen.findByText('GymCheck')).toBeInTheDocument()
+    expect(screen.getByText('portfolio')).toBeInTheDocument()
+    expect(screen.getByText('Coinflow')).toBeInTheDocument()
     // Filtered out:
+    expect(screen.queryByText('random-side-project')).not.toBeInTheDocument()
     expect(screen.queryByText('forked-lib')).not.toBeInTheDocument()
-    expect(screen.queryByText('old-archived')).not.toBeInTheDocument()
   })
 
   it('shows a project detail when selectedId is set', async () => {
-    wrap(<ProjectsWindow selectedId="winfolio" />)
+    wrap(<ProjectsWindow selectedId="portfolio" />)
     expect(
       await screen.findByText(/Windows 95 desktop portfolio built with React/i),
     ).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Back/ })).toBeInTheDocument()
     // Meta row shows stars/forks.
-    expect(screen.getByText(/42 stars/)).toBeInTheDocument()
+    expect(screen.getByText(/4 stars/)).toBeInTheDocument()
   })
 
   it('shows a not-found note for an unknown project id', async () => {

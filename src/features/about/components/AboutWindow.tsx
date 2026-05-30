@@ -8,9 +8,9 @@ const SKILLS = [
 /** About section — Roberto Amador's intro. (User-facing content.) */
 export function AboutWindow() {
   return (
-    <article className="flex flex-col gap-3 text-[11px] leading-relaxed">
+    <article className="flex flex-col gap-3 text-w95 leading-relaxed">
       <header>
-        <h2 className="text-sm font-bold">Roberto Amador</h2>
+        <h2 className="text-w95-lg font-bold">Roberto Amador</h2>
         <p className="opacity-80">Systems Engineer</p>
       </header>
 

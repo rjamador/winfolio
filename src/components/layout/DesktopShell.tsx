@@ -21,8 +21,14 @@ const AboutWindow = lazy(() =>
 const ProjectsWindow = lazy(() =>
   import('@/features/projects').then((m) => ({ default: m.ProjectsWindow })),
 )
-const ContactWindow = lazy(() =>
-  import('@/features/contact').then((m) => ({ default: m.ContactWindow })),
+const StackWindow = lazy(() =>
+  import('@/features/stack').then((m) => ({ default: m.StackWindow })),
+)
+const ExperienceWindow = lazy(() =>
+  import('@/features/experience').then((m) => ({ default: m.ExperienceWindow })),
+)
+const SettingsWindow = lazy(() =>
+  import('@/features/settings').then((m) => ({ default: m.SettingsWindow })),
 )
 
 /** A launchable section of the portfolio (window metadata). */
@@ -32,12 +38,16 @@ type AppDefinition = {
   icon: string
   width: number
   height: number
+  /** Whether this window opens automatically on first load (content sections). */
+  autoOpen: boolean
 }
 
 const APPS: AppDefinition[] = [
-  { id: 'about', title: 'About', icon: '👤', width: 340, height: 260 },
-  { id: 'projects', title: 'Projects', icon: '📁', width: 380, height: 300 },
-  { id: 'contact', title: 'Contact', icon: '✉️', width: 360, height: 320 },
+  { id: 'about', title: 'About', icon: '👤', width: 340, height: 260, autoOpen: true },
+  { id: 'projects', title: 'Projects', icon: '📁', width: 380, height: 300, autoOpen: true },
+  { id: 'stack', title: 'Stack', icon: '🧰', width: 380, height: 320, autoOpen: true },
+  { id: 'experience', title: 'Experience', icon: '💼', width: 420, height: 380, autoOpen: true },
+  { id: 'settings', title: 'Settings', icon: '⚙️', width: 320, height: 300, autoOpen: false },
 ]
 
 const CASCADE_STEP = 28
@@ -66,7 +76,9 @@ function WindowBody({ id, selectedId }: { id: string; selectedId: string | null 
   let body: React.ReactNode = null
   if (id === 'about') body = <AboutWindow />
   else if (id === 'projects') body = <ProjectsWindow selectedId={selectedId} />
-  else if (id === 'contact') body = <ContactWindow />
+  else if (id === 'stack') body = <StackWindow />
+  else if (id === 'experience') body = <ExperienceWindow />
+  else if (id === 'settings') body = <SettingsWindow />
 
   return (
     <ErrorBoundary>
@@ -96,6 +108,17 @@ export function DesktopShell() {
   useEffect(() => {
     windowsRef.current = wm.windows
   }, [wm.windows])
+
+  // On first load, open all content windows in a tidy cascade (desktop) — on
+  // mobile they render full-bleed/stacked. Runs once; idempotent regardless.
+  const openedAllRef = useRef(false)
+  useEffect(() => {
+    if (openedAllRef.current) return
+    openedAllRef.current = true
+    APPS.filter((app) => app.autoOpen).forEach((app, index) => {
+      openWindow(buildPayload(app, index * CASCADE_STEP))
+    })
+  }, [openWindow])
 
   // URL → window: opening is idempotent (openWindow focuses if already open).
   useEffect(() => {

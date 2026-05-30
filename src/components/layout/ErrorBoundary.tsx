@@ -44,11 +44,11 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
           className="bevel-raised w-80 max-w-full bg-w95-bg p-0.5"
         >
           <div className="titlebar h-[18px] select-none px-1">
-            <span id="errorboundary-title" className="text-[11px] font-bold">
+            <span id="errorboundary-title" className="text-w95 font-bold">
               Winfolio
             </span>
           </div>
-          <div className="flex items-start gap-3 px-3 py-4 text-[11px]">
+          <div className="flex items-start gap-3 px-3 py-4 text-w95">
             <span aria-hidden className="text-2xl leading-none">
               ✖
             </span>

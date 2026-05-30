@@ -13,7 +13,7 @@ export function Checkbox({ checked, onChange, label, disabled = false, id }: Che
   return (
     <label
       className={clsx(
-        'inline-flex cursor-pointer items-center gap-1.5 text-[11px]',
+        'inline-flex cursor-pointer items-center gap-1.5 text-w95',
         disabled && 'cursor-not-allowed text-w95-shadow',
       )}
     >

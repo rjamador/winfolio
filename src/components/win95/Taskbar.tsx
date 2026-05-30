@@ -41,7 +41,7 @@ export function Taskbar({
       <div className="flex flex-1 items-center gap-1 overflow-x-auto">{children}</div>
 
       {clock != null && (
-        <div className="bevel-sunken px-2 py-0.5 text-[11px] tabular-nums">{clock}</div>
+        <div className="bevel-sunken px-2 py-0.5 text-w95 tabular-nums">{clock}</div>
       )}
     </footer>
   )

@@ -11,7 +11,7 @@ export function Fieldset({ legend, children, className }: FieldsetProps) {
   return (
     <fieldset
       className={clsx(
-        'bevel-sunken border-w95-shadow px-3 pb-3 pt-1 text-[11px]',
+        'bevel-sunken border-w95-shadow px-3 pb-3 pt-1 text-w95',
         className,
       )}
     >

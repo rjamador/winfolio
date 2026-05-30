@@ -36,7 +36,7 @@ export function TitleBar({
       )}
     >
       {icon && <span className="flex h-4 w-4 items-center">{icon}</span>}
-      <span id={titleId} className="flex-1 truncate px-1 text-[11px] font-bold">
+      <span id={titleId} className="flex-1 truncate px-1 text-w95 font-bold">
         {title}
       </span>
 

@@ -33,7 +33,7 @@ export function TextInput({
         aria-label={ariaLabel}
         onChange={(e) => onChange(e.target.value)}
         className={clsx(
-          'w-full bg-transparent px-1 py-0.5 text-[11px] text-w95-text outline-none',
+          'w-full bg-transparent px-1 py-0.5 text-w95 text-w95-text outline-none',
           disabled && 'text-w95-shadow',
         )}
       />

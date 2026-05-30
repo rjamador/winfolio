@@ -6,7 +6,10 @@ import type { ReactNode } from 'react'
 import { Button95, Dialog } from '@/components/win95'
 import { AboutWindow } from '@/features/about'
 import { ProjectsWindow } from '@/features/projects'
-import { ContactWindow } from '@/features/contact'
+import { StackWindow } from '@/features/stack'
+import { ExperienceWindow } from '@/features/experience'
+import { SettingsWindow } from '@/features/settings'
+import { SettingsProvider } from '@/components/layout/SettingsProvider'
 import { routes } from '@/routes/router'
 
 // Scope to real WCAG A/AA failures (not best-practice noise). color-contrast is
@@ -48,21 +51,35 @@ describe('accessibility (axe, WCAG A/AA)', () => {
     expect(await axe(container, AXE_OPTIONS)).toHaveNoViolations()
   })
 
-  it('ContactWindow has no violations', async () => {
-    const { container } = render(withProviders(<ContactWindow />))
+  it('StackWindow has no violations', async () => {
+    const { container } = render(<StackWindow />)
+    expect(await axe(container, AXE_OPTIONS)).toHaveNoViolations()
+  })
+
+  it('ExperienceWindow has no violations', async () => {
+    const { container } = render(<ExperienceWindow />)
     expect(await axe(container, AXE_OPTIONS)).toHaveNoViolations()
   })
 
   it('ProjectsWindow (list) has no violations', async () => {
     const { container } = render(withProviders(<ProjectsWindow />))
-    await screen.findByText('winfolio')
+    await screen.findByText('GymCheck')
+    expect(await axe(container, AXE_OPTIONS)).toHaveNoViolations()
+  })
+
+  it('SettingsWindow has no violations', async () => {
+    const { container } = render(
+      <SettingsProvider>
+        <SettingsWindow />
+      </SettingsProvider>,
+    )
     expect(await axe(container, AXE_OPTIONS)).toHaveNoViolations()
   })
 
   it('DesktopShell with a window open has no violations', async () => {
     const router = createMemoryRouter(routes, { initialEntries: ['/about'] })
     render(<RouterProvider router={router} />)
-    await screen.findByRole('button', { name: 'Close' })
+    await screen.findAllByRole('button', { name: 'Close' })
     expect(await axe(document.body, AXE_OPTIONS)).toHaveNoViolations()
   })
 })

@@ -22,7 +22,7 @@ function ProjectList() {
   if (isError) return <ErrorNote>Could not load projects.</ErrorNote>
 
   return (
-    <ul className="flex flex-col gap-1 text-[11px]">
+    <ul className="flex flex-col gap-1 text-w95">
       {data.map((project) => (
         <li key={project.id}>
           <button
@@ -55,9 +55,9 @@ function ProjectDetail({ id }: { id: string }) {
   if (!project) return <NotFoundNote onBack={() => navigate('/projects')} />
 
   return (
-    <article className="flex flex-col gap-3 text-[11px]">
+    <article className="flex flex-col gap-3 text-w95">
       <Button95 onClick={() => navigate('/projects')}>← Back</Button95>
-      <h2 className="text-sm font-bold">
+      <h2 className="text-w95-lg font-bold">
         {project.title} <span className="font-normal opacity-80">({project.year})</span>
       </h2>
       <div className="flex flex-wrap gap-3 tabular-nums opacity-80">
@@ -115,12 +115,12 @@ function Links({ project }: { project: Project }) {
 }
 
 function ErrorNote({ children }: { children: React.ReactNode }) {
-  return <p className="text-[11px] text-w95-text">⚠ {children}</p>
+  return <p className="text-w95 text-w95-text">⚠ {children}</p>
 }
 
 function NotFoundNote({ onBack }: { onBack: () => void }) {
   return (
-    <div className="flex flex-col gap-2 text-[11px]">
+    <div className="flex flex-col gap-2 text-w95">
       <p>⚠ That project does not exist.</p>
       <Button95 onClick={onBack}>← Back to projects</Button95>
     </div>

@@ -91,7 +91,7 @@ export function Window({
         onMaximize={onMaximize}
         onClose={onClose}
       />
-      <div className="win95-scroll flex-1 overflow-auto p-2 text-[11px]">
+      <div className="win95-scroll flex-1 overflow-auto p-2 text-w95">
         {children}
       </div>
     </section>

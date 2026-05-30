@@ -14,11 +14,11 @@ export default function NotFound() {
         className="bevel-raised w-80 max-w-full bg-w95-bg p-0.5"
       >
         <div className="titlebar h-[18px] select-none px-1">
-          <span id="notfound-title" className="text-[11px] font-bold">
+          <span id="notfound-title" className="text-w95 font-bold">
             Error
           </span>
         </div>
-        <div id="notfound-body" className="flex items-start gap-3 px-3 py-4 text-[11px]">
+        <div id="notfound-body" className="flex items-start gap-3 px-3 py-4 text-w95">
           <span aria-hidden className="text-2xl leading-none">
             ⚠
           </span>

@@ -8,6 +8,18 @@ import {
 
 const FEATURED_COUNT = 3
 
+/** Only these repos (by exact `name`) are surfaced in the Projects window. */
+const PROJECT_ALLOWLIST = new Set([
+  'Coinflow',
+  'Starpay',
+  'GymCheck',
+  'Perfumeria',
+  'GestorCitas',
+  'portfolio',
+  'Programatic',
+  'ClinicaAsp',
+])
+
 /**
  * Fetches the user's public GitHub repos, validates them, and maps them to the
  * internal Project shape: forks/archived are dropped, the list is sorted by stars
@@ -31,7 +43,7 @@ export async function fetchProjects(): Promise<Project[]> {
   // The API already returns repos sorted by `updated` desc; a stable sort by
   // stars desc therefore keeps the most-recent order within equal star counts.
   const projects = repos
-    .filter((repo) => !repo.fork && !repo.archived)
+    .filter((repo) => !repo.fork && !repo.archived && PROJECT_ALLOWLIST.has(repo.name))
     .map(mapRepoToProject)
     .sort((a, b) => b.stars - a.stars)
 

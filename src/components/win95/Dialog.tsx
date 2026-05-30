@@ -77,7 +77,7 @@ export function Dialog({ open, title, onClose, children, footer }: DialogProps) 
         className="bevel-raised min-w-64 max-w-md bg-w95-bg p-0.5 outline-none"
       >
         <TitleBar title={title} titleId={titleId} onClose={onClose} />
-        <div id={bodyId} className="px-3 py-4 text-[11px]">
+        <div id={bodyId} className="px-3 py-4 text-w95">
           {children}
         </div>
         {footer && (

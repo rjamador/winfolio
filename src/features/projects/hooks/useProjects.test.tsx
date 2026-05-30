@@ -13,27 +13,26 @@ function makeWrapper() {
 }
 
 describe('useProjects', () => {
-  it('returns mapped repos with forks/archived excluded, sorted by stars', async () => {
+  it('returns only allowlisted repos (forks/archived/non-allowlisted excluded), sorted by stars', async () => {
     const { result } = renderHook(() => useProjects(), { wrapper: makeWrapper() })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
     const projects = result.current.data!
-    // 3 of the 5 fixture repos remain (forked-lib + old-archived filtered out).
-    expect(projects.map((p) => p.id)).toEqual(['winfolio', 'pixel-paint', 'task-tray'])
-    // Sorted by stars desc.
-    expect(projects[0]!.stars).toBe(42)
-    // Top-starred is featured.
+    // GymCheck(7), portfolio(4), Coinflow(1) survive; random-side-project (not
+    // allowlisted), forked-lib (fork) and Perfumeria (archived) are dropped.
+    expect(projects.map((p) => p.id)).toEqual(['GymCheck', 'portfolio', 'Coinflow'])
+    expect(projects[0]!.stars).toBe(7)
     expect(projects[0]!.featured).toBe(true)
   })
 })
 
 describe('useProject', () => {
   it('returns the matching project for a known id', async () => {
-    const { result } = renderHook(() => useProject('winfolio'), {
+    const { result } = renderHook(() => useProject('portfolio'), {
       wrapper: makeWrapper(),
     })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
-    expect(result.current.data?.title).toBe('winfolio')
+    expect(result.current.data?.title).toBe('portfolio')
   })
 
   it('returns null for an unknown id', async () => {

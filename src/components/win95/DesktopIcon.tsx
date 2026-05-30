@@ -29,7 +29,7 @@ export function DesktopIcon({
       aria-pressed={selected}
       className={clsx(
         'focus-ring flex w-16 flex-col items-center gap-1 p-1 text-center',
-        'text-[11px] text-w95-light',
+        'text-w95 text-w95-light',
         selected && 'bg-w95-titlebar',
       )}
     >

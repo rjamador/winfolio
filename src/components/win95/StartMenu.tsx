@@ -62,7 +62,7 @@ export function StartMenu({
       className="bevel-raised flex w-full bg-w95-bg"
     >
       <div className="flex w-6 items-end justify-center bg-w95-titlebar pb-2">
-        <span className="rotate-180 text-[11px] font-bold text-w95-titlebar-text [writing-mode:vertical-rl]">
+        <span className="rotate-180 text-w95 font-bold text-w95-titlebar-text [writing-mode:vertical-rl]">
           {brand}
         </span>
       </div>

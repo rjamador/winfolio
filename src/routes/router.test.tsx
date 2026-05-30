@@ -1,7 +1,10 @@
+import { afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { routes } from './router'
+
+afterEach(() => localStorage.clear())
 
 function renderApp(initialEntries: string[] = ['/']) {
   const router = createMemoryRouter(routes, { initialEntries })
@@ -11,16 +14,10 @@ function renderApp(initialEntries: string[] = ['/']) {
 describe('routing', () => {
   it('deep-links to a section: /about opens the About window', async () => {
     renderApp(['/about'])
-    // The window's title bar exposes a Close control once open.
-    expect(await screen.findByRole('button', { name: 'Close' })).toBeInTheDocument()
-    // Two "About" matches: the desktop icon and the window title bar.
+    // Content windows open on load; the title bars expose Close controls.
+    expect((await screen.findAllByRole('button', { name: 'Close' })).length).toBeGreaterThan(0)
+    // "About" appears in the desktop icon and the window title bar.
     expect(screen.getAllByText('About').length).toBeGreaterThan(1)
-  })
-
-  it('deep-links to /projects/:id and opens the Projects window', async () => {
-    renderApp(['/projects/react'])
-    expect(await screen.findByRole('button', { name: 'Close' })).toBeInTheDocument()
-    expect(screen.getAllByText('Projects').length).toBeGreaterThan(1)
   })
 
   it('renders a themed 404 for an unknown path', async () => {
@@ -28,16 +25,21 @@ describe('routing', () => {
     expect(await screen.findByText('This page cannot be found.')).toBeInTheDocument()
   })
 
-  it('opens a window (URL-driven) when a desktop icon is double-clicked', async () => {
+  it('opens Settings (not auto-opened) when its desktop icon is double-clicked', async () => {
     const user = userEvent.setup()
     renderApp(['/'])
-    expect(screen.queryByRole('button', { name: 'Close' })).not.toBeInTheDocument()
-    await user.dblClick(screen.getByRole('button', { name: 'Contact' }))
-    expect(await screen.findByRole('button', { name: 'Close' })).toBeInTheDocument()
+    await screen.findAllByRole('button', { name: 'Close' })
+
+    // Settings is a utility window — not part of the open-all set.
+    expect(screen.queryByRole('radiogroup', { name: 'Text size' })).not.toBeInTheDocument()
+    await user.dblClick(screen.getByRole('button', { name: 'Settings' }))
+    expect(
+      await screen.findByRole('radiogroup', { name: 'Text size' }),
+    ).toBeInTheDocument()
   })
 
   it('deep-link /projects/:id opens the Projects window on that project detail', async () => {
-    renderApp(['/projects/winfolio'])
+    renderApp(['/projects/portfolio'])
     // End-to-end URL → data: the selected repo's description renders.
     expect(
       await screen.findByText(/Windows 95 desktop portfolio built with React/i),

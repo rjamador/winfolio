@@ -7,6 +7,17 @@
 @import './tokens.css';
 @import './win95.css';
 
+/* Bundled Microsoft Windows 95 font (W95FA). Vite hashes these assets. */
+@font-face {
+  font-family: 'W95FA';
+  src:
+    url('../assets/fonts/w95f.woff2') format('woff2'),
+    url('../assets/fonts/w95f.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /*
  * Alias the canonical tokens (tokens.css) into Tailwind so utilities like
  * `bg-w95-desktop`, `text-w95-text`, and `font-sans` are generated.
@@ -21,8 +32,15 @@
   --color-w95-titlebar-text: var(--w95-titlebar-text);
   --color-w95-text: var(--w95-text);
 
-  --font-sans: 'Pixelify Sans', Tahoma, sans-serif;
+  --font-sans: 'W95FA', Tahoma, sans-serif;
   --font-mono: 'Fixedsys', monospace;
+
+  /* Scalable text sizes (driven by --w95-font-scale, set by Settings).
+     Window layout/drag math is unaffected — only text scales. */
+  --text-w95: calc(11px * var(--w95-font-scale, 1));
+  --text-w95--line-height: 1.4;
+  --text-w95-lg: calc(14px * var(--w95-font-scale, 1));
+  --text-w95-lg--line-height: 1.3;
 
   /* Win95 has no rounded corners — flatten Tailwind's radius scale. */
   --radius-none: 0px;
@@ -46,7 +64,7 @@ body {
 
 body {
   font-family: var(--font-sans);
-  font-size: var(--w95-font-size);
+  font-size: var(--text-w95);
   color: var(--w95-text);
   background: var(--w95-desktop);
   /* Keep the pixel font crisp; no smoothing/antialiasing. */
