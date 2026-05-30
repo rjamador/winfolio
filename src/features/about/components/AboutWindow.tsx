@@ -1,16 +1,29 @@
 import { clsx } from 'clsx'
+import { useClock } from '@/hooks/useClock'
+import { useT } from '@/i18n'
+import type { MessageKey } from '@/i18n/messages'
 import { useGithubUser } from '../hooks/useGithubUser'
 
-const SKILLS = [
-  'UI/UX design',
-  'Git & version control',
-  'Design patterns',
-  'Web development',
+const SKILL_KEYS: MessageKey[] = [
+  'about.skill.uiux',
+  'about.skill.git',
+  'about.skill.patterns',
+  'about.skill.web',
 ]
+
+const BIRTH_DATE = new Date(2003, 3, 9) // 9 April 2003
 
 /** About section — Roberto Amador's intro. (User-facing content.) */
 export function AboutWindow() {
+  const { t, locale } = useT()
   const { data: user, isPending, isError } = useGithubUser()
+  const managuaTime = useClock({ timeZone: 'America/Managua', withSeconds: true })
+
+  const birthday = BIRTH_DATE.toLocaleDateString(locale === 'es' ? 'es-ES' : 'en-US', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
 
   return (
     <article className="flex flex-col gap-3 text-w95 leading-relaxed">
@@ -18,28 +31,29 @@ export function AboutWindow() {
         <Avatar src={isError ? undefined : user?.avatar_url} pending={isPending} />
         <div>
           <h2 className="text-w95-lg font-bold">Roberto Amador</h2>
-          <p className="opacity-80">Systems Engineer</p>
+          <p className="opacity-80">{t('about.role')}</p>
         </div>
       </header>
 
-      <p className="font-bold">Designing modern, functional web experiences.</p>
+      <p className="font-bold">{t('about.tagline')}</p>
+      <p>{t('about.p1')}</p>
+      <p>{t('about.p2')}</p>
 
-      <p>
-        My approach focuses on creating clean and minimalist designs that enhance
-        user experience.
-      </p>
-      <p>
-        My technical skill set includes a solid understanding of UI/UX design
-        principles, experience with version control like Git, and knowledge of
-        design patterns.
-      </p>
+      <dl className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-0.5">
+        <dt className="font-bold">{t('about.birthday')}:</dt>
+        <dd>{birthday}</dd>
+        <dt className="font-bold">{t('about.location')}:</dt>
+        <dd>Managua, Nicaragua</dd>
+        <dt className="font-bold">{t('about.localTime')}:</dt>
+        <dd className="tabular-nums">{managuaTime}</dd>
+      </dl>
 
       <div>
-        <h3 className="mb-1 font-bold">Skills</h3>
+        <h3 className="mb-1 font-bold">{t('about.skillsHeading')}</h3>
         <ul className="flex flex-wrap gap-1">
-          {SKILLS.map((skill) => (
-            <li key={skill} className="bevel-raised bg-w95-bg px-2 py-0.5">
-              {skill}
+          {SKILL_KEYS.map((key) => (
+            <li key={key} className="bevel-raised bg-w95-bg px-2 py-0.5">
+              {t(key)}
             </li>
           ))}
         </ul>

@@ -3,22 +3,31 @@ import { Fieldset, Radio } from '@/components/win95'
 import {
   useSettings,
   WIN95_SWATCHES,
+  type Locale,
   type TextSize,
 } from '@/components/layout/settings'
+import { useT } from '@/i18n'
+import type { MessageKey } from '@/i18n/messages'
 
-const TEXT_SIZES: { value: TextSize; label: string }[] = [
-  { value: 'sm', label: 'Small' },
-  { value: 'md', label: 'Normal' },
-  { value: 'lg', label: 'Large' },
+const TEXT_SIZES: { value: TextSize; labelKey: MessageKey }[] = [
+  { value: 'sm', labelKey: 'settings.small' },
+  { value: 'md', labelKey: 'settings.normal' },
+  { value: 'lg', labelKey: 'settings.large' },
 ]
 
-/** Settings: change the desktop background color and the text size. */
+const LANGUAGES: { value: Locale; labelKey: MessageKey }[] = [
+  { value: 'en', labelKey: 'settings.english' },
+  { value: 'es', labelKey: 'settings.spanish' },
+]
+
+/** Settings: desktop background color, text size, and language. */
 export function SettingsWindow() {
-  const { bgColor, textSize, setBgColor, setTextSize } = useSettings()
+  const { bgColor, textSize, locale, setBgColor, setTextSize, setLocale } = useSettings()
+  const { t } = useT()
 
   return (
     <div className="flex flex-col gap-3 text-w95">
-      <Fieldset legend="Background">
+      <Fieldset legend={t('settings.background')}>
         <ul className="mb-2 flex flex-wrap gap-1">
           {WIN95_SWATCHES.map((swatch) => (
             <li key={swatch.value}>
@@ -39,24 +48,20 @@ export function SettingsWindow() {
           ))}
         </ul>
         <label className="flex items-center gap-2">
-          <span>Custom:</span>
+          <span>{t('settings.custom')}</span>
           <input
             type="color"
             value={bgColor}
             onChange={(e) => setBgColor(e.target.value)}
-            aria-label="Custom background color"
+            aria-label={t('settings.custom')}
             className="focus-ring bevel-sunken h-6 w-10 bg-w95-light p-0.5"
           />
           <span className="tabular-nums opacity-80">{bgColor}</span>
         </label>
       </Fieldset>
 
-      <Fieldset legend="Text size">
-        <div
-          role="radiogroup"
-          aria-label="Text size"
-          className="flex flex-col gap-1"
-        >
+      <Fieldset legend={t('settings.textSize')}>
+        <div role="radiogroup" aria-label={t('settings.textSize')} className="flex flex-col gap-1">
           {TEXT_SIZES.map((size) => (
             <Radio
               key={size.value}
@@ -64,7 +69,22 @@ export function SettingsWindow() {
               value={size.value}
               checked={textSize === size.value}
               onChange={() => setTextSize(size.value)}
-              label={size.label}
+              label={t(size.labelKey)}
+            />
+          ))}
+        </div>
+      </Fieldset>
+
+      <Fieldset legend={t('settings.language')}>
+        <div role="radiogroup" aria-label={t('settings.language')} className="flex flex-col gap-1">
+          {LANGUAGES.map((lang) => (
+            <Radio
+              key={lang.value}
+              name="language"
+              value={lang.value}
+              checked={locale === lang.value}
+              onChange={() => setLocale(lang.value)}
+              label={t(lang.labelKey)}
             />
           ))}
         </div>

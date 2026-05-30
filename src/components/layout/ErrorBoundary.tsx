@@ -1,5 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
-import { Button95 } from '@/components/win95'
+import { Button95, PixelIcon } from '@/components/win95'
 
 type ErrorBoundaryProps = {
   children: ReactNode
@@ -49,9 +49,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             </span>
           </div>
           <div className="flex items-start gap-3 px-3 py-4 text-w95">
-            <span aria-hidden className="text-2xl leading-none">
-              ✖
-            </span>
+            <PixelIcon name="octagon-times" size={24} />
             <p className="flex-1">An error has occurred.</p>
           </div>
           <div className="flex justify-center pb-3">

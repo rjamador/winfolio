@@ -4,14 +4,16 @@ import {
   saveSettings,
   SettingsContext,
   TEXT_SCALE,
+  type Locale,
   type TextSize,
 } from './settings'
 
 /**
- * Holds the user's theme prefs (desktop color + text size), persists them, and
- * applies them as CSS custom properties on the document root:
+ * Holds the user's prefs (desktop color, text size, language), persists them,
+ * and applies them to the document root:
  *  - `--w95-desktop`    → background color
  *  - `--w95-font-scale` → multiplier for the scalable text tokens
+ *  - `lang` attribute   → current locale
  */
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState(loadSettings)
@@ -20,6 +22,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const root = document.documentElement
     root.style.setProperty('--w95-desktop', settings.bgColor)
     root.style.setProperty('--w95-font-scale', String(TEXT_SCALE[settings.textSize]))
+    root.lang = settings.locale
     saveSettings(settings)
   }, [settings])
 
@@ -31,10 +34,21 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     (textSize: TextSize) => setSettings((s) => ({ ...s, textSize })),
     [],
   )
+  const setLocale = useCallback(
+    (locale: Locale) => setSettings((s) => ({ ...s, locale })),
+    [],
+  )
 
   return (
     <SettingsContext.Provider
-      value={{ bgColor: settings.bgColor, textSize: settings.textSize, setBgColor, setTextSize }}
+      value={{
+        bgColor: settings.bgColor,
+        textSize: settings.textSize,
+        locale: settings.locale,
+        setBgColor,
+        setTextSize,
+        setLocale,
+      }}
     >
       {children}
     </SettingsContext.Provider>

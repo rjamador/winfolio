@@ -1,3 +1,5 @@
+import { PixelIcon } from './PixelIcon'
+
 type Win95LoaderProps = {
   label?: string
 }
@@ -13,9 +15,7 @@ export function Win95Loader({ label = 'Please wait…' }: Win95LoaderProps) {
       aria-live="polite"
       className="bevel-raised flex items-center gap-2 bg-w95-bg px-4 py-3 text-w95"
     >
-      <span aria-hidden className="text-base">
-        ⏳
-      </span>
+      <PixelIcon name="spinner" spin />
       <span>{label}</span>
     </div>
   )

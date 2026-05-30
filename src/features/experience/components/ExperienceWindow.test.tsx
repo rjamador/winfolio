@@ -1,9 +1,18 @@
 import { render, screen } from '@testing-library/react'
+import { SettingsProvider } from '@/components/layout/SettingsProvider'
 import { ExperienceWindow } from './ExperienceWindow'
+
+function renderExperience() {
+  return render(
+    <SettingsProvider>
+      <ExperienceWindow />
+    </SettingsProvider>,
+  )
+}
 
 describe('ExperienceWindow', () => {
   it('renders all roles with their orgs and tech', () => {
-    render(<ExperienceWindow />)
+    renderExperience()
     expect(
       screen.getByRole('heading', { name: 'Full-Stack Developer' }),
     ).toBeInTheDocument()

@@ -1,3 +1,5 @@
+import { useT } from '@/i18n'
+
 const FILE_ID = '1mJrdO_UcnYVtZuyoTzntinpK63TdIqqh'
 const PREVIEW_URL = `https://drive.google.com/file/d/${FILE_ID}/preview`
 const VIEW_URL = `https://drive.google.com/file/d/${FILE_ID}/view`
@@ -7,6 +9,7 @@ const VIEW_URL = `https://drive.google.com/file/d/${FILE_ID}/view`
  * needed when the file is shared "anyone with the link") plus an external link.
  */
 export function ResumeWindow() {
+  const { t } = useT()
   return (
     <div className="flex h-full min-h-72 flex-col gap-2 text-w95">
       <iframe
@@ -20,7 +23,7 @@ export function ResumeWindow() {
         rel="noreferrer"
         className="focus-ring self-start text-w95-titlebar underline"
       >
-        Open in Google Drive ↗
+        {t('resume.open')}
       </a>
     </div>
   )

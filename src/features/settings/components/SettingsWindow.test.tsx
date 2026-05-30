@@ -45,4 +45,16 @@ describe('SettingsWindow', () => {
     await user.click(screen.getByRole('button', { name: 'Navy' }))
     expect(localStorage.getItem('winfolio:settings')).toContain('#000080')
   })
+
+  it('switches the language and translates the UI', async () => {
+    const user = userEvent.setup()
+    renderSettings()
+    // Default (jsdom) is English.
+    expect(screen.getByText('Background')).toBeInTheDocument()
+    await user.click(screen.getByRole('radio', { name: 'Español' }))
+    // Legends re-translate to Spanish.
+    expect(screen.getByText('Fondo')).toBeInTheDocument()
+    expect(document.documentElement.lang).toBe('es')
+  })
 })
+

@@ -26,7 +26,9 @@ function withProviders(ui: ReactNode) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return (
     <QueryClientProvider client={client}>
-      <MemoryRouter>{ui}</MemoryRouter>
+      <SettingsProvider>
+        <MemoryRouter>{ui}</MemoryRouter>
+      </SettingsProvider>
     </QueryClientProvider>
   )
 }
@@ -58,7 +60,11 @@ describe('accessibility (axe, WCAG A/AA)', () => {
   })
 
   it('ExperienceWindow has no violations', async () => {
-    const { container } = render(<ExperienceWindow />)
+    const { container } = render(
+      <SettingsProvider>
+        <ExperienceWindow />
+      </SettingsProvider>,
+    )
     expect(await axe(container, AXE_OPTIONS)).toHaveNoViolations()
   })
 

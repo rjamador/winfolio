@@ -32,8 +32,8 @@ describe('loadSettings / saveSettings', () => {
   })
 
   it('round-trips saved settings', () => {
-    saveSettings({ bgColor: '#800080', textSize: 'lg' })
-    expect(loadSettings()).toEqual({ bgColor: '#800080', textSize: 'lg' })
+    saveSettings({ bgColor: '#800080', textSize: 'lg', locale: 'es' })
+    expect(loadSettings()).toEqual({ bgColor: '#800080', textSize: 'lg', locale: 'es' })
   })
 
   it('falls back to defaults on corrupt data', () => {

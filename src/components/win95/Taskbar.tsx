@@ -9,6 +9,10 @@ type TaskbarProps = {
   startActive?: boolean
   /** Forwarded to the Start button so a StartMenu can exclude it from outside-click. */
   startButtonRef?: React.Ref<HTMLButtonElement>
+  /** Start button label (also its accessible name). */
+  startLabel?: string
+  /** Start button icon. */
+  startIcon?: React.ReactNode
   /** Clock/tray node; Phase 3 supplies a live clock. */
   clock?: React.ReactNode
 }
@@ -22,6 +26,8 @@ export function Taskbar({
   onStartClick,
   startActive,
   startButtonRef,
+  startLabel = 'Start',
+  startIcon,
   clock,
 }: TaskbarProps) {
   return (
@@ -29,12 +35,12 @@ export function Taskbar({
       <Button95
         ref={startButtonRef}
         onClick={onStartClick}
-        aria-label="Start"
+        aria-label={startLabel}
         className={clsx('font-bold', startActive && 'bevel-sunken')}
       >
         <span className="inline-flex items-center gap-1">
-          <span aria-hidden className="inline-block h-3 w-3 bg-w95-titlebar" />
-          Start
+          {startIcon}
+          {startLabel}
         </span>
       </Button95>
 

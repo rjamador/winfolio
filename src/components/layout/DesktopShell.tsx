@@ -7,11 +7,14 @@ import {
   StartMenu,
   Button95,
   DesktopIcon,
+  PixelIcon,
   Win95Loader,
 } from '@/components/win95'
 import { ErrorBoundary } from '@/components/layout/ErrorBoundary'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { useTaskbarClock } from '@/hooks/useTaskbarClock'
+import { useT } from '@/i18n'
+import type { MessageKey } from '@/i18n/messages'
 import { useWindowManager, type WindowState } from './windowManager'
 
 // Feature window bodies are lazy-loaded so each ships as its own chunk.
@@ -45,14 +48,20 @@ type AppDefinition = {
   autoOpen: boolean
 }
 
+// `icon` is a HackerNoon pixel-icon name (without the `hn-` prefix).
 const APPS: AppDefinition[] = [
-  { id: 'about', title: 'About', icon: '👤', width: 340, height: 260, autoOpen: true },
-  { id: 'projects', title: 'Projects', icon: '📁', width: 380, height: 300, autoOpen: true },
-  { id: 'stack', title: 'Stack', icon: '🧰', width: 380, height: 320, autoOpen: true },
-  { id: 'experience', title: 'Experience', icon: '💼', width: 420, height: 380, autoOpen: true },
-  { id: 'resume', title: 'Resume', icon: '📄', width: 480, height: 600, autoOpen: false },
-  { id: 'settings', title: 'Settings', icon: '⚙️', width: 320, height: 300, autoOpen: false },
+  { id: 'about', title: 'About', icon: 'user', width: 340, height: 260, autoOpen: true },
+  { id: 'projects', title: 'Projects', icon: 'folder', width: 380, height: 300, autoOpen: true },
+  { id: 'stack', title: 'Stack', icon: 'laptop-code', width: 380, height: 320, autoOpen: true },
+  { id: 'experience', title: 'Experience', icon: 'briefcase', width: 420, height: 380, autoOpen: true },
+  { id: 'resume', title: 'Resume', icon: 'clipboard', width: 480, height: 600, autoOpen: false },
+  { id: 'settings', title: 'Settings', icon: 'cog', width: 320, height: 300, autoOpen: false },
 ]
+
+/** Section title message key for an app id. */
+function titleKey(id: string): MessageKey {
+  return `section.${id}` as MessageKey
+}
 
 const CASCADE_STEP = 28
 
@@ -100,6 +109,7 @@ function buildPayload(app: AppDefinition, x: number, y: number): Omit<WindowStat
 
 /** Renders a feature window body, isolated by an error boundary + lazy Suspense. */
 function WindowBody({ id, selectedId }: { id: string; selectedId: string | null }) {
+  const { t } = useT()
   let body: React.ReactNode = null
   if (id === 'about') body = <AboutWindow />
   else if (id === 'projects') body = <ProjectsWindow selectedId={selectedId} />
@@ -110,7 +120,7 @@ function WindowBody({ id, selectedId }: { id: string; selectedId: string | null 
 
   return (
     <ErrorBoundary>
-      <Suspense fallback={<Win95Loader />}>{body}</Suspense>
+      <Suspense fallback={<Win95Loader label={t('loader.pleaseWait')} />}>{body}</Suspense>
     </ErrorBoundary>
   )
 }
@@ -119,6 +129,7 @@ function WindowBody({ id, selectedId }: { id: string; selectedId: string | null 
 export function DesktopShell() {
   const wm = useWindowManager()
   const clock = useTaskbarClock()
+  const { t } = useT()
   const navigate = useNavigate()
   const location = useLocation()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
@@ -211,8 +222,8 @@ export function DesktopShell() {
           {APPS.map((app) => (
             <DesktopIcon
               key={app.id}
-              label={app.title}
-              icon={app.icon}
+              label={t(titleKey(app.id))}
+              icon={<PixelIcon name={app.icon} size={32} />}
               selected={selectedIcon === app.id}
               onClick={() => setSelectedIcon(app.id)}
               onDoubleClick={() => openApp(app)}
@@ -226,8 +237,8 @@ export function DesktopShell() {
             <Window
               key={w.id}
               draggable
-              title={w.title}
-              icon={w.icon ? <span aria-hidden>{w.icon}</span> : undefined}
+              title={t(titleKey(w.id))}
+              icon={w.icon ? <PixelIcon name={w.icon} /> : undefined}
               active={wm.focusedId === w.id}
               x={w.x}
               y={w.y}
@@ -270,8 +281,8 @@ export function DesktopShell() {
                   onClick={() => openApp(app)}
                   className="focus-ring flex w-full items-center gap-2 px-3 py-1 text-left hover:bg-w95-titlebar hover:text-w95-titlebar-text"
                 >
-                  <span aria-hidden>{app.icon}</span>
-                  {app.title}
+                  <PixelIcon name={app.icon} />
+                  {t(titleKey(app.id))}
                 </button>
               </li>
             ))}
@@ -283,6 +294,8 @@ export function DesktopShell() {
         onStartClick={() => setStartOpen((v) => !v)}
         startActive={startOpen}
         startButtonRef={startButtonRef}
+        startLabel={t('taskbar.start')}
+        startIcon={<PixelIcon name="grid" />}
         clock={clock}
       >
         {wm.windows.map((w) => (
@@ -299,8 +312,8 @@ export function DesktopShell() {
             }
           >
             <span className="inline-flex items-center gap-1">
-              <span aria-hidden>{w.icon}</span>
-              {w.title}
+              {w.icon && <PixelIcon name={w.icon} />}
+              {t(titleKey(w.id))}
             </span>
           </Button95>
         ))}

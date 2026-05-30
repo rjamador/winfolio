@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@hackernoon/pixel-icon-library':
+        specifier: ^1.1.0
+        version: 1.1.0
       '@hookform/resolvers':
         specifier: ^5.4.0
         version: 5.4.0(react-hook-form@7.76.1(react@19.2.6))
@@ -293,6 +296,9 @@ packages:
     peerDependenciesMeta:
       '@noble/hashes':
         optional: true
+
+  '@hackernoon/pixel-icon-library@1.1.0':
+    resolution: {integrity: sha512-VEdDskTYRc37quKh3LFt65nMtriJlxuov/ifOmlomAyfK2hty4IPdL6IIXNvATOaQwZYjlfyxJTCGO+JgWbgIw==}
 
   '@hookform/resolvers@5.4.0':
     resolution: {integrity: sha512-EIsqr/t/qbinPIhGjMdtvutIN1Kk4uwbROE9/UQ93CAVGR7GkA7Y92+fX80OzXi/OB67jVFYwKGO1WzkxmkFZw==}
@@ -1979,6 +1985,8 @@ snapshots:
       levn: 0.4.1
 
   '@exodus/bytes@1.15.1': {}
+
+  '@hackernoon/pixel-icon-library@1.1.0': {}
 
   '@hookform/resolvers@5.4.0(react-hook-form@7.76.1(react@19.2.6))':
     dependencies:

@@ -1,5 +1,6 @@
 import { Button95 } from './Button95'
 import { Dialog } from './Dialog'
+import { PixelIcon } from './PixelIcon'
 
 type MessageBoxButton = 'ok' | 'cancel'
 
@@ -7,7 +8,7 @@ type MessageBoxProps = {
   open: boolean
   title: string
   message: string
-  /** Glyph shown left of the message (e.g. ℹ, ⚠, ✕). Defaults to info. */
+  /** Glyph shown left of the message. Defaults to an info pixel icon. */
   icon?: React.ReactNode
   buttons?: MessageBoxButton[]
   onOk?: () => void
@@ -23,7 +24,7 @@ export function MessageBox({
   open,
   title,
   message,
-  icon = 'ℹ',
+  icon = <PixelIcon name="info-circle" size={24} />,
   buttons = ['ok'],
   onOk,
   onCancel,

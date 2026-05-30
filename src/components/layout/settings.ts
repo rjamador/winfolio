@@ -1,6 +1,14 @@
 import { createContext, useContext } from 'react'
 import { z } from 'zod'
 
+export type Locale = 'en' | 'es'
+
+/** Initial locale from the browser (es → Spanish, else English). */
+export function detectLocale(): Locale {
+  const lang = typeof navigator !== 'undefined' ? navigator.language : 'en'
+  return lang.toLowerCase().startsWith('es') ? 'es' : 'en'
+}
+
 export const settingsSchema = z.object({
   /** Desktop background color (hex). */
   bgColor: z
@@ -9,6 +17,8 @@ export const settingsSchema = z.object({
     .default('#000080'),
   /** Base text-size preset. */
   textSize: z.enum(['sm', 'md', 'lg']).default('md'),
+  /** UI language. */
+  locale: z.enum(['en', 'es']).default('en'),
 })
 
 export type TextSize = z.infer<typeof settingsSchema>['textSize']
@@ -37,15 +47,17 @@ export const WIN95_SWATCHES: { name: string; value: string }[] = [
 
 const STORAGE_KEY = 'winfolio:settings'
 
-/** Reads persisted settings; falls back to defaults on missing/corrupt data. */
+/** Reads persisted settings; falls back to defaults (locale from the browser
+ * on first visit) on missing/corrupt data. */
 export function loadSettings(): Settings {
+  const fresh: Settings = { ...DEFAULT_SETTINGS, locale: detectLocale() }
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return DEFAULT_SETTINGS
+    if (!raw) return fresh
     const parsed = settingsSchema.safeParse(JSON.parse(raw))
-    return parsed.success ? parsed.data : DEFAULT_SETTINGS
+    return parsed.success ? parsed.data : fresh
   } catch {
-    return DEFAULT_SETTINGS
+    return fresh
   }
 }
 
@@ -60,8 +72,10 @@ export function saveSettings(settings: Settings): void {
 export type SettingsContextValue = {
   bgColor: string
   textSize: TextSize
+  locale: Locale
   setBgColor: (color: string) => void
   setTextSize: (size: TextSize) => void
+  setLocale: (locale: Locale) => void
 }
 
 export const SettingsContext = createContext<SettingsContextValue | null>(null)
