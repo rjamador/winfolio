@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { clsx } from 'clsx'
 import {
@@ -7,45 +7,39 @@ import {
   StartMenu,
   Button95,
   DesktopIcon,
+  Win95Loader,
 } from '@/components/win95'
+import { ErrorBoundary } from '@/components/layout/ErrorBoundary'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { useTaskbarClock } from '@/hooks/useTaskbarClock'
 import { useWindowManager, type WindowState } from './windowManager'
 
-/**
- * A launchable section of the portfolio. The body is a placeholder for now;
- * Phase 7 features supply the real content.
- */
+// Feature window bodies are lazy-loaded so each ships as its own chunk.
+const AboutWindow = lazy(() =>
+  import('@/features/about').then((m) => ({ default: m.AboutWindow })),
+)
+const ProjectsWindow = lazy(() =>
+  import('@/features/projects').then((m) => ({ default: m.ProjectsWindow })),
+)
+const ContactWindow = lazy(() =>
+  import('@/features/contact').then((m) => ({ default: m.ContactWindow })),
+)
+
+/** A launchable section of the portfolio (window metadata). */
 type AppDefinition = {
   id: string
   title: string
   icon: string
-  body: React.ReactNode
+  width: number
+  height: number
 }
 
 const APPS: AppDefinition[] = [
-  {
-    id: 'about',
-    title: 'About',
-    icon: '👤',
-    body: <p>About window — content arrives in Phase 7.</p>,
-  },
-  {
-    id: 'projects',
-    title: 'Projects',
-    icon: '📁',
-    body: <p>Projects window — content arrives in Phase 7.</p>,
-  },
-  {
-    id: 'contact',
-    title: 'Contact',
-    icon: '✉️',
-    body: <p>Contact window — content arrives in Phase 7.</p>,
-  },
+  { id: 'about', title: 'About', icon: '👤', width: 340, height: 260 },
+  { id: 'projects', title: 'Projects', icon: '📁', width: 380, height: 300 },
+  { id: 'contact', title: 'Contact', icon: '✉️', width: 360, height: 320 },
 ]
 
-const DEFAULT_WIDTH = 320
-const DEFAULT_HEIGHT = 200
 const CASCADE_STEP = 28
 
 /** Parses a pathname into the section id and optional sub-id (e.g. project id). */
@@ -61,10 +55,24 @@ function buildPayload(app: AppDefinition, offset: number): Omit<WindowState, 'zI
     icon: app.icon,
     x: 48 + offset,
     y: 32 + offset,
-    width: DEFAULT_WIDTH,
-    height: DEFAULT_HEIGHT,
+    width: app.width,
+    height: app.height,
     minimized: false,
   }
+}
+
+/** Renders a feature window body, isolated by an error boundary + lazy Suspense. */
+function WindowBody({ id, selectedId }: { id: string; selectedId: string | null }) {
+  let body: React.ReactNode = null
+  if (id === 'about') body = <AboutWindow />
+  else if (id === 'projects') body = <ProjectsWindow selectedId={selectedId} />
+  else if (id === 'contact') body = <ContactWindow />
+
+  return (
+    <ErrorBoundary>
+      <Suspense fallback={<Win95Loader />}>{body}</Suspense>
+    </ErrorBoundary>
+  )
 }
 
 /** The faux Windows 95 desktop: wallpaper, icons, floating windows, taskbar. */
@@ -125,8 +133,6 @@ export function DesktopShell() {
     if (currentRoute.section === id) navigate('/', { replace: true })
   }
 
-  const bodyFor = (id: string) => APPS.find((a) => a.id === id)?.body
-
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-w95-desktop">
       {/*
@@ -180,7 +186,7 @@ export function DesktopShell() {
                 wm.resizeWindow(w.id, width, height, x, y)
               }
             >
-              {bodyFor(w.id)}
+              <WindowBody id={w.id} selectedId={currentRoute.id} />
             </Window>
           ))}
 

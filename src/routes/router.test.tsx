@@ -35,4 +35,12 @@ describe('routing', () => {
     await user.dblClick(screen.getByRole('button', { name: 'Contact' }))
     expect(await screen.findByRole('button', { name: 'Close' })).toBeInTheDocument()
   })
+
+  it('deep-link /projects/:id opens the Projects window on that project detail', async () => {
+    renderApp(['/projects/winfolio'])
+    // End-to-end URL → data: the selected project's description renders.
+    expect(
+      await screen.findByText(/Windows 95 desktop built with React/i),
+    ).toBeInTheDocument()
+  })
 })
