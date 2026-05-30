@@ -25,17 +25,15 @@ describe('routing', () => {
     expect(await screen.findByText('This page cannot be found.')).toBeInTheDocument()
   })
 
-  it('opens Settings (not auto-opened) when its desktop icon is double-clicked', async () => {
+  it('opens Resume (not auto-opened) when its desktop icon is double-clicked', async () => {
     const user = userEvent.setup()
     renderApp(['/'])
     await screen.findAllByRole('button', { name: 'Close' })
 
-    // Settings is a utility window — not part of the open-all set.
-    expect(screen.queryByRole('radiogroup', { name: 'Text size' })).not.toBeInTheDocument()
-    await user.dblClick(screen.getByRole('button', { name: 'Settings' }))
-    expect(
-      await screen.findByRole('radiogroup', { name: 'Text size' }),
-    ).toBeInTheDocument()
+    // Resume is on-demand — not part of the open-all set.
+    expect(screen.queryByTitle('Résumé (PDF)')).not.toBeInTheDocument()
+    await user.dblClick(screen.getByRole('button', { name: 'Resume' }))
+    expect(await screen.findByTitle('Résumé (PDF)')).toBeInTheDocument()
   })
 
   it('deep-link /projects/:id opens the Projects window on that project detail', async () => {

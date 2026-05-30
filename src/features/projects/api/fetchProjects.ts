@@ -18,6 +18,7 @@ const PROJECT_ALLOWLIST = new Set([
   'portfolio',
   'Programatic',
   'ClinicaAsp',
+  'winfolio'
 ])
 
 /**

@@ -55,7 +55,7 @@ const APPS: AppDefinition[] = [
   { id: 'stack', title: 'Stack', icon: 'laptop-code', width: 380, height: 320, autoOpen: true },
   { id: 'experience', title: 'Experience', icon: 'briefcase', width: 420, height: 380, autoOpen: true },
   { id: 'resume', title: 'Resume', icon: 'clipboard', width: 480, height: 600, autoOpen: false },
-  { id: 'settings', title: 'Settings', icon: 'cog', width: 380, height: 440, autoOpen: false },
+  { id: 'settings', title: 'Settings', icon: 'cog', width: 380, height: 440, autoOpen: true },
 ]
 
 /** Section title message key for an app id. */
@@ -144,20 +144,30 @@ export function DesktopShell() {
   // it fight user focus).
   const { openWindow } = wm
   const windowsRef = useRef(wm.windows)
+  const desktopRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     windowsRef.current = wm.windows
   }, [wm.windows])
 
-  // On first load, open all content windows in a jittered grid (desktop) — on
-  // mobile they render full-bleed/stacked. Runs once; idempotent regardless.
+  // On first load, open the content windows in a jittered grid, then Settings
+  // last — right-anchored on desktop (clear of the info windows) and last in the
+  // mobile stack. Runs once; idempotent regardless.
   const openedAllRef = useRef(false)
   useEffect(() => {
     if (openedAllRef.current) return
     openedAllRef.current = true
-    APPS.filter((app) => app.autoOpen).forEach((app, index) => {
+
+    APPS.filter((app) => app.autoOpen && app.id !== 'settings').forEach((app, index) => {
       const { x, y } = gridPosition(index)
       openWindow(buildPayload(app, x, y))
     })
+
+    const settings = APPS.find((app) => app.id === 'settings')
+    if (settings) {
+      const desktopWidth = desktopRef.current?.clientWidth || window.innerWidth
+      const x = Math.max(GRID_BASE_X, desktopWidth - settings.width - 24)
+      openWindow(buildPayload(settings, x, GRID_BASE_Y))
+    }
   }, [openWindow])
 
   // URL → window: opening is idempotent (openWindow focuses if already open).
@@ -208,6 +218,7 @@ export function DesktopShell() {
         windows stack full-bleed in a scrollable column.
       */}
       <div
+        ref={desktopRef}
         className={clsx(
           'relative flex-1',
           isDesktop ? 'overflow-hidden' : 'flex flex-col gap-2 overflow-auto p-2',
