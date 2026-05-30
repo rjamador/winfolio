@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react'
+import { PixelatedIcon } from './PixelatedIcon'
 import TailwindcssOriginal from 'devicons-react/icons/TailwindcssOriginal'
 import DotnetcoreOriginal from 'devicons-react/icons/DotNetPlain'
 import AngularOriginal from 'devicons-react/icons/AngularOriginal'
@@ -44,7 +45,7 @@ export function StackWindow() {
           className="bevel-raised flex flex-col items-center gap-1 bg-w95-bg p-2 text-center"
         >
           <span aria-hidden>
-            <Icon size={32} />
+            <PixelatedIcon Icon={Icon} size={36} resolution={18} />
           </span>
           <span className="leading-tight">{label}</span>
         </li>
