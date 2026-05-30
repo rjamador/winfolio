@@ -211,7 +211,7 @@ export function DesktopShell() {
   }
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-w95-desktop">
+    <div className="flex h-dvh flex-col overflow-hidden bg-w95-desktop">
       {/*
         Desktop: icons + windows. On desktop, windows float (react-rnd, absolute)
         over a column of icons. On mobile, icons collapse to a launcher row and
