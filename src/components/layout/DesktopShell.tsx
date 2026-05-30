@@ -1,4 +1,5 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { clsx } from 'clsx'
 import {
   Window,
@@ -9,11 +10,11 @@ import {
 } from '@/components/win95'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { useTaskbarClock } from '@/hooks/useTaskbarClock'
-import { useWindowManager } from './windowManager'
+import { useWindowManager, type WindowState } from './windowManager'
 
 /**
- * A launchable section of the portfolio. The body is a placeholder in Phase 3;
- * Phase 5 routing + Phase 7 features supply the real content.
+ * A launchable section of the portfolio. The body is a placeholder for now;
+ * Phase 7 features supply the real content.
  */
 type AppDefinition = {
   id: string
@@ -43,31 +44,85 @@ const APPS: AppDefinition[] = [
   },
 ]
 
-const DEFAULT_SIZE = { width: 320, height: 200 }
+const DEFAULT_WIDTH = 320
+const DEFAULT_HEIGHT = 200
 const CASCADE_STEP = 28
+
+/** Parses a pathname into the section id and optional sub-id (e.g. project id). */
+function parseRoute(pathname: string): { section: string | null; id: string | null } {
+  const segments = pathname.split('/').filter(Boolean)
+  return { section: segments[0] ?? null, id: segments[1] ?? null }
+}
+
+function buildPayload(app: AppDefinition, offset: number): Omit<WindowState, 'zIndex'> {
+  return {
+    id: app.id,
+    title: app.title,
+    icon: app.icon,
+    x: 48 + offset,
+    y: 32 + offset,
+    width: DEFAULT_WIDTH,
+    height: DEFAULT_HEIGHT,
+    minimized: false,
+  }
+}
 
 /** The faux Windows 95 desktop: wallpaper, icons, floating windows, taskbar. */
 export function DesktopShell() {
   const wm = useWindowManager()
   const clock = useTaskbarClock()
+  const navigate = useNavigate()
+  const location = useLocation()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [startOpen, setStartOpen] = useState(false)
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null)
   const startButtonRef = useRef<HTMLButtonElement>(null)
 
+  const currentRoute = parseRoute(location.pathname)
+
+  // Stable open action + a ref to the latest windows, so the URL→window effect
+  // depends only on the pathname (not on window-state changes, which would make
+  // it fight user focus).
+  const { openWindow } = wm
+  const windowsRef = useRef(wm.windows)
+  useEffect(() => {
+    windowsRef.current = wm.windows
+  }, [wm.windows])
+
+  // URL → window: opening is idempotent (openWindow focuses if already open).
+  useEffect(() => {
+    const { section } = parseRoute(location.pathname)
+    if (!section) return
+    const app = APPS.find((a) => a.id === section)
+    if (!app) return
+    openWindow(buildPayload(app, windowsRef.current.length * CASCADE_STEP))
+  }, [location.pathname, openWindow])
+
+  /** Shareable path for a window; preserves the project id while on a project. */
+  const pathFor = (id: string) =>
+    id === 'projects' && currentRoute.section === 'projects' && currentRoute.id
+      ? `/projects/${currentRoute.id}`
+      : `/${id}`
+
+  // window → URL (push). The effect above performs the actual open.
   const openApp = (app: AppDefinition) => {
-    const offset = wm.windows.length * CASCADE_STEP
-    wm.openWindow({
-      id: app.id,
-      title: app.title,
-      icon: app.icon,
-      x: 48 + offset,
-      y: 32 + offset,
-      width: DEFAULT_SIZE.width,
-      height: DEFAULT_SIZE.height,
-      minimized: false,
-    })
     setStartOpen(false)
+    navigate(pathFor(app.id))
+  }
+
+  const focusWindow = (id: string) => {
+    wm.focusWindow(id)
+    navigate(pathFor(id), { replace: true })
+  }
+
+  const closeWindow = (id: string) => {
+    wm.closeWindow(id)
+    if (currentRoute.section === id) navigate('/')
+  }
+
+  const minimizeWindow = (id: string) => {
+    wm.minimizeWindow(id)
+    if (currentRoute.section === id) navigate('/', { replace: true })
   }
 
   const bodyFor = (id: string) => APPS.find((a) => a.id === id)?.body
@@ -117,9 +172,9 @@ export function DesktopShell() {
               width={w.width}
               height={w.height}
               zIndex={w.zIndex}
-              onFocus={() => wm.focusWindow(w.id)}
-              onMinimize={() => wm.minimizeWindow(w.id)}
-              onClose={() => wm.closeWindow(w.id)}
+              onFocus={() => focusWindow(w.id)}
+              onMinimize={() => minimizeWindow(w.id)}
+              onClose={() => closeWindow(w.id)}
               onDragStop={(x, y) => wm.moveWindow(w.id, x, y)}
               onResizeStop={(width, height, x, y) =>
                 wm.resizeWindow(w.id, width, height, x, y)
@@ -128,6 +183,9 @@ export function DesktopShell() {
               {bodyFor(w.id)}
             </Window>
           ))}
+
+        {/* Routed content (e.g. the themed 404) renders over the desktop. */}
+        <Outlet />
       </div>
 
       {/* Start menu, anchored above the Start button */}
@@ -169,8 +227,8 @@ export function DesktopShell() {
             )}
             onClick={() =>
               w.minimized || wm.focusedId !== w.id
-                ? wm.restoreWindow(w.id)
-                : wm.minimizeWindow(w.id)
+                ? focusWindow(w.id)
+                : minimizeWindow(w.id)
             }
           >
             <span className="inline-flex items-center gap-1">
