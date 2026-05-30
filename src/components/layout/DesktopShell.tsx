@@ -236,7 +236,9 @@ export function DesktopShell() {
               label={t(titleKey(app.id))}
               icon={<PixelIcon name={app.icon} size={32} />}
               selected={selectedIcon === app.id}
-              onClick={() => setSelectedIcon(app.id)}
+              // Desktop: single click selects, double click opens. Touch/mobile:
+              // a single tap opens (double-tap is awkward on touch).
+              onClick={() => (isDesktop ? setSelectedIcon(app.id) : openApp(app))}
               onDoubleClick={() => openApp(app)}
             />
           ))}
@@ -309,26 +311,34 @@ export function DesktopShell() {
         startIcon={<PixelIcon name="grid" />}
         clock={clock}
       >
-        {wm.windows.map((w) => (
-          <Button95
-            key={w.id}
-            pressable={false}
-            className={clsx(
-              'max-w-40 truncate',
-              wm.focusedId === w.id && !w.minimized && 'bevel-sunken',
-            )}
-            onClick={() =>
-              w.minimized || wm.focusedId !== w.id
-                ? focusWindow(w.id)
-                : minimizeWindow(w.id)
-            }
-          >
-            <span className="inline-flex items-center gap-1">
-              {w.icon && <PixelIcon name={w.icon} />}
-              {t(titleKey(w.id))}
-            </span>
-          </Button95>
-        ))}
+        {wm.windows.map((w) => {
+          const title = t(titleKey(w.id))
+          const active = wm.focusedId === w.id && !w.minimized
+          return (
+            <Button95
+              key={w.id}
+              pressable={false}
+              compact={!isDesktop}
+              aria-label={title}
+              className={clsx(
+                active && 'bevel-sunken',
+                // Desktop: share width, cap, and truncate. + left-aligned icon/label.
+                // Mobile: compact icon-only chips that stay small as windows pile up.
+                isDesktop ? 'min-w-0 max-w-40 flex-1 text-left' : 'shrink-0',
+              )}
+              onClick={() =>
+                w.minimized || wm.focusedId !== w.id
+                  ? focusWindow(w.id)
+                  : minimizeWindow(w.id)
+              }
+            >
+              <span className="inline-flex min-w-0 items-center gap-1">
+                {w.icon && <PixelIcon name={w.icon} />}
+                {isDesktop && <span className="truncate">{title}</span>}
+              </span>
+            </Button95>
+          )
+        })}
       </Taskbar>
     </div>
   )

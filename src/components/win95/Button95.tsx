@@ -9,6 +9,8 @@ type Button95Props = {
   type?: 'button' | 'submit'
   /** When false, the button doesn't show the sunken "pressed" look on click. */
   pressable?: boolean
+  /** Tighter horizontal padding (e.g. for dense taskbar/icon-only buttons). */
+  compact?: boolean
   className?: string
   'aria-label'?: string
   ref?: React.Ref<HTMLButtonElement>
@@ -25,6 +27,7 @@ export function Button95({
   disabled = false,
   type = 'button',
   pressable = true,
+  compact = false,
   className,
   'aria-label': ariaLabel,
   ref,
@@ -37,7 +40,8 @@ export function Button95({
       disabled={disabled}
       aria-label={ariaLabel}
       className={clsx(
-        'bevel-raised focus-ring bg-w95-bg px-4 py-0.5 leading-tight',
+        'bevel-raised focus-ring bg-w95-bg py-0.5 leading-tight',
+        compact ? 'px-1.5' : 'px-4',
         pressable
           ? 'active:pt-[3px] active:pb-px' // nudge label down when pressed
           : 'bevel-no-press',
