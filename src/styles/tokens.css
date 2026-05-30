@@ -8,8 +8,8 @@
   /* Surfaces & palette */
   --w95-bg: #c0c0c0;
   /* classic silver panel/button surface */
-  --w95-desktop: #000080;
-  /* navy desktop background (default; teal #008080 selectable in Settings) */
+  --w95-desktop: #008080;
+  /* teal desktop background (default; navy #000080 selectable in Settings) */
   --w95-shadow: #808080;
   /* mid-gray bevel shadow */
   --w95-darkshadow: #000000;
