@@ -57,9 +57,8 @@ const APPS: AppDefinition[] = [
 const CASCADE_STEP = 28
 
 // Initial layout: a 2-column grid with a small per-window jitter so the desktop
-// looks naturally arranged rather than perfectly aligned.
 const GRID_COLS = 2
-const GRID_BASE_X = 32
+const GRID_BASE_X = 120
 const GRID_BASE_Y = 24
 const GRID_COL_GAP = 440
 const GRID_ROW_GAP = 290
@@ -157,8 +156,9 @@ export function DesktopShell() {
     if (!section) return
     const app = APPS.find((a) => a.id === section)
     if (!app) return
+    // Cascade on-demand opens off the icon column too, so they don't cover it.
     const offset = windowsRef.current.length * CASCADE_STEP
-    openWindow(buildPayload(app, 48 + offset, 32 + offset))
+    openWindow(buildPayload(app, GRID_BASE_X + offset, GRID_BASE_Y + offset))
   }, [location.pathname, openWindow])
 
   /** Shareable path for a window; preserves the project id while on a project. */
