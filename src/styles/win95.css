@@ -68,10 +68,19 @@
   background: var(--w95-titlebar-inactive);
 }
 
+/* Window title bars are the drag handle → show a move cursor */
+.win95-titlebar {
+  cursor: move;
+}
+
+.win95-titlebar button {
+  cursor: pointer;
+}
+
 /* --- Scrollbars ------------------------------------------------------------ */
 
 /* Chunky beveled scrollbars (Chromium/WebKit). Firefox falls back to its
-   native scrollbar gracefully — no rule needed. */
+   native scrollbar gracefully */
 .win95-scroll::-webkit-scrollbar {
   width: 16px;
   height: 16px;
