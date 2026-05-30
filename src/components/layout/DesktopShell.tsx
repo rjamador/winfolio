@@ -301,6 +301,7 @@ export function DesktopShell() {
         {wm.windows.map((w) => (
           <Button95
             key={w.id}
+            pressable={false}
             className={clsx(
               'max-w-40 truncate',
               wm.focusedId === w.id && !w.minimized && 'bevel-sunken',

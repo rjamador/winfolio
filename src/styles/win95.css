@@ -34,6 +34,15 @@
     inset -1px -1px 0 var(--w95-bg);
 }
 
+/* Opt-out of the pressed look (e.g. taskbar buttons): stay raised on :active.
+   Defined after .bevel-raised:active so it wins by source order. */
+.bevel-no-press:active {
+  border-color: var(--w95-light) var(--w95-darkshadow) var(--w95-darkshadow) var(--w95-light);
+  box-shadow:
+    inset 1px 1px 0 var(--w95-bg),
+    inset -1px -1px 0 var(--w95-shadow);
+}
+
 /* --- Focus ----------------------------------------------------------------- */
 
 /* Classic Win95 dotted focus rectangle, drawn inside the control's padding.

@@ -7,6 +7,8 @@ type Button95Props = {
   variant?: 'default' | 'primary'
   disabled?: boolean
   type?: 'button' | 'submit'
+  /** When false, the button doesn't show the sunken "pressed" look on click. */
+  pressable?: boolean
   className?: string
   'aria-label'?: string
   ref?: React.Ref<HTMLButtonElement>
@@ -22,6 +24,7 @@ export function Button95({
   variant = 'default',
   disabled = false,
   type = 'button',
+  pressable = true,
   className,
   'aria-label': ariaLabel,
   ref,
@@ -35,7 +38,9 @@ export function Button95({
       aria-label={ariaLabel}
       className={clsx(
         'bevel-raised focus-ring bg-w95-bg px-4 py-0.5 leading-tight',
-        'active:pt-[3px] active:pb-px', // nudge label down when pressed
+        pressable
+          ? 'active:pt-[3px] active:pb-px' // nudge label down when pressed
+          : 'bevel-no-press',
         variant === 'primary' && 'outline outline-w95-text',
         disabled ? 'text-w95-shadow' : 'text-w95-text',
         className,

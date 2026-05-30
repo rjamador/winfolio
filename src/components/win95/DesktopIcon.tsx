@@ -38,8 +38,12 @@ export function DesktopIcon({
       </span>
       <span
         className={clsx(
-          'w-full break-words leading-tight',
-          selected && 'bg-w95-titlebar text-w95-titlebar-text',
+          'max-w-full leading-tight',
+          // Unselected: clip to one line with an ellipsis (avoids ugly mid-word
+          // wraps). Selected: show the full label, wrapping as needed.
+          selected
+            ? 'whitespace-normal break-words bg-w95-titlebar text-w95-titlebar-text'
+            : 'block truncate',
         )}
       >
         {label}

@@ -36,6 +36,7 @@ export function Taskbar({
         ref={startButtonRef}
         onClick={onStartClick}
         aria-label={startLabel}
+        pressable={false}
         className={clsx('font-bold', startActive && 'bevel-sunken')}
       >
         <span className="inline-flex items-center gap-1">

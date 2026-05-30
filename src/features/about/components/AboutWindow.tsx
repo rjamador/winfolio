@@ -12,10 +12,13 @@ const LINKS = [
 ]
 
 const SKILL_KEYS: MessageKey[] = [
+  'about.skill.web',
+  'about.skill.backend',
+  'about.skill.api',
+  'about.skill.mobile',
   'about.skill.uiux',
   'about.skill.git',
   'about.skill.patterns',
-  'about.skill.web',
 ]
 
 const BIRTH_DATE = new Date(2003, 3, 9) // 9 April 2003
