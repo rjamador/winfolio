@@ -1,8 +1,15 @@
 import { clsx } from 'clsx'
+import { PixelIcon } from '@/components/win95'
 import { useClock } from '@/hooks/useClock'
+import { GITHUB_USERNAME } from '@/lib/config'
 import { useT } from '@/i18n'
 import type { MessageKey } from '@/i18n/messages'
 import { useGithubUser } from '../hooks/useGithubUser'
+
+const LINKS = [
+  { label: 'GitHub', href: `https://github.com/${GITHUB_USERNAME}` },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/roberto-amador-1590a629b/' },
+]
 
 const SKILL_KEYS: MessageKey[] = [
   'about.skill.uiux',
@@ -17,7 +24,7 @@ const BIRTH_DATE = new Date(2003, 3, 9) // 9 April 2003
 export function AboutWindow() {
   const { t, locale } = useT()
   const { data: user, isPending, isError } = useGithubUser()
-  const managuaTime = useClock({ timeZone: 'America/Managua', withSeconds: true })
+  const managuaTime = useClock({ timeZone: 'America/Managua' })
 
   const birthday = BIRTH_DATE.toLocaleDateString(locale === 'es' ? 'es-ES' : 'en-US', {
     day: 'numeric',
@@ -47,6 +54,22 @@ export function AboutWindow() {
         <dt className="font-bold">{t('about.localTime')}:</dt>
         <dd className="tabular-nums">{managuaTime}</dd>
       </dl>
+
+      <ul className="flex flex-wrap gap-3">
+        {LINKS.map((link) => (
+          <li key={link.label}>
+            <a
+              href={link.href}
+              target="_blank"
+              rel="noreferrer"
+              className="focus-ring inline-flex items-center gap-1 text-w95-titlebar underline"
+            >
+              {link.label}
+              <PixelIcon name="external-link" />
+            </a>
+          </li>
+        ))}
+      </ul>
 
       <div>
         <h3 className="mb-1 font-bold">{t('about.skillsHeading')}</h3>

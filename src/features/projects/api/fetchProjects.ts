@@ -1,5 +1,5 @@
 import { ApiError } from '@/lib/api/client'
-import { env } from '@/lib/env'
+import { GITHUB_USERNAME } from '@/lib/config'
 import {
   githubRepoListSchema,
   mapRepoToProject,
@@ -26,7 +26,7 @@ const PROJECT_ALLOWLIST = new Set([
  * (then most-recently-updated), and the top-starred few are flagged `featured`.
  */
 export async function fetchProjects(): Promise<Project[]> {
-  const url = `https://api.github.com/users/${env.VITE_GITHUB_USERNAME}/repos?sort=updated&per_page=100`
+  const url = `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100`
 
   let response: Response
   try {

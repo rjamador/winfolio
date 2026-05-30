@@ -6,8 +6,6 @@
 @import 'tailwindcss';
 @import './tokens.css';
 @import './win95.css';
-/* HackerNoon Pixel Icon Library (icon font → `.hn .hn-<name>`). */
-@import '@hackernoon/pixel-icon-library/fonts/iconfont.css';
 
 /* Bundled Microsoft Windows 95 font (W95FA). Vite hashes these assets. */
 @font-face {

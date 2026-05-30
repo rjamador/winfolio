@@ -15,10 +15,9 @@ const EXPERIENCE: Record<Locale, Role[]> = {
       title: 'Full-Stack Developer',
       period: 'Jul. 2025 – Present',
       org: 'Grupo Invercasa - Casavisión',
-      location: 'Managua, Nicaragua',
       bullets: [
-        'Responsible for the ASP.NET Core and React development of the Casavisión/Telecable client portal, centralizing the management of contracts, devices, and work orders.',
-        'Integrated an efficient payment gateway for viewing and settling invoices within the client portal.',
+        'Responsible for the ASP.NET Core and React development of the Casavisión/Telecable customer portal, centralizing the management of contracts, devices, and work orders.',
+        'Integrated an efficient payment gateway for viewing and settling invoices within the customer portal.',
       ],
       tech: ['React', 'ASP.NET', 'Microsoft SQL', 'Flutter', 'Angular'],
     },
@@ -46,7 +45,6 @@ const EXPERIENCE: Record<Locale, Role[]> = {
       title: 'Desarrollador Full-Stack',
       period: 'Jul. 2025 – Presente',
       org: 'Grupo Invercasa - Casavisión',
-      location: 'Managua, Nicaragua',
       bullets: [
         'Responsable del desarrollo en ASP.NET Core y React del portal para clientes de Casavisión/Telecable, centralizando la gestión de contratos, dispositivos y órdenes de trabajo.',
         'Integración de una pasarela de pagos eficiente para la consulta y cancelación de facturas dentro del portal para clientes.',

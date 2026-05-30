@@ -48,14 +48,14 @@ type AppDefinition = {
   autoOpen: boolean
 }
 
-// `icon` is a HackerNoon pixel-icon name (without the `hn-` prefix).
+// `icon` is a PixelIcon semantic name (see PixelIcon's registry).
 const APPS: AppDefinition[] = [
-  { id: 'about', title: 'About', icon: 'user', width: 340, height: 260, autoOpen: true },
+  { id: 'about', title: 'About', icon: 'user', width: 440, height: 360, autoOpen: true },
   { id: 'projects', title: 'Projects', icon: 'folder', width: 380, height: 300, autoOpen: true },
   { id: 'stack', title: 'Stack', icon: 'laptop-code', width: 380, height: 320, autoOpen: true },
   { id: 'experience', title: 'Experience', icon: 'briefcase', width: 420, height: 380, autoOpen: true },
   { id: 'resume', title: 'Resume', icon: 'clipboard', width: 480, height: 600, autoOpen: false },
-  { id: 'settings', title: 'Settings', icon: 'cog', width: 320, height: 300, autoOpen: false },
+  { id: 'settings', title: 'Settings', icon: 'cog', width: 380, height: 440, autoOpen: false },
 ]
 
 /** Section title message key for an app id. */
