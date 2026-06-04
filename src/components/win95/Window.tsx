@@ -5,6 +5,7 @@ import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { TitleBar } from './TitleBar'
 
 type WindowProps = {
+  id?: string
   title: string
   icon?: React.ReactNode
   active?: boolean
@@ -41,6 +42,7 @@ const DESKTOP_QUERY = '(min-width: 1024px)'
  * — or when not draggable — it renders full-bleed in normal flow.
  */
 export function Window({
+  id,
   title,
   icon,
   active = true,
@@ -73,6 +75,7 @@ export function Window({
 
   const surface = (
     <section
+      id={id}
       ref={surfaceRef}
       tabIndex={-1}
       aria-label={title}

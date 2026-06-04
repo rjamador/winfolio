@@ -11,7 +11,8 @@
 /* Raised (button/panel): light top-left edge, dark bottom-right edge. */
 .bevel-raised {
   border: var(--w95-border-width) solid;
-  border-color: var(--w95-light) var(--w95-darkshadow) var(--w95-darkshadow) var(--w95-light);
+  border-color: var(--w95-light) var(--w95-darkshadow) var(--w95-darkshadow)
+    var(--w95-light);
   box-shadow:
     inset 1px 1px 0 var(--w95-bg),
     inset -1px -1px 0 var(--w95-shadow);
@@ -20,7 +21,8 @@
 /* Sunken (input/well): inverse of raised — content looks recessed. */
 .bevel-sunken {
   border: var(--w95-border-width) solid;
-  border-color: var(--w95-shadow) var(--w95-light) var(--w95-light) var(--w95-shadow);
+  border-color: var(--w95-shadow) var(--w95-light) var(--w95-light)
+    var(--w95-shadow);
   box-shadow:
     inset 1px 1px 0 var(--w95-darkshadow),
     inset -1px -1px 0 var(--w95-bg);
@@ -29,7 +31,8 @@
 /* Pressed look — scoped to BUTTONS only, so panels/windows/the taskbar (which
    are also `.bevel-raised`) don't depress when clicked/held. */
 button.bevel-raised:active {
-  border-color: var(--w95-darkshadow) var(--w95-light) var(--w95-light) var(--w95-darkshadow);
+  border-color: var(--w95-darkshadow) var(--w95-light) var(--w95-light)
+    var(--w95-darkshadow);
   box-shadow:
     inset 1px 1px 0 var(--w95-shadow),
     inset -1px -1px 0 var(--w95-bg);
@@ -38,7 +41,8 @@ button.bevel-raised:active {
 /* Opt-out of the pressed look (e.g. taskbar buttons): stay raised on :active.
    Same specificity as the rule above + defined later. */
 button.bevel-no-press:active {
-  border-color: var(--w95-light) var(--w95-darkshadow) var(--w95-darkshadow) var(--w95-light);
+  border-color: var(--w95-light) var(--w95-darkshadow) var(--w95-darkshadow)
+    var(--w95-light);
   box-shadow:
     inset 1px 1px 0 var(--w95-bg),
     inset -1px -1px 0 var(--w95-shadow);
@@ -47,7 +51,7 @@ button.bevel-no-press:active {
 /* --- Focus ----------------------------------------------------------------- */
 
 /* Classic Win95 dotted focus rectangle, drawn inside the control's padding.
-   Phase 2 primitives opt in via :focus-visible to keep mouse clicks ring-free. */
+  Primitives opt in via :focus-visible to keep mouse clicks ring-free. */
 .focus-ring:focus-visible {
   outline: 1px dotted var(--w95-text);
   outline-offset: -4px;
@@ -59,9 +63,11 @@ button.bevel-no-press:active {
   display: flex;
   align-items: center;
   color: var(--w95-titlebar-text);
-  background: linear-gradient(90deg,
-      var(--w95-titlebar) 0%,
-      var(--w95-titlebar-active-end) 100%);
+  background: linear-gradient(
+    90deg,
+    var(--w95-titlebar) 0%,
+    var(--w95-titlebar-active-end) 100%
+  );
 }
 
 .titlebar--inactive {
@@ -94,7 +100,8 @@ button.bevel-no-press:active {
 .win95-scroll::-webkit-scrollbar-thumb {
   background: var(--w95-bg);
   border: var(--w95-border-width) solid;
-  border-color: var(--w95-light) var(--w95-darkshadow) var(--w95-darkshadow) var(--w95-light);
+  border-color: var(--w95-light) var(--w95-darkshadow) var(--w95-darkshadow)
+    var(--w95-light);
   box-shadow:
     inset 1px 1px 0 var(--w95-bg),
     inset -1px -1px 0 var(--w95-shadow);
@@ -144,8 +151,8 @@ button.bevel-no-press:active {
     min-height: 24px;
   }
 
-  input[type='checkbox'].focus-ring,
-  input[type='radio'].focus-ring {
+  input[type="checkbox"].focus-ring,
+  input[type="radio"].focus-ring {
     width: 24px;
     height: 24px;
   }

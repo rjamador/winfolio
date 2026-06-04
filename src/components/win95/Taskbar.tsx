@@ -1,32 +1,31 @@
-import { clsx } from 'clsx'
-import { Button95 } from './Button95'
+import { clsx } from "clsx";
+import { Button95 } from "./Button95";
 
 type TaskbarProps = {
   /** Open-window buttons (or any taskbar items) rendered between Start and clock. */
-  children?: React.ReactNode
-  onStartClick?: () => void
+  children?: React.ReactNode;
+  onStartClick?: () => void;
   /** Whether the Start menu is open, for the pressed Start-button look. */
-  startActive?: boolean
+  startActive?: boolean;
   /** Forwarded to the Start button so a StartMenu can exclude it from outside-click. */
-  startButtonRef?: React.Ref<HTMLButtonElement>
+  startButtonRef?: React.Ref<HTMLButtonElement>;
   /** Start button label (also its accessible name). */
-  startLabel?: string
+  startLabel?: string;
   /** Start button icon. */
-  startIcon?: React.ReactNode
-  /** Clock/tray node; Phase 3 supplies a live clock. */
-  clock?: React.ReactNode
-}
+  startIcon?: React.ReactNode;
+  /** Clock/tray node. */
+  clock?: React.ReactNode;
+};
 
 /**
  * Fixed bottom taskbar: Start button, open-window buttons, and a clock tray.
- * Presentational only — the live clock and window list are wired in Phase 3.
  */
 export function Taskbar({
   children,
   onStartClick,
   startActive,
   startButtonRef,
-  startLabel = 'Start',
+  startLabel = "Start",
   startIcon,
   clock,
 }: TaskbarProps) {
@@ -37,7 +36,7 @@ export function Taskbar({
         onClick={onStartClick}
         aria-label={startLabel}
         pressable={false}
-        className={clsx('font-bold', startActive && 'bevel-sunken')}
+        className={clsx("font-bold", startActive && "bevel-sunken")}
       >
         <span className="inline-flex items-center gap-1">
           {startIcon}
@@ -45,11 +44,15 @@ export function Taskbar({
         </span>
       </Button95>
 
-      <div className="flex flex-1 items-center gap-1 overflow-x-auto">{children}</div>
+      <div className="flex flex-1 items-center gap-1 overflow-x-auto">
+        {children}
+      </div>
 
       {clock != null && (
-        <div className="bevel-sunken px-2 py-0.5 text-w95 tabular-nums">{clock}</div>
+        <div className="bevel-sunken px-2 py-0.5 text-w95 tabular-nums">
+          {clock}
+        </div>
       )}
     </footer>
-  )
+  );
 }

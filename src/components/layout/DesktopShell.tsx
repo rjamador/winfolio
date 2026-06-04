@@ -133,8 +133,10 @@ export function DesktopShell() {
   const navigate = useNavigate()
   const location = useLocation()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
+  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
   const [startOpen, setStartOpen] = useState(false)
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null)
+  const scrollTargetRef = useRef<string | null>(null)
   const startButtonRef = useRef<HTMLButtonElement>(null)
 
   const currentRoute = parseRoute(location.pathname)
@@ -181,6 +183,18 @@ export function DesktopShell() {
     const offset = windowsRef.current.length * CASCADE_STEP
     openWindow(buildPayload(app, GRID_BASE_X + offset, GRID_BASE_Y + offset))
   }, [location.pathname, openWindow])
+
+  // On mobile, scroll the target window into view after it appears in the DOM.
+  // Uses a ref (not state) to avoid setState-in-effect. wm.windows in the deps
+  // guarantees the effect re-fires once a newly added window is committed to DOM.
+  useEffect(() => {
+    const id = scrollTargetRef.current
+    if (!id || isDesktop) return
+    const el = document.getElementById(`window-${id}`)
+    if (!el) return
+    scrollTargetRef.current = null
+    el.scrollIntoView?.({ behavior: prefersReducedMotion ? 'instant' : 'smooth', block: 'start' })
+  }, [wm.windows, isDesktop, prefersReducedMotion])
 
   /** Shareable path for a window; preserves the project id while on a project. */
   const pathFor = (id: string) =>
@@ -237,8 +251,15 @@ export function DesktopShell() {
               icon={<PixelIcon name={app.icon} size={32} />}
               selected={selectedIcon === app.id}
               // Desktop: single click selects, double click opens. Touch/mobile:
-              // a single tap opens (double-tap is awkward on touch).
-              onClick={() => (isDesktop ? setSelectedIcon(app.id) : openApp(app))}
+              // a single tap opens and scrolls to the window.
+              onClick={() => {
+                if (isDesktop) {
+                  setSelectedIcon(app.id)
+                } else {
+                  openApp(app)
+                  scrollTargetRef.current = app.id
+                }
+              }}
               onDoubleClick={() => openApp(app)}
             />
           ))}
@@ -249,6 +270,7 @@ export function DesktopShell() {
           .map((w) => (
             <Window
               key={w.id}
+              id={`window-${w.id}`}
               draggable
               title={t(titleKey(w.id))}
               icon={w.icon ? <PixelIcon name={w.icon} /> : undefined}
@@ -326,11 +348,14 @@ export function DesktopShell() {
                 // Mobile: compact icon-only chips that stay small as windows pile up.
                 isDesktop ? 'min-w-0 max-w-40 flex-1 text-left' : 'shrink-0',
               )}
-              onClick={() =>
-                w.minimized || wm.focusedId !== w.id
-                  ? focusWindow(w.id)
-                  : minimizeWindow(w.id)
-              }
+              onClick={() => {
+                if (w.minimized || wm.focusedId !== w.id) {
+                  focusWindow(w.id)
+                  if (!isDesktop) scrollTargetRef.current = w.id
+                } else {
+                  minimizeWindow(w.id)
+                }
+              }}
             >
               <span className="inline-flex min-w-0 items-center gap-1">
                 {w.icon && <PixelIcon name={w.icon} />}

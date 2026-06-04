@@ -1,22 +1,22 @@
-import { clsx } from 'clsx'
+import { clsx } from "clsx";
 
 type TitleBarProps = {
-  title: string
+  title: string;
   /** id applied to the title text, so a Dialog can label itself by it. */
-  titleId?: string
+  titleId?: string;
   /** Optional pixel icon shown left of the title. */
-  icon?: React.ReactNode
+  icon?: React.ReactNode;
   /** Active windows get the navy→blue gradient; inactive get flat gray. */
-  active?: boolean
-  onMinimize?: () => void
-  onMaximize?: () => void
-  onClose?: () => void
-}
+  active?: boolean;
+  onMinimize?: () => void;
+  onMaximize?: () => void;
+  onClose?: () => void;
+};
 
 /**
  * Window title bar: gradient (or inactive gray) strip with the title and the
  * minimize/maximize/close cluster. The `win95-titlebar` class is the stable
- * drag handle that Phase 4's react-rnd will target. Control handlers stop
+ * drag handle that react-rnd will target. Control handlers stop
  * propagation so a future drag isn't initiated by clicking a button.
  */
 export function TitleBar({
@@ -31,8 +31,8 @@ export function TitleBar({
   return (
     <div
       className={clsx(
-        'titlebar win95-titlebar h-[18px] select-none gap-1 px-0.5',
-        !active && 'titlebar--inactive',
+        "titlebar win95-titlebar h-[18px] select-none gap-1 px-0.5",
+        !active && "titlebar--inactive",
       )}
     >
       {icon && <span className="flex h-4 w-4 items-center">{icon}</span>}
@@ -63,14 +63,14 @@ export function TitleBar({
         )}
       </div>
     </div>
-  )
+  );
 }
 
 type TitleBarButtonProps = {
-  label: string
-  onClick: () => void
-  children: React.ReactNode
-}
+  label: string;
+  onClick: () => void;
+  children: React.ReactNode;
+};
 
 /** Small raised control button; stops propagation to protect future dragging. */
 function TitleBarButton({ label, onClick, children }: TitleBarButtonProps) {
@@ -79,13 +79,13 @@ function TitleBarButton({ label, onClick, children }: TitleBarButtonProps) {
       type="button"
       aria-label={label}
       onClick={(e) => {
-        e.stopPropagation()
-        onClick()
+        e.stopPropagation();
+        onClick();
       }}
       onMouseDown={(e) => e.stopPropagation()}
       className="bevel-raised focus-ring flex h-4 w-4 items-center justify-center bg-w95-bg p-0 text-w95-text"
     >
       {children}
     </button>
-  )
+  );
 }
