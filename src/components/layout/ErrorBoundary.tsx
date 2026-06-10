@@ -1,15 +1,15 @@
-import { Component, type ErrorInfo, type ReactNode } from 'react'
-import { Button95, PixelIcon } from '@/components/win95'
+import { Component, type ErrorInfo, type ReactNode } from "react";
+import { Button95, PixelIcon } from "@/components/win95";
 
 type ErrorBoundaryProps = {
-  children: ReactNode
+  children: ReactNode;
   /** Custom fallback. Defaults to the themed Win95 error screen. */
-  fallback?: ReactNode
-}
+  fallback?: ReactNode;
+};
 
 type ErrorBoundaryState = {
-  hasError: boolean
-}
+  hasError: boolean;
+};
 
 /**
  * Catches render errors in its subtree and shows a themed Win95 error screen
@@ -19,22 +19,29 @@ type ErrorBoundaryState = {
  * error boundaries, so this is the codebase's single, deliberate exception to
  * the function-components-only rule.
  */
-export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  override state: ErrorBoundaryState = { hasError: false }
+export class ErrorBoundary extends Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
+  override state: ErrorBoundaryState = { hasError: false };
 
   static getDerivedStateFromError(): ErrorBoundaryState {
-    return { hasError: true }
+    return { hasError: true };
   }
 
   override componentDidCatch(error: Error, info: ErrorInfo) {
     if (import.meta.env.DEV) {
-      console.error('ErrorBoundary caught an error:', error, info.componentStack)
+      console.error(
+        "ErrorBoundary caught an error:",
+        error,
+        info.componentStack,
+      );
     }
   }
 
   override render() {
-    if (!this.state.hasError) return this.props.children
-    if (this.props.fallback) return this.props.fallback
+    if (!this.state.hasError) return this.props.children;
+    if (this.props.fallback) return this.props.fallback;
 
     return (
       <div className="flex h-full min-h-40 items-center justify-center p-4">
@@ -43,7 +50,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
           aria-labelledby="errorboundary-title"
           className="bevel-raised w-80 max-w-full bg-w95-bg p-0.5"
         >
-          <div className="titlebar h-[18px] select-none px-1">
+          <div className="titlebar h-4.5 select-none px-1">
             <span id="errorboundary-title" className="text-w95 font-bold">
               Winfolio
             </span>
@@ -53,12 +60,15 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             <p className="flex-1">An error has occurred.</p>
           </div>
           <div className="flex justify-center pb-3">
-            <Button95 variant="primary" onClick={() => window.location.reload()}>
+            <Button95
+              variant="primary"
+              onClick={() => window.location.reload()}
+            >
               OK
             </Button95>
           </div>
         </div>
       </div>
-    )
+    );
   }
 }

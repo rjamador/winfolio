@@ -3,19 +3,21 @@
  * Order matters: all @import rules must come first (CSS spec), and the Tailwind
  * import must precede the @theme block (Tailwind v4 CSS-first config).
  */
-@import 'tailwindcss';
-@import './tokens.css';
-@import './win95.css';
+@import "tailwindcss";
+@import "./tokens.css";
+@import "./win95.css";
 
-/* Bundled Microsoft Windows 95 font (W95FA). Vite hashes these assets. */
+/* Bundled Microsoft Windows 95 font (W95FA). Served from public/ at a stable
+   URL so index.html can preload it; `block` avoids a fallback-font flash on
+   first visit. */
 @font-face {
-  font-family: 'W95FA';
+  font-family: "W95FA";
   src:
-    url('../assets/fonts/w95f.woff2') format('woff2'),
-    url('../assets/fonts/w95f.woff') format('woff');
+    url("/fonts/w95f.woff2") format("woff2"),
+    url("/fonts/w95f.woff") format("woff");
   font-weight: normal;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 /*
@@ -32,8 +34,8 @@
   --color-w95-titlebar-text: var(--w95-titlebar-text);
   --color-w95-text: var(--w95-text);
 
-  --font-sans: 'W95FA', Tahoma, sans-serif;
-  --font-mono: 'Fixedsys', monospace;
+  --font-sans: "W95FA", Tahoma, sans-serif;
+  --font-mono: "Fixedsys", monospace;
 
   /* Scalable text sizes (driven by --w95-font-scale, set by Settings).
      Window layout/drag math is unaffected — only text scales. */

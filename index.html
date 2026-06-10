@@ -1,40 +1,71 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="128x128"
+      href="/apple-touch-icon-128x128.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="256x256"
+      href="/apple-touch-icon-256x256.png"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-  <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png" />
-  <link rel="apple-touch-icon" sizes="128x128" href="/apple-touch-icon-128x128.png" />
-  <link rel="apple-touch-icon" sizes="256x256" href="/apple-touch-icon-256x256.png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Preload the boot-splash assets so first paint never shows a font swap
+       or a late-popping logo. -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/w95f.woff2"
+      crossorigin
+    />
+    <link rel="preload" as="image" href="/favicon-32x32.png" />
 
-  <title>Roberto Amador — Portfolio</title>
-  <meta name="description"
-    content="Roberto Amador — Systems Engineer & full-stack developer. A Windows 95–styled portfolio with projects, stack, and experience." />
-  <meta name="author" content="Roberto Amador" />
-  <meta name="keywords"
-    content="Roberto Amador, portfolio, full-stack developer, systems engineer, React, ASP.NET, Windows 95" />
-  <meta name="theme-color" content="#000080" />
+    <title>Roberto Amador — Portfolio</title>
+    <meta
+      name="description"
+      content="Roberto Amador — Systems Engineer & full-stack developer. A Windows 95–styled portfolio with projects, stack, and experience."
+    />
+    <meta name="author" content="Roberto Amador" />
+    <meta
+      name="keywords"
+      content="Roberto Amador, portfolio, full-stack developer, systems engineer, React, ASP.NET, Windows 95"
+    />
+    <meta name="theme-color" content="#000080" />
 
-  <!-- Open Graph -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Roberto Amador — Portfolio" />
-  <meta property="og:description" content="A Windows 95–styled portfolio: projects, stack, and experience." />
-  <meta property="og:image" content="/favicon.png" />
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Roberto Amador — Portfolio" />
+    <meta
+      property="og:description"
+      content="A Windows 95–styled portfolio: projects, stack, and experience."
+    />
+    <meta property="og:image" content="/favicon.png" />
 
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Roberto Amador — Portfolio" />
-  <meta name="twitter:description" content="A Windows 95–styled portfolio: projects, stack, and experience." />
-</head>
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Roberto Amador — Portfolio" />
+    <meta
+      name="twitter:description"
+      content="A Windows 95–styled portfolio: projects, stack, and experience."
+    />
+  </head>
 
-<body>
-  <div id="root"></div>
-  <script type="module" src="/src/main.tsx"></script>
-</body>
-
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
