@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { ErrorBoundary } from './ErrorBoundary'
+import { ErrorBoundary } from '@/components/layout/ErrorBoundary'
 
 function Boom(): React.ReactNode {
   throw new Error('boom')

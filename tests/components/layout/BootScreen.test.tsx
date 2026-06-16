@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
-import { SettingsProvider } from './SettingsProvider'
-import { BootScreen } from './BootScreen'
+import { SettingsProvider } from '@/components/layout/SettingsProvider'
+import { BootScreen } from '@/components/layout/BootScreen'
 
 describe('BootScreen', () => {
   it('shows a progress bar and calls onDone after loading', async () => {

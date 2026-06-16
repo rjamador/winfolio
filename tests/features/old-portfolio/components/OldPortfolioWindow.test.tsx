@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { SettingsProvider } from '@/components/layout/SettingsProvider'
-import { OldPortfolioWindow } from './OldPortfolioWindow'
+import { OldPortfolioWindow } from '@/features/old-portfolio/components/OldPortfolioWindow'
 
 describe('OldPortfolioWindow', () => {
   it('embeds the old portfolio and links to it', () => {

@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react'
-import { Window } from './Window'
-import { Taskbar } from './Taskbar'
-import { Win95Loader } from './Win95Loader'
-import { MessageBox } from './MessageBox'
+import { Window } from '@/components/win95/Window'
+import { Taskbar } from '@/components/win95/Taskbar'
+import { Win95Loader } from '@/components/win95/Win95Loader'
+import { MessageBox } from '@/components/win95/MessageBox'
 
 // Light smoke renders for the purely presentational primitives.
 describe('presentational primitives render without throwing', () => {

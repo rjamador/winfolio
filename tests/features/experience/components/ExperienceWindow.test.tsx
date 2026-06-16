@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { SettingsProvider } from '@/components/layout/SettingsProvider'
-import { ExperienceWindow } from './ExperienceWindow'
+import { ExperienceWindow } from '@/features/experience/components/ExperienceWindow'
 
 function renderExperience() {
   return render(

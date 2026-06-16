@@ -4,7 +4,7 @@ import {
   loadSettings,
   saveSettings,
   settingsSchema,
-} from './settings'
+} from '@/components/layout/settings'
 
 afterEach(() => localStorage.clear())
 

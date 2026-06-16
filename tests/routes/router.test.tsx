@@ -2,7 +2,7 @@ import { afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
-import { routes } from './router'
+import { routes } from '@/routes/router'
 
 afterEach(() => localStorage.clear())
 

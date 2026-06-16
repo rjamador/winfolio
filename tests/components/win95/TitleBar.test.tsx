@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { TitleBar } from './TitleBar'
+import { TitleBar } from '@/components/win95/TitleBar'
 
 describe('TitleBar', () => {
   it('fires the matching handler for each control', async () => {

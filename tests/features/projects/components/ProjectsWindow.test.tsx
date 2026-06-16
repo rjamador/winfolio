@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { render, screen } from '@testing-library/react'
 import type { ReactNode } from 'react'
 import { SettingsProvider } from '@/components/layout/SettingsProvider'
-import { ProjectsWindow } from './ProjectsWindow'
+import { ProjectsWindow } from '@/features/projects/components/ProjectsWindow'
 
 function wrap(ui: ReactNode) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })

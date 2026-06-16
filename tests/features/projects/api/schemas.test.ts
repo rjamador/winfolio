@@ -1,4 +1,4 @@
-import { githubRepoSchema, mapRepoToProject } from './schemas'
+import { githubRepoSchema, mapRepoToProject } from '@/features/projects/api/schemas'
 
 const rawRepo = {
   id: 1,

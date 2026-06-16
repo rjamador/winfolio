@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { StartMenu } from './StartMenu'
+import { StartMenu } from '@/components/win95/StartMenu'
 
 describe('StartMenu', () => {
   it('renders nothing when closed', () => {

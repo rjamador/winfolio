@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { TextInput } from './TextInput'
-import { TextArea } from './TextArea'
-import { Select } from './Select'
-import { Checkbox } from './Checkbox'
-import { Radio } from './Radio'
-import { Fieldset } from './Fieldset'
+import { TextInput } from '@/components/win95/TextInput'
+import { TextArea } from '@/components/win95/TextArea'
+import { Select } from '@/components/win95/Select'
+import { Checkbox } from '@/components/win95/Checkbox'
+import { Radio } from '@/components/win95/Radio'
+import { Fieldset } from '@/components/win95/Fieldset'
 
 // --- TextInput --------------------------------------------------------------
 

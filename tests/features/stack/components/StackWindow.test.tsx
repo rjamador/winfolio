@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { StackWindow } from './StackWindow'
+import { StackWindow } from '@/features/stack/components/StackWindow'
 
 describe('StackWindow', () => {
   it('renders the tech tiles with labels', () => {

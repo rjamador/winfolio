@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { SettingsProvider } from '@/components/layout/SettingsProvider'
-import { ResumeWindow } from './ResumeWindow'
+import { ResumeWindow } from '@/features/resume/components/ResumeWindow'
 
 describe('ResumeWindow', () => {
   it('embeds the PDF preview and links to Google Drive', () => {

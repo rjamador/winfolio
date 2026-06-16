@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { ReactNode } from 'react'
-import { ContactWindow } from './ContactWindow'
+import { ContactWindow } from '@/features/contact/components/ContactWindow'
 
 function wrap(ui: ReactNode) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })

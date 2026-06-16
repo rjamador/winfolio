@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { Button95 } from './Button95'
+import { Button95 } from '@/components/win95/Button95'
 
 describe('Button95', () => {
   it('renders its children', () => {

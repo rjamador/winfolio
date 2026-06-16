@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { Dialog } from './Dialog'
-import { Button95 } from './Button95'
+import { Dialog } from '@/components/win95/Dialog'
+import { Button95 } from '@/components/win95/Button95'
 
 describe('Dialog', () => {
   it('exposes dialog role and modal semantics labelled by its title', () => {

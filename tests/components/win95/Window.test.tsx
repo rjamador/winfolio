@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { Window } from './Window'
+import { Window } from '@/components/win95/Window'
 
 function setViewport(isDesktop: boolean) {
   window.matchMedia = (query: string): MediaQueryList => ({

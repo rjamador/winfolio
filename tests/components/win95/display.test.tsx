@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { ProgressBar } from './ProgressBar'
-import { DesktopIcon } from './DesktopIcon'
+import { ProgressBar } from '@/components/win95/ProgressBar'
+import { DesktopIcon } from '@/components/win95/DesktopIcon'
 
 // --- ProgressBar ------------------------------------------------------------
 

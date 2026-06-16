@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen } from '@testing-library/react'
 import type { ReactNode } from 'react'
 import { SettingsProvider } from '@/components/layout/SettingsProvider'
-import { AboutWindow } from './AboutWindow'
+import { AboutWindow } from '@/features/about/components/AboutWindow'
 
 function wrap(ui: ReactNode) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })

@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react'
-import { PixelatedIcon } from './PixelatedIcon'
+import { PixelatedIcon } from '@/features/stack/components/PixelatedIcon'
 
 function FakeIcon({ size }: { size?: number }) {
   return <svg width={size} height={size} viewBox="0 0 24 24" />
