@@ -14,6 +14,10 @@ import { SquareAlert } from 'pixelarticons/react/SquareAlert'
 import { Close } from 'pixelarticons/react/Close'
 import { Loader } from 'pixelarticons/react/Loader'
 import { ExternalLink } from 'pixelarticons/react/ExternalLink'
+import { Globe } from 'pixelarticons/react/Globe'
+import { ArrowLeft } from 'pixelarticons/react/ArrowLeft'
+import { ArrowRight } from 'pixelarticons/react/ArrowRight'
+import { Reload } from 'pixelarticons/react/Reload'
 
 type IconComponent = ComponentType<SVGProps<SVGSVGElement>>
 
@@ -33,6 +37,10 @@ const ICONS: Record<string, IconComponent> = {
   'octagon-times': Close,
   spinner: Loader,
   'external-link': ExternalLink,
+  globe: Globe,
+  'arrow-left': ArrowLeft,
+  'arrow-right': ArrowRight,
+  reload: Reload,
 }
 
 type PixelIconProps = {

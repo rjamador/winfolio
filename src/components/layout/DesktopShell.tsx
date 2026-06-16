@@ -36,6 +36,9 @@ const SettingsWindow = lazy(() =>
 const ResumeWindow = lazy(() =>
   import('@/features/resume').then((m) => ({ default: m.ResumeWindow })),
 )
+const OldPortfolioWindow = lazy(() =>
+  import('@/features/old-portfolio').then((m) => ({ default: m.OldPortfolioWindow })),
+)
 
 /** A launchable section of the portfolio (window metadata). */
 type AppDefinition = {
@@ -55,6 +58,7 @@ const APPS: AppDefinition[] = [
   { id: 'stack', title: 'Stack', icon: 'laptop-code', width: 380, height: 320, autoOpen: true },
   { id: 'experience', title: 'Experience', icon: 'briefcase', width: 420, height: 380, autoOpen: true },
   { id: 'resume', title: 'Resume', icon: 'clipboard', width: 480, height: 600, autoOpen: false },
+  { id: 'old-portfolio', title: 'Old Portfolio', icon: 'globe', width: 760, height: 560, autoOpen: false },
   { id: 'settings', title: 'Settings', icon: 'cog', width: 380, height: 440, autoOpen: true },
 ]
 
@@ -117,6 +121,7 @@ function WindowBody({ id, selectedId }: { id: string; selectedId: string | null 
   else if (id === 'experience') body = <ExperienceWindow />
   else if (id === 'settings') body = <SettingsWindow />
   else if (id === 'resume') body = <ResumeWindow />
+  else if (id === 'old-portfolio') body = <OldPortfolioWindow />
 
   return (
     <ErrorBoundary>

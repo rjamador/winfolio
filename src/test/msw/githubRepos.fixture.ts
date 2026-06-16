@@ -16,11 +16,11 @@ export const githubReposFixture = [
   },
   {
     id: 2,
-    name: 'portfolio',
+    name: 'old-portfolio',
     description: 'A Windows 95 desktop portfolio built with React.',
     language: 'TypeScript',
     topics: ['react', 'vite'],
-    html_url: 'https://github.com/rjamador/portfolio',
+    html_url: 'https://github.com/rjamador/old-portfolio',
     homepage: '',
     stargazers_count: 4,
     forks_count: 0,

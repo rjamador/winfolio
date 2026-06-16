@@ -57,6 +57,41 @@ button.bevel-no-press:active {
   outline-offset: -4px;
 }
 
+/* --- Radio button ---------------------------------------------------------- */
+
+/*
+ * Pixel-faithful Win95 radio: a sunken white circle with a black dot when
+ * selected. The real <input> stays in the DOM (focusable, keyboard- and
+ * screen-reader-operable) but is visually hidden; this <span> is its skin, so
+ * the look is identical across browsers instead of the native `accent-color`.
+ */
+.win95-radio {
+  display: inline-block;
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+/* The center dot is hidden until the paired input is checked. */
+.win95-radio-dot {
+  display: none;
+  fill: var(--w95-text);
+}
+
+.win95-radio-input:checked + .win95-radio .win95-radio-dot {
+  display: block;
+}
+
+/* Disabled: engrave the dot in gray to match disabled text. */
+.win95-radio-input:disabled:checked + .win95-radio .win95-radio-dot {
+  fill: var(--w95-shadow);
+}
+
+/* Keyboard focus draws the classic dotted ring around the circle. */
+.win95-radio-input:focus-visible + .win95-radio {
+  outline: 1px dotted var(--w95-text);
+  outline-offset: 2px;
+}
+
 /* --- Title bar ------------------------------------------------------------- */
 
 .titlebar {
@@ -155,5 +190,10 @@ button.bevel-no-press:active {
   input[type="radio"].focus-ring {
     width: 24px;
     height: 24px;
+  }
+
+  /* The radio's real input is visually hidden, so the label is the tap target. */
+  .win95-radio-label {
+    min-height: 24px;
   }
 }

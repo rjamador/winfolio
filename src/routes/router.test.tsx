@@ -37,7 +37,7 @@ describe('routing', () => {
   })
 
   it('deep-link /projects/:id opens the Projects window on that project detail', async () => {
-    renderApp(['/projects/portfolio'])
+    renderApp(['/projects/old-portfolio'])
     // End-to-end URL → data: the selected repo's description renders.
     expect(
       await screen.findByText(/Windows 95 desktop portfolio built with React/i),

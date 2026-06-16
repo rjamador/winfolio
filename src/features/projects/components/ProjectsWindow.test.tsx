@@ -20,7 +20,7 @@ describe('ProjectsWindow', () => {
   it('lists only allowlisted repos after load', async () => {
     wrap(<ProjectsWindow />)
     expect(await screen.findByText('GymCheck')).toBeInTheDocument()
-    expect(screen.getByText('portfolio')).toBeInTheDocument()
+    expect(screen.getByText('old-portfolio')).toBeInTheDocument()
     expect(screen.getByText('Coinflow')).toBeInTheDocument()
     // Filtered out:
     expect(screen.queryByText('random-side-project')).not.toBeInTheDocument()
@@ -28,7 +28,7 @@ describe('ProjectsWindow', () => {
   })
 
   it('shows a project detail when selectedId is set', async () => {
-    wrap(<ProjectsWindow selectedId="portfolio" />)
+    wrap(<ProjectsWindow selectedId="old-portfolio" />)
     expect(
       await screen.findByText(/Windows 95 desktop portfolio built with React/i),
     ).toBeInTheDocument()

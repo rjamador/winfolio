@@ -18,9 +18,9 @@ describe('useProjects', () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
     const projects = result.current.data!
-    // GymCheck(7), portfolio(4), Coinflow(1) survive; random-side-project (not
-    // allowlisted), forked-lib (fork) and Perfumeria (archived) are dropped.
-    expect(projects.map((p) => p.id)).toEqual(['GymCheck', 'portfolio', 'Coinflow'])
+    // GymCheck(7), old-portfolio(4), Coinflow(1) survive; random-side-project
+    // (not allowlisted), forked-lib (fork) and Perfumeria (archived) are dropped.
+    expect(projects.map((p) => p.id)).toEqual(['GymCheck', 'old-portfolio', 'Coinflow'])
     expect(projects[0]!.stars).toBe(7)
     expect(projects[0]!.featured).toBe(true)
   })
@@ -28,11 +28,11 @@ describe('useProjects', () => {
 
 describe('useProject', () => {
   it('returns the matching project for a known id', async () => {
-    const { result } = renderHook(() => useProject('portfolio'), {
+    const { result } = renderHook(() => useProject('old-portfolio'), {
       wrapper: makeWrapper(),
     })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
-    expect(result.current.data?.title).toBe('portfolio')
+    expect(result.current.data?.title).toBe('old-portfolio')
   })
 
   it('returns null for an unknown id', async () => {
