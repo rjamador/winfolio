@@ -13,8 +13,14 @@ type TaskbarProps = {
   startLabel?: string;
   /** Start button icon. */
   startIcon?: React.ReactNode;
+  /** System-tray node, rendered just left of the clock. */
+  tray?: React.ReactNode;
   /** Clock/tray node. */
   clock?: React.ReactNode;
+  /** When set, the clock becomes a button that calls this on activation. */
+  onClockActivate?: () => void;
+  /** Accessible name for the clock button (e.g. "Open Date/Time properties"). */
+  clockLabel?: string;
 };
 
 /**
@@ -27,7 +33,10 @@ export function Taskbar({
   startButtonRef,
   startLabel = "Start",
   startIcon,
+  tray,
   clock,
+  onClockActivate,
+  clockLabel,
 }: TaskbarProps) {
   return (
     <footer className="bevel-raised flex h-[var(--taskbar-height)] w-full items-center gap-1 bg-w95-bg px-0.5">
@@ -48,11 +57,23 @@ export function Taskbar({
         {children}
       </div>
 
-      {clock != null && (
-        <div className="bevel-sunken px-2 py-0.5 text-w95 tabular-nums">
-          {clock}
-        </div>
-      )}
+      {tray}
+
+      {clock != null &&
+        (onClockActivate ? (
+          <button
+            type="button"
+            onClick={onClockActivate}
+            aria-label={clockLabel}
+            className="bevel-sunken focus-ring cursor-default px-2 py-0.5 text-w95 tabular-nums"
+          >
+            {clock}
+          </button>
+        ) : (
+          <div className="bevel-sunken px-2 py-0.5 text-w95 tabular-nums">
+            {clock}
+          </div>
+        ))}
     </footer>
   );
 }

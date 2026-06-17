@@ -9,8 +9,13 @@ import {
   DesktopIcon,
   PixelIcon,
   Win95Loader,
+  MessageBox,
 } from "@/components/win95";
 import { ErrorBoundary } from "@/components/layout/ErrorBoundary";
+import { SystemTray } from "@/components/layout/SystemTray";
+import { ShutDownScreen } from "@/components/layout/ShutDownScreen";
+import { DesktopContextMenu } from "@/components/layout/DesktopContextMenu";
+import { DateTimeDialog } from "@/components/layout/DateTimeDialog";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useTaskbarClock } from "@/hooks/useTaskbarClock";
 import { useT } from "@/i18n";
@@ -41,6 +46,11 @@ const ResumeWindow = lazy(() =>
 const OldPortfolioWindow = lazy(() =>
   import("@/features/old-portfolio").then((m) => ({
     default: m.OldPortfolioWindow,
+  })),
+);
+const RecycleBinWindow = lazy(() =>
+  import("@/features/recycle-bin").then((m) => ({
+    default: m.RecycleBinWindow,
   })),
 );
 
@@ -103,6 +113,14 @@ const APPS: AppDefinition[] = [
     icon: "globe",
     width: 760,
     height: 560,
+    autoOpen: false,
+  },
+  {
+    id: "recycle-bin",
+    title: "Recycle Bin",
+    icon: "trash",
+    width: 420,
+    height: 300,
     autoOpen: false,
   },
   {
@@ -214,6 +232,7 @@ function WindowBody({
   else if (id === "settings") body = <SettingsWindow />;
   else if (id === "resume") body = <ResumeWindow />;
   else if (id === "old-portfolio") body = <OldPortfolioWindow />;
+  else if (id === "recycle-bin") body = <RecycleBinWindow />;
 
   return (
     <ErrorBoundary>
@@ -237,6 +256,16 @@ export function DesktopShell() {
   );
   const [startOpen, setStartOpen] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
+  // Easter-egg UI state: shutdown flow, the date/time dialog, and the desktop
+  // right-click menu position.
+  const [shutdown, setShutdown] = useState<"idle" | "confirm" | "down">("idle");
+  const [dateTimeOpen, setDateTimeOpen] = useState(false);
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
+  // Brief flag that blinks the icon layer, mimicking the classic F5 desktop redraw.
+  const [refreshing, setRefreshing] = useState(false);
   const scrollTargetRef = useRef<string | null>(null);
   const startButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -391,6 +420,31 @@ export function DesktopShell() {
     if (currentRoute.section === id) navigate("/", { replace: true });
   };
 
+  const openSettings = () => {
+    const settings = APPS.find((a) => a.id === "settings");
+    if (settings) openApp(settings);
+  };
+
+  const minimizeAllWindows = () => {
+    windowsRef.current.forEach((w) => wm.minimizeWindow(w.id));
+    navigate("/", { replace: true });
+  };
+
+  const refreshDesktop = () => {
+    setSelectedIcon(null);
+    if (prefersReducedMotion) return;
+    setRefreshing(true);
+    window.setTimeout(() => setRefreshing(false), 120);
+  };
+
+  // Right-click the bare desktop (not a window) to open the context menu.
+  const handleDesktopContextMenu = (e: React.MouseEvent) => {
+    if (!isDesktop) return;
+    if ((e.target as HTMLElement).closest(".win95-window-rnd")) return;
+    e.preventDefault();
+    setContextMenu({ x: e.clientX, y: e.clientY });
+  };
+
   return (
     <div className="flex h-dvh flex-col overflow-hidden bg-w95-desktop">
       {/*
@@ -400,6 +454,7 @@ export function DesktopShell() {
       */}
       <div
         ref={desktopRef}
+        onContextMenu={handleDesktopContextMenu}
         className={clsx(
           "relative flex-1",
           isDesktop
@@ -417,6 +472,8 @@ export function DesktopShell() {
             isDesktop
               ? "flex h-full flex-col flex-wrap content-start p-2"
               : "flex flex-row flex-wrap",
+            // A one-frame blink on "Refresh" (F5 desktop redraw nod).
+            refreshing && "opacity-0",
           )}
         >
           {APPS.map((app) => (
@@ -469,6 +526,17 @@ export function DesktopShell() {
 
         {/* Routed content (e.g. the themed 404) renders over the desktop. */}
         <Outlet />
+
+        {contextMenu && (
+          <DesktopContextMenu
+            x={contextMenu.x}
+            y={contextMenu.y}
+            onClose={() => setContextMenu(null)}
+            onMinimizeAll={minimizeAllWindows}
+            onRefresh={refreshDesktop}
+            onProperties={openSettings}
+          />
+        )}
       </div>
 
       {/* Start menu: compact anchored panel on desktop, full-width on mobile. */}
@@ -484,7 +552,8 @@ export function DesktopShell() {
             onClose={() => setStartOpen(false)}
             triggerRef={startButtonRef}
           >
-            {APPS.map((app) => (
+            {/* Recycle Bin is a desktop-only icon (authentic), not a Start item. */}
+            {APPS.filter((app) => app.id !== "recycle-bin").map((app) => (
               <li key={app.id}>
                 <button
                   type="button"
@@ -496,6 +565,22 @@ export function DesktopShell() {
                 </button>
               </li>
             ))}
+            <li aria-hidden>
+              <hr className="my-1 border-0 border-t border-t-w95-shadow" />
+            </li>
+            <li>
+              <button
+                type="button"
+                onClick={() => {
+                  setStartOpen(false);
+                  setShutdown("confirm");
+                }}
+                className="focus-ring flex w-full items-center gap-2 px-3 py-1 text-left hover:bg-w95-titlebar hover:text-w95-titlebar-text"
+              >
+                <PixelIcon name="power" />
+                {t("start.shutDown")}
+              </button>
+            </li>
           </StartMenu>
         </div>
       )}
@@ -506,7 +591,10 @@ export function DesktopShell() {
         startButtonRef={startButtonRef}
         startLabel={t("taskbar.start")}
         startIcon={<PixelIcon name="grid" />}
+        tray={isDesktop ? <SystemTray /> : undefined}
         clock={clock}
+        onClockActivate={isDesktop ? () => setDateTimeOpen(true) : undefined}
+        clockLabel={t("datetime.title")}
       >
         {wm.windows.map((w) => {
           const title = t(titleKey(w.id));
@@ -540,6 +628,23 @@ export function DesktopShell() {
           );
         })}
       </Taskbar>
+
+      {/* Mounted only while open so the clock initializes at the current time. */}
+      {dateTimeOpen && (
+        <DateTimeDialog open onClose={() => setDateTimeOpen(false)} />
+      )}
+
+      <MessageBox
+        open={shutdown === "confirm"}
+        title={t("shutdown.title")}
+        message={t("shutdown.confirm")}
+        icon={<PixelIcon name="power" size={24} />}
+        buttons={["ok", "cancel"]}
+        onOk={() => setShutdown("down")}
+        onCancel={() => setShutdown("idle")}
+      />
+
+      {shutdown === "down" && <ShutDownScreen />}
     </div>
   );
 }

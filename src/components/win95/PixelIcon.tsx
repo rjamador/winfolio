@@ -18,6 +18,11 @@ import { Globe } from 'pixelarticons/react/Globe'
 import { ArrowLeft } from 'pixelarticons/react/ArrowLeft'
 import { ArrowRight } from 'pixelarticons/react/ArrowRight'
 import { Reload } from 'pixelarticons/react/Reload'
+import { Volume3 } from 'pixelarticons/react/Volume3'
+import { Trash } from 'pixelarticons/react/Trash'
+import { AlarmClock } from 'pixelarticons/react/AlarmClock'
+import { Clock } from 'pixelarticons/react/Clock'
+import { Power } from 'pixelarticons/react/Power'
 
 type IconComponent = ComponentType<SVGProps<SVGSVGElement>>
 
@@ -41,6 +46,11 @@ const ICONS: Record<string, IconComponent> = {
   'arrow-left': ArrowLeft,
   'arrow-right': ArrowRight,
   reload: Reload,
+  volume: Volume3,
+  trash: Trash,
+  alarm: AlarmClock,
+  clock: Clock,
+  power: Power,
 }
 
 type PixelIconProps = {
