@@ -92,6 +92,32 @@ function gridPosition(index: number): { x: number; y: number } {
   }
 }
 
+// Keep a small gap between a spawned window and the desktop edges.
+const SAFE_MARGIN = 8
+
+/**
+ * Clamp a window's spawn position so it sits fully inside the visible desktop
+ * area. Fixed grid coordinates would otherwise push windows off-screen on small
+ * desktops, causing the shell to scroll and clip the desktop icons. If a window
+ * is larger than the area, it pins to the top-left margin so its title bar stays
+ * reachable.
+ */
+function clampToDesktop(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  deskWidth: number,
+  deskHeight: number,
+): { x: number; y: number } {
+  const maxX = Math.max(SAFE_MARGIN, deskWidth - width - SAFE_MARGIN)
+  const maxY = Math.max(SAFE_MARGIN, deskHeight - height - SAFE_MARGIN)
+  return {
+    x: Math.min(Math.max(x, SAFE_MARGIN), maxX),
+    y: Math.min(Math.max(y, SAFE_MARGIN), maxY),
+  }
+}
+
 /** Parses a pathname into the section id and optional sub-id (e.g. project id). */
 function parseRoute(pathname: string): { section: string | null; id: string | null } {
   const segments = pathname.split('/').filter(Boolean)
@@ -149,7 +175,7 @@ export function DesktopShell() {
   // Stable open action + a ref to the latest windows, so the URL→window effect
   // depends only on the pathname (not on window-state changes, which would make
   // it fight user focus).
-  const { openWindow } = wm
+  const { openWindow, moveWindow } = wm
   const windowsRef = useRef(wm.windows)
   const desktopRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -164,16 +190,20 @@ export function DesktopShell() {
     if (openedAllRef.current) return
     openedAllRef.current = true
 
+    const deskWidth = desktopRef.current?.clientWidth || window.innerWidth
+    const deskHeight = desktopRef.current?.clientHeight || window.innerHeight
+
     APPS.filter((app) => app.autoOpen && app.id !== 'settings').forEach((app, index) => {
       const { x, y } = gridPosition(index)
-      openWindow(buildPayload(app, x, y))
+      const pos = clampToDesktop(x, y, app.width, app.height, deskWidth, deskHeight)
+      openWindow(buildPayload(app, pos.x, pos.y))
     })
 
     const settings = APPS.find((app) => app.id === 'settings')
     if (settings) {
-      const desktopWidth = desktopRef.current?.clientWidth || window.innerWidth
-      const x = Math.max(GRID_BASE_X, desktopWidth - settings.width - 24)
-      openWindow(buildPayload(settings, x, GRID_BASE_Y))
+      const anchorX = Math.max(GRID_BASE_X, deskWidth - settings.width - 24)
+      const pos = clampToDesktop(anchorX, GRID_BASE_Y, settings.width, settings.height, deskWidth, deskHeight)
+      openWindow(buildPayload(settings, pos.x, pos.y))
     }
   }, [openWindow])
 
@@ -186,7 +216,17 @@ export function DesktopShell() {
     if (!app) return
     // Cascade on-demand opens off the icon column too, so they don't cover it.
     const offset = windowsRef.current.length * CASCADE_STEP
-    openWindow(buildPayload(app, GRID_BASE_X + offset, GRID_BASE_Y + offset))
+    const deskWidth = desktopRef.current?.clientWidth || window.innerWidth
+    const deskHeight = desktopRef.current?.clientHeight || window.innerHeight
+    const pos = clampToDesktop(
+      GRID_BASE_X + offset,
+      GRID_BASE_Y + offset,
+      app.width,
+      app.height,
+      deskWidth,
+      deskHeight,
+    )
+    openWindow(buildPayload(app, pos.x, pos.y))
   }, [location.pathname, openWindow])
 
   // On mobile, scroll the target window into view after it appears in the DOM.
@@ -200,6 +240,32 @@ export function DesktopShell() {
     scrollTargetRef.current = null
     el.scrollIntoView?.({ behavior: prefersReducedMotion ? 'instant' : 'smooth', block: 'start' })
   }, [wm.windows, isDesktop, prefersReducedMotion])
+
+  // Permanent safe area: when the viewport shrinks, nudge any window that now
+  // falls outside the desktop back into view. Only out-of-bounds windows move,
+  // so user-placed windows that still fit are left untouched. rAF coalesces the
+  // burst of resize events into one pass.
+  useEffect(() => {
+    if (!isDesktop) return
+    let frame = 0
+    const reclamp = () => {
+      frame = 0
+      const deskWidth = desktopRef.current?.clientWidth || window.innerWidth
+      const deskHeight = desktopRef.current?.clientHeight || window.innerHeight
+      windowsRef.current.forEach((w) => {
+        const pos = clampToDesktop(w.x, w.y, w.width, w.height, deskWidth, deskHeight)
+        if (pos.x !== w.x || pos.y !== w.y) moveWindow(w.id, pos.x, pos.y)
+      })
+    }
+    const onResize = () => {
+      if (!frame) frame = requestAnimationFrame(reclamp)
+    }
+    window.addEventListener('resize', onResize)
+    return () => {
+      window.removeEventListener('resize', onResize)
+      if (frame) cancelAnimationFrame(frame)
+    }
+  }, [isDesktop, moveWindow])
 
   /** Shareable path for a window; preserves the project id while on a project. */
   const pathFor = (id: string) =>

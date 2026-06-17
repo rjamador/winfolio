@@ -69,8 +69,10 @@ export function Window({
   const surfaceRef = useRef<HTMLElement>(null)
 
   // Move focus into a freshly opened window so keyboard/SR users land inside it.
+  // `preventScroll` stops the browser from scrolling the desktop to reveal the
+  // window — which would shift every other window out of the visible area.
   useEffect(() => {
-    surfaceRef.current?.focus()
+    surfaceRef.current?.focus({ preventScroll: true })
   }, [])
 
   const surface = (
