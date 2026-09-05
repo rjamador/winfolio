@@ -85,7 +85,12 @@ export function Window({
       aria-label={title}
       onMouseDown={onFocus}
       className={clsx(
-        'bevel-raised flex flex-col bg-w95-bg p-0.5 outline-none',
+        // `relative` makes the window the containing block for any absolutely
+        // positioned descendant (e.g. `sr-only` form inputs). Without it, on
+        // mobile those inputs resolve against the desktop shell and get laid out
+        // at the window's full horizontal offset in the carousel strip — far
+        // off-screen — so focusing one scrolls the whole shell out of view.
+        'bevel-raised relative flex flex-col bg-w95-bg p-0.5 outline-none',
         floats ? 'h-full w-full' : 'w-full',
         className,
       )}
