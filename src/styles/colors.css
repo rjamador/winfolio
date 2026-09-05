@@ -1,6 +1,6 @@
 /*
- * Canonical Win95 design tokens.
- * This is the SINGLE source of truth for the palette and core metrics.
+ * Canonical Win95 color palette.
+ * This is the SINGLE source of truth for every color used in the app.
  * styles/index.css aliases these into Tailwind via @theme; never redefine the
  * values elsewhere.
  */
@@ -31,9 +31,4 @@
   /* Text */
   --w95-text: #000000;
   --w95-text-disabled: #808080;
-
-  /* Metrics (named — no magic numbers */
-  --w95-border-width: 2px;
-  --w95-font-size: 11px;
-  --taskbar-height: 28px;
 }

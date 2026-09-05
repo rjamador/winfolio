@@ -1,0 +1,11 @@
+/*
+ * Canonical Win95 layout metrics (non-color, non-type tokens).
+ * This is the SINGLE source of truth for these values.
+ * styles/index.css aliases these into Tailwind via @theme; never redefine the
+ * values elsewhere.
+ */
+:root {
+  /* Metrics (named — no magic numbers) */
+  --w95-border-width: 2px;
+  --taskbar-height: 28px;
+}

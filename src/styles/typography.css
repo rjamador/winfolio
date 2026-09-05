@@ -1,0 +1,19 @@
+/*
+ * Canonical Win95 type tokens.
+ * This is the SINGLE source of truth for font sizing. styles/index.css
+ * combines these with --w95-font-scale (the user's Settings preference) into
+ * the final --text-w95* tokens aliased into Tailwind via @theme.
+ */
+:root {
+  /*
+   * Base sizes were fixed px (11px/14px) regardless of screen size, so on a
+   * large/high-resolution monitor the whole UI rendered comically small and
+   * hard to read. clamp() makes them fluid instead: they hold at the classic
+   * 11px/14px up to a normal desktop (1024px viewport), then scale up
+   * gradually to a readable ceiling by ~2560px (a large monitor), so a huge
+   * screen doesn't leave the Win95 chrome illegible. The user's manual
+   * Settings > Text size preference still multiplies on top of this.
+   */
+  --w95-text-base: clamp(11px, 8.33px + 0.26vw, 15px);
+  --w95-text-lg-base: clamp(14px, 10.67px + 0.33vw, 19px);
+}

@@ -4,7 +4,9 @@
  * import must precede the @theme block (Tailwind v4 CSS-first config).
  */
 @import "tailwindcss";
-@import "./tokens.css";
+@import "./colors.css";
+@import "./spacing.css";
+@import "./typography.css";
 @import "./win95.css";
 
 /* Bundled Microsoft Windows 95 font (W95FA). Served from public/ at a stable
@@ -37,11 +39,12 @@
   --font-sans: "W95FA", Tahoma, sans-serif;
   --font-mono: "Fixedsys", monospace;
 
-  /* Scalable text sizes (driven by --w95-font-scale, set by Settings).
-     Window layout/drag math is unaffected — only text scales. */
-  --text-w95: calc(11px * var(--w95-font-scale, 1));
+  /* Scalable text sizes: a fluid, viewport-based base (typography.css) times
+     --w95-font-scale (the user's Settings preference). Window layout/drag
+     math is unaffected — only text scales. */
+  --text-w95: calc(var(--w95-text-base) * var(--w95-font-scale, 1));
   --text-w95--line-height: 1.4;
-  --text-w95-lg: calc(14px * var(--w95-font-scale, 1));
+  --text-w95-lg: calc(var(--w95-text-lg-base) * var(--w95-font-scale, 1));
   --text-w95-lg--line-height: 1.3;
 
   /* Win95 has no rounded corners — flatten Tailwind's radius scale. */
