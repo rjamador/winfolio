@@ -1,4 +1,17 @@
+import { useEffect } from 'react'
 import { useDismissableLayer } from '@/hooks/useDismissableLayer'
+
+const MENU_ITEM_SELECTOR = '[role="menuitem"]'
+
+/** Moves focus among a menu's `[role="menuitem"]` descendants (wraps at the ends). */
+function moveItemFocus(panel: HTMLElement, delta: 1 | -1 | 'home' | 'end') {
+  const items = Array.from(panel.querySelectorAll<HTMLElement>(MENU_ITEM_SELECTOR))
+  if (items.length === 0) return
+  const current = items.indexOf(document.activeElement as HTMLElement)
+  const next =
+    delta === 'home' ? 0 : delta === 'end' ? items.length - 1 : (current + delta + items.length) % items.length
+  items[next]?.focus()
+}
 
 type StartMenuProps = {
   open: boolean
@@ -33,13 +46,38 @@ export function StartMenu({
     enabled: open,
   })
 
+  // Opening the menu focuses its first item, matching the ARIA menu pattern.
+  useEffect(() => {
+    if (!open) return
+    panelRef.current?.querySelector<HTMLElement>(MENU_ITEM_SELECTOR)?.focus()
+  }, [open, panelRef])
+
   if (!open) return null
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    const panel = panelRef.current
+    if (!panel) return
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      moveItemFocus(panel, 1)
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      moveItemFocus(panel, -1)
+    } else if (e.key === 'Home') {
+      e.preventDefault()
+      moveItemFocus(panel, 'home')
+    } else if (e.key === 'End') {
+      e.preventDefault()
+      moveItemFocus(panel, 'end')
+    }
+  }
 
   return (
     <div
       ref={panelRef}
       role="menu"
       aria-label="Start menu"
+      onKeyDown={handleKeyDown}
       className="bevel-raised flex w-full bg-w95-bg"
     >
       <div className="flex w-6 items-end justify-center bg-w95-titlebar pb-2">

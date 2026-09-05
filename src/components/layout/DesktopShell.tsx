@@ -554,9 +554,10 @@ export function DesktopShell() {
           >
             {/* Recycle Bin is a desktop-only icon (authentic), not a Start item. */}
             {APPS.filter((app) => app.id !== "recycle-bin").map((app) => (
-              <li key={app.id}>
+              <li key={app.id} role="none">
                 <button
                   type="button"
+                  role="menuitem"
                   onClick={() => openApp(app)}
                   className="win95-row-hover focus-ring flex w-full items-center gap-2 px-3 py-1 text-left"
                 >
@@ -568,14 +569,15 @@ export function DesktopShell() {
             <li aria-hidden>
               <hr className="my-1 border-0 border-t border-t-w95-shadow" />
             </li>
-            <li>
+            <li role="none">
               <button
                 type="button"
+                role="menuitem"
                 onClick={() => {
                   setStartOpen(false);
                   setShutdown("confirm");
                 }}
-                className="focus-ring flex w-full items-center gap-2 px-3 py-1 text-left hover:bg-w95-titlebar hover:text-w95-titlebar-text"
+                className="win95-row-hover focus-ring flex w-full items-center gap-2 px-3 py-1 text-left"
               >
                 <PixelIcon name="power" />
                 {t("start.shutDown")}
