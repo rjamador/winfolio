@@ -53,6 +53,25 @@ const ICONS: Record<string, IconComponent> = {
   power: Power,
 }
 
+// Full-color art for icons that have one, at native small size. Only used up
+// to RASTER_MAX_SIZE (title bar / taskbar / Start menu / the 24px shutdown
+// MessageBox icon) — above that the vector glyph still applies, e.g. the
+// Recycle Bin window's 32px trash icon, since it scales cleanly and the
+// desktop already has a dedicated 32px asset there.
+const RASTER_MAX_SIZE = 24
+const RASTER_ICONS: Record<string, string> = {
+  user: '/icons/user-16.png',
+  folder: '/icons/folder-16.png',
+  'laptop-code': '/icons/laptop-code-16.png',
+  briefcase: '/icons/briefcase-16.png',
+  clipboard: '/icons/clipboard-16.png',
+  globe: '/icons/globe-16.png',
+  trash: '/icons/trash-16.png',
+  cog: '/icons/cog-16.png',
+  grid: '/icons/grid-16.png',
+  power: '/icons/power-16.png',
+}
+
 type PixelIconProps = {
   /** Semantic icon name (see ICONS registry). */
   name: string
@@ -63,10 +82,27 @@ type PixelIconProps = {
 }
 
 /**
- * A pixel-art glyph from `pixelarticons` (SVG, inherits the current text color).
- * Decorative by default (`aria-hidden`); pair it with real text/labels.
+ * A small icon: full-color raster art where available (title bar, taskbar,
+ * Start menu sizes), otherwise a `pixelarticons` glyph (SVG, inherits the
+ * current text color). Decorative by default (`aria-hidden`); pair it with
+ * real text/labels.
  */
 export function PixelIcon({ name, size = 16, className, spin = false }: PixelIconProps) {
+  const raster = size <= RASTER_MAX_SIZE ? RASTER_ICONS[name] : undefined
+  if (raster) {
+    return (
+      <img
+        src={raster}
+        alt=""
+        aria-hidden
+        width={size}
+        height={size}
+        className={clsx('inline-block shrink-0', className)}
+        style={{ imageRendering: 'pixelated' }}
+      />
+    )
+  }
+
   const Icon = ICONS[name] ?? InfoBox
   return (
     <Icon

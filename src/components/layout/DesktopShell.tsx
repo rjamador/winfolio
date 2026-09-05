@@ -7,6 +7,7 @@ import {
   StartMenu,
   Button95,
   DesktopIcon,
+  DesktopIconArt,
   PixelIcon,
   Win95Loader,
   MessageBox,
@@ -480,7 +481,7 @@ export function DesktopShell() {
             <DesktopIcon
               key={app.id}
               label={t(titleKey(app.id))}
-              icon={<PixelIcon name={app.icon} size={32} />}
+              icon={<DesktopIconArt name={app.icon} size={32} />}
               selected={selectedIcon === app.id}
               // Desktop: single click selects, double click opens. Touch/mobile:
               // a single tap opens and scrolls to the window.

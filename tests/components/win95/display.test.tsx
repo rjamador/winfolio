@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ProgressBar } from '@/components/win95/ProgressBar'
 import { DesktopIcon } from '@/components/win95/DesktopIcon'
+import { DesktopIconArt } from '@/components/win95/DesktopIconArt'
 
 // --- ProgressBar ------------------------------------------------------------
 
@@ -49,5 +50,30 @@ describe('DesktopIcon', () => {
   it('has an accessible label', () => {
     render(<DesktopIcon label="Projects" icon="📁" />)
     expect(screen.getByRole('button', { name: 'Projects' })).toBeInTheDocument()
+  })
+})
+
+// --- DesktopIconArt ----------------------------------------------------------
+
+describe('DesktopIconArt', () => {
+  it('renders the icon image at the requested size', () => {
+    render(<DesktopIconArt name="user" size={40} />)
+    const img = screen.getByRole('presentation', { hidden: true })
+    expect(img).toHaveAttribute('src', '/icons/user.png')
+    expect(img).toHaveAttribute('width', '40')
+    expect(img).toHaveAttribute('height', '40')
+  })
+
+  it('renders a different source per icon', () => {
+    const { rerender, container } = render(<DesktopIconArt name="user" />)
+    const userSrc = container.querySelector('img')?.getAttribute('src')
+    rerender(<DesktopIconArt name="cog" />)
+    const cogSrc = container.querySelector('img')?.getAttribute('src')
+    expect(userSrc).not.toBe(cogSrc)
+  })
+
+  it('renders nothing for an unknown icon name', () => {
+    const { container } = render(<DesktopIconArt name="does-not-exist" />)
+    expect(container).toBeEmptyDOMElement()
   })
 })
