@@ -294,20 +294,21 @@ export function DesktopShell() {
     const deskWidth = desktopRef.current?.clientWidth || window.innerWidth;
     const deskHeight = desktopRef.current?.clientHeight || window.innerHeight;
 
-    APPS.filter((app) => app.autoOpen && app.id !== "settings").forEach(
-      (app, index) => {
-        const { x, y } = gridPosition(index);
-        const pos = clampToDesktop(
-          x,
-          y,
-          app.width,
-          app.height,
-          deskWidth,
-          deskHeight,
-        );
-        openWindow(buildPayload(app, pos.x, pos.y));
-      },
+    const autoOpenApps = APPS.filter(
+      (app) => app.autoOpen && app.id !== "settings",
     );
+    autoOpenApps.forEach((app, index) => {
+      const { x, y } = gridPosition(index);
+      const pos = clampToDesktop(
+        x,
+        y,
+        app.width,
+        app.height,
+        deskWidth,
+        deskHeight,
+      );
+      openWindow(buildPayload(app, pos.x, pos.y));
+    });
 
     const settings = APPS.find((app) => app.id === "settings");
     if (settings) {
@@ -346,6 +347,9 @@ export function DesktopShell() {
     openWindow(buildPayload(app, pos.x, pos.y));
   }, [location.pathname, openWindow]);
 
+  // The mobile carousel's pages, in DOM/track order.
+  const mobilePages = wm.windows.filter((w) => !w.minimized);
+
   // On mobile, scroll the target window's carousel page into view once it
   // appears in the DOM (e.g. a Taskbar tap or icon launch). Uses a ref (not
   // state) to avoid setState-in-effect. wm.windows in the deps guarantees the
@@ -356,9 +360,15 @@ export function DesktopShell() {
     const el = document.getElementById(`window-${id}`);
     if (!el) return;
     scrollTargetRef.current = null;
+    // The first/last page align "start"/"end" (see the render below), not
+    // "center" like the rest — match that here or the scroll would overshoot
+    // and get yanked back by scroll-snap on release.
+    const pages = wm.windows.filter((w) => !w.minimized);
+    const index = pages.findIndex((w) => w.id === id);
+    const inline = index <= 0 ? "start" : index === pages.length - 1 ? "end" : "center";
     el.scrollIntoView?.({
       behavior: prefersReducedMotion ? "instant" : "smooth",
-      inline: "start",
+      inline,
       block: "nearest",
     });
   }, [wm.windows, isDesktop, prefersReducedMotion]);
@@ -376,10 +386,7 @@ export function DesktopShell() {
   // on every dispatch this effect itself causes — and a fresh observer always
   // re-sends its initial notification for whatever is currently in view, so
   // that reconnect would refire the callback and dispatch again, forever.
-  const mobileWindowIds = wm.windows
-    .filter((w) => !w.minimized)
-    .map((w) => w.id)
-    .join(",");
+  const mobileWindowIds = mobilePages.map((w) => w.id).join(",");
   useEffect(() => {
     if (isDesktop) return;
     const root = carouselRef.current;
@@ -387,9 +394,21 @@ export function DesktopShell() {
     const route = parseRoute(location.pathname);
     const observer = new IntersectionObserver(
       (entries) => {
-        const id = entries
-          .find((entry) => entry.isIntersecting)
-          ?.target.id.replace(/^window-/, "");
+        // Pages peek into their neighbors' edges (see --carousel-peek), so
+        // mid-swipe the outgoing and incoming page can briefly *both* clear
+        // the threshold at once (each is judged against its own, narrower-
+        // than-the-root width). Picking the highest ratio — not just the
+        // first match — always resolves to whichever is actually more in view.
+        const winner = entries
+          .filter((entry) => entry.isIntersecting)
+          .reduce<IntersectionObserverEntry | null>(
+            (best, entry) =>
+              !best || entry.intersectionRatio > best.intersectionRatio
+                ? entry
+                : best,
+            null,
+          );
+        const id = winner?.target.id.replace(/^window-/, "");
         if (!id) return;
         focusWindowInView(id);
         const path =
@@ -579,21 +598,59 @@ export function DesktopShell() {
               !prefersReducedMotion && "snap-x snap-mandatory",
             )}
           >
-            {wm.windows
-              .filter((w) => !w.minimized)
-              .map((w) => (
+            {mobilePages.map((w, i) => {
+              const isActive = wm.focusedId === w.id;
+              const isFirst = i === 0;
+              const isLast = i === mobilePages.length - 1;
+              return (
                 <div
                   key={w.id}
                   id={`window-${w.id}`}
                   className={clsx(
-                    "h-full w-full shrink-0 p-2",
-                    !prefersReducedMotion && "snap-start snap-always",
+                    "h-full shrink-0 py-2 transition-opacity duration-150",
+                    // Middle pages show a full peek on both sides, so they
+                    // just need the container's own width minus two peeks.
+                    // The first/last page only has one real neighbor: it
+                    // reserves a full peek toward that side, and a smaller
+                    // fixed "edge-gap" toward the empty side. That edge-gap
+                    // must be *this element's own* padding (not the
+                    // container's, not a margin) — mandatory scroll-snap
+                    // always collapses a start/end-aligned page flush against
+                    // the scroll boundary, scrolling straight past any space
+                    // that isn't part of the snapped element's own box. A page
+                    // that's both first and last (the only window open) gets
+                    // a small edge-gap on both sides and no peek at all.
+                    //
+                    // Every peek-facing side also gets a small fixed px-1 (not
+                    // the full edge-gap) purely so two peeking windows don't
+                    // render bevel-to-bevel — most of the peek stays visible
+                    // window chrome, not blank inset.
+                    isFirst && isLast
+                      ? "w-full px-[var(--carousel-edge-gap)]"
+                      : isFirst
+                        ? "w-[calc(100%-var(--carousel-peek))] pl-[var(--carousel-edge-gap)] pr-1"
+                        : isLast
+                          ? "w-[calc(100%-var(--carousel-peek))] pr-[var(--carousel-edge-gap)] pl-1"
+                          : "w-[calc(100%-2*var(--carousel-peek))] px-1",
+                    !prefersReducedMotion &&
+                      (isFirst ? "snap-start" : isLast ? "snap-end" : "snap-center"),
+                    !prefersReducedMotion && "snap-always",
+                    // Peeking (non-active) pages dim slightly and ignore
+                    // pointer input, so a stray tap on a sliver of the next
+                    // window can't hit a control there or steal the swipe.
+                    // No scale here on purpose — a transform on the
+                    // not-yet-active last/first page throws off scroll-snap's
+                    // own end-of-track math, leaving it short of its true
+                    // rest position by a few px.
+                    isActive
+                      ? "opacity-100"
+                      : "pointer-events-none opacity-70",
                   )}
                 >
                   <Window
                     title={t(titleKey(w.id))}
                     icon={w.icon ? <PixelIcon name={w.icon} /> : undefined}
-                    active={wm.focusedId === w.id}
+                    active={isActive}
                     className="h-full"
                     onFocus={() => focusWindow(w.id)}
                     onMinimize={() => minimizeWindow(w.id)}
@@ -602,7 +659,8 @@ export function DesktopShell() {
                     <WindowBody id={w.id} selectedId={currentRoute.id} />
                   </Window>
                 </div>
-              ))}
+              );
+            })}
           </div>
         )}
 

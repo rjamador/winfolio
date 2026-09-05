@@ -8,4 +8,14 @@
   /* Metrics (named — no magic numbers) */
   --w95-border-width: 2px;
   --taskbar-height: 28px;
+  /* Mobile window carousel: how much of the previous/next window peeks in at
+     each edge, as a passive "you can swipe here" affordance. */
+  --carousel-peek: 28px;
+  /* The first/last page's *outer* side has no neighbor to peek at, so it only
+     gets this smaller breathing-room gap instead of a full peek. This must be
+     the page's own padding, not the container's or a sibling margin — mandatory
+     scroll-snap always collapses a start/end-aligned page flush against the
+     scroll boundary, scrolling straight past any space that isn't part of the
+     snapped element's own box. */
+  --carousel-edge-gap: 16px;
 }
