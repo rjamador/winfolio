@@ -5,7 +5,9 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  // `compiler: true` runs the React Compiler (Rust/oxc build, via
+  // oxc-transform-react)
+  plugins: [react({ compiler: true }), tailwindcss()],
   server: {
     // Honor an externally assigned port; default 5173.
     port: Number(process.env.PORT) || 5173,
