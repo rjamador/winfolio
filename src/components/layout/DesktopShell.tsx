@@ -10,6 +10,7 @@ import {
   PixelIcon,
   Win95Loader,
   MessageBox,
+  DESKTOP_QUERY,
 } from "@/components/win95";
 import { ErrorBoundary } from "@/components/layout/ErrorBoundary";
 import { SystemTray } from "@/components/layout/SystemTray";
@@ -251,7 +252,7 @@ export function DesktopShell() {
   const { t } = useT();
   const navigate = useNavigate();
   const location = useLocation();
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const prefersReducedMotion = usePrefersReducedMotion();
   const [startOpen, setStartOpen] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null);

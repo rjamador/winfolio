@@ -32,7 +32,9 @@ type WindowProps = {
 
 const MIN_WIDTH = 240
 const MIN_HEIGHT = 120
-const DESKTOP_QUERY = '(min-width: 1024px)'
+
+/** Breakpoint at which windows become draggable/resizable (see also DesktopShell). */
+export const DESKTOP_QUERY = '(min-width: 1024px)'
 
 /**
  * A Win95 window: raised surface with a TitleBar and a scrollable content area.
