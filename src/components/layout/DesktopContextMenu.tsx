@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useDismissableLayer } from "@/hooks/useDismissableLayer";
 import { useT } from "@/i18n";
 
 type DesktopContextMenuProps = {
@@ -23,22 +23,7 @@ export function DesktopContextMenu({
   onRefresh,
   onProperties,
 }: DesktopContextMenuProps) {
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const onPointerDown = (e: PointerEvent) => {
-      if (!menuRef.current?.contains(e.target as Node)) onClose();
-    };
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("pointerdown", onPointerDown, true);
-    document.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.removeEventListener("pointerdown", onPointerDown, true);
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [onClose]);
+  const menuRef = useDismissableLayer<HTMLDivElement>({ onDismiss: onClose });
 
   const { t } = useT();
   const run = (fn: () => void) => () => {

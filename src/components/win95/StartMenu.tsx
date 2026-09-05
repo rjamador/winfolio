@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useDismissableLayer } from '@/hooks/useDismissableLayer'
 
 type StartMenuProps = {
   open: boolean
@@ -27,30 +27,11 @@ export function StartMenu({
   brand = 'Winfolio',
   triggerRef,
 }: StartMenuProps) {
-  const panelRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!open) return
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
-    const handlePointerDown = (e: PointerEvent) => {
-      const target = e.target as Node
-      const insidePanel = panelRef.current?.contains(target)
-      const onTrigger = triggerRef?.current?.contains(target)
-      if (!insidePanel && !onTrigger) {
-        onClose()
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    document.addEventListener('pointerdown', handlePointerDown, true)
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-      document.removeEventListener('pointerdown', handlePointerDown, true)
-    }
-  }, [open, onClose, triggerRef])
+  const panelRef = useDismissableLayer<HTMLDivElement>({
+    onDismiss: onClose,
+    ignoreRef: triggerRef,
+    enabled: open,
+  })
 
   if (!open) return null
 
