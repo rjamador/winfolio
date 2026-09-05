@@ -640,7 +640,10 @@ export function DesktopShell() {
                 <button
                   type="button"
                   role="menuitem"
-                  onClick={() => openApp(app)}
+                  onClick={() => {
+                    openApp(app);
+                    if (!isDesktop) scrollTargetRef.current = app.id;
+                  }}
                   className="win95-row-hover focus-ring flex w-full items-center gap-2 px-3 py-1 text-left"
                 >
                   <PixelIcon name={app.icon} />
