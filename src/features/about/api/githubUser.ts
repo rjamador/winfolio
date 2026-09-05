@@ -6,7 +6,13 @@ import { GITHUB_USERNAME } from '@/lib/config'
 export const githubUserSchema = z.object({
   login: z.string(),
   name: z.string().nullable(),
-  avatar_url: z.url(),
+  // GitHub's avatar CDN serves whatever size is requested via `s=`; the API
+  // returns a 460px original, but the avatar only ever renders at 60px.
+  avatar_url: z.url().transform((url) => {
+    const sized = new URL(url)
+    sized.searchParams.set('s', '120') // 2x for retina at the 60px display size
+    return sized.toString()
+  }),
 })
 
 export type GithubUser = z.infer<typeof githubUserSchema>

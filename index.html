@@ -1,84 +1,51 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="/apple-touch-icon-72x72.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="128x128"
-      href="/apple-touch-icon-128x128.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="256x256"
-      href="/apple-touch-icon-256x256.png"
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link
-      rel="preload"
-      as="font"
-      type="font/woff2"
-      href="/fonts/w95f.woff2"
-      crossorigin
-    />
-    <link rel="preload" as="image" href="/favicon-32x32.png" />
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png" />
+  <link rel="apple-touch-icon" sizes="128x128" href="/apple-touch-icon-128x128.png" />
+  <link rel="apple-touch-icon" sizes="256x256" href="/apple-touch-icon-256x256.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Roberto Amador — Portfolio</title>
-    <meta
-      name="description"
-      content="Roberto Amador — Systems Engineer & full-stack developer. A Windows 95–styled portfolio with projects, stack, and experience."
-    />
-    <link rel="canonical" href="https://www.ramador.dev/" />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
-    <meta name="author" content="Roberto Amador" />
-    <meta
-      name="keywords"
-      content="Roberto Amador, portfolio, full-stack developer, systems engineer, React, ASP.NET, Windows 95"
-    />
-    <meta name="theme-color" content="#000080" />
-    <meta name="color-scheme" content="light" />
+  <link rel="preconnect" href="https://api.github.com" />
+  <link rel="preconnect" href="https://avatars.githubusercontent.com" crossorigin />
 
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Winfolio 95" />
-    <meta property="og:title" content="Roberto Amador — Portfolio" />
-    <meta
-      property="og:description"
-      content="A Windows 95–styled portfolio: projects, stack, and experience."
-    />
-    <meta property="og:url" content="https://www.ramador.dev/" />
-    <meta property="og:locale" content="en_US" />
-    <meta
-      property="og:image"
-      content="https://www.ramador.dev/apple-touch-icon-256x256.png"
-    />
-    <meta property="og:image:width" content="256" />
-    <meta property="og:image:height" content="256" />
-    <meta
-      property="og:image:alt"
-      content="Winfolio 95 icon — a pixel-art desktop shortcut glyph"
-    />
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/w95f.woff2" crossorigin />
+  <link rel="preload" as="image" href="/favicon-32x32.png" />
 
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="Roberto Amador — Portfolio" />
-    <meta
-      name="twitter:description"
-      content="A Windows 95–styled portfolio: projects, stack, and experience."
-    />
-    <meta
-      name="twitter:image"
-      content="https://www.ramador.dev/apple-touch-icon-256x256.png"
-    />
+  <title>Roberto Amador — Portfolio</title>
+  <meta name="description"
+    content="Roberto Amador — Systems Engineer & full-stack developer. A Windows 95–styled portfolio with projects, stack, and experience." />
+  <link rel="canonical" href="https://www.ramador.dev/" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="author" content="Roberto Amador" />
+  <meta name="keywords"
+    content="Roberto Amador, portfolio, full-stack developer, systems engineer, React, ASP.NET, Windows 95" />
+  <meta name="theme-color" content="#000080" />
+  <meta name="color-scheme" content="light" />
 
-    <script type="application/ld+json">
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Winfolio 95" />
+  <meta property="og:title" content="Roberto Amador — Portfolio" />
+  <meta property="og:description" content="A Windows 95–styled portfolio: projects, stack, and experience." />
+  <meta property="og:url" content="https://www.ramador.dev/" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:image" content="https://www.ramador.dev/apple-touch-icon-256x256.png" />
+  <meta property="og:image:width" content="256" />
+  <meta property="og:image:height" content="256" />
+  <meta property="og:image:alt" content="Winfolio 95 icon — a pixel-art desktop shortcut glyph" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Roberto Amador — Portfolio" />
+  <meta name="twitter:description" content="A Windows 95–styled portfolio: projects, stack, and experience." />
+  <meta name="twitter:image" content="https://www.ramador.dev/apple-touch-icon-256x256.png" />
+
+  <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@graph": [
@@ -103,10 +70,11 @@
         ]
       }
     </script>
-  </head>
+</head>
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>
