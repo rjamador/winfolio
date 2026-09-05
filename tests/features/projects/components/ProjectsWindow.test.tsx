@@ -22,6 +22,7 @@ describe('ProjectsWindow', () => {
     expect(await screen.findByText('GymCheck')).toBeInTheDocument()
     expect(screen.getByText('old-portfolio')).toBeInTheDocument()
     expect(screen.getByText('Coinflow')).toBeInTheDocument()
+    expect(screen.getByText('oceanic-ui')).toBeInTheDocument()
     // Filtered out:
     expect(screen.queryByText('random-side-project')).not.toBeInTheDocument()
     expect(screen.queryByText('forked-lib')).not.toBeInTheDocument()
@@ -35,6 +36,15 @@ describe('ProjectsWindow', () => {
     expect(screen.getByRole('button', { name: /Back/ })).toBeInTheDocument()
     // Meta row shows stars/forks.
     expect(screen.getByText(/4 stars/)).toBeInTheDocument()
+  })
+
+  it('shows the curated logo and npm link on a project that has them', async () => {
+    wrap(<ProjectsWindow selectedId="oceanic-ui" />)
+    expect(await screen.findByRole('img', { name: /oceanic-ui logo/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'npm' })).toHaveAttribute(
+      'href',
+      'https://www.npmjs.com/package/oceanic-ui',
+    )
   })
 
   it('shows a not-found note for an unknown project id', async () => {

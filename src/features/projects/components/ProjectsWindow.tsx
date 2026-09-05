@@ -64,6 +64,16 @@ function ProjectDetail({ id }: { id: string }) {
   return (
     <article className="flex flex-col gap-3 text-w95">
       <Button95 onClick={() => navigate('/projects')}>{t('projects.back')}</Button95>
+      {project.image && (
+        <div className="bevel-sunken self-start bg-w95-light p-1">
+          <img
+            src={project.image}
+            alt={`${project.title} logo`}
+            loading="lazy"
+            className="max-h-32 w-auto"
+          />
+        </div>
+      )}
       <h2 className="text-w95-lg font-bold">
         {project.title} <span className="font-normal opacity-80">({project.year})</span>
       </h2>
@@ -95,10 +105,11 @@ function TechList({ tech }: { tech: string[] }) {
 
 function Links({ project }: { project: Project }) {
   const { t } = useT()
-  if (!project.url && !project.repoUrl) return null
+  if (!project.url && !project.repoUrl && !project.npmUrl) return null
   return (
-    <div className="flex gap-3">
+    <div className="flex flex-wrap gap-3">
       {project.url && <ExternalLink href={project.url}>{t('projects.liveSite')}</ExternalLink>}
+      {project.npmUrl && <ExternalLink href={project.npmUrl}>{t('projects.npm')}</ExternalLink>}
       {project.repoUrl && (
         <ExternalLink href={project.repoUrl}>{t('projects.source')}</ExternalLink>
       )}

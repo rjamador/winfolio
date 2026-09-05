@@ -18,11 +18,30 @@ describe('useProjects', () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
     const projects = result.current.data!
-    // GymCheck(7), old-portfolio(4), Coinflow(1) survive; random-side-project
-    // (not allowlisted), forked-lib (fork) and Perfumeria (archived) are dropped.
-    expect(projects.map((p) => p.id)).toEqual(['GymCheck', 'old-portfolio', 'Coinflow'])
+    // GymCheck(7), old-portfolio(4), oceanic-ui(3), Coinflow(1) survive;
+    // random-side-project (not allowlisted), forked-lib (fork) and Perfumeria
+    // (archived) are dropped.
+    expect(projects.map((p) => p.id)).toEqual([
+      'GymCheck',
+      'old-portfolio',
+      'oceanic-ui',
+      'Coinflow',
+    ])
     expect(projects[0]!.stars).toBe(7)
     expect(projects[0]!.featured).toBe(true)
+  })
+
+  it('merges curated extras (logo, npm, tech) onto the matching project', async () => {
+    const { result } = renderHook(() => useProjects(), { wrapper: makeWrapper() })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+
+    const oceanic = result.current.data!.find((p) => p.id === 'oceanic-ui')!
+    expect(oceanic.image).toMatch(/logo\.png$/)
+    expect(oceanic.npmUrl).toBe('https://www.npmjs.com/package/oceanic-ui')
+    // Language + repo topics + curated tech, de-duped.
+    expect(oceanic.tech).toEqual(
+      expect.arrayContaining(['TypeScript', 'react', 'component-library', 'React']),
+    )
   })
 })
 

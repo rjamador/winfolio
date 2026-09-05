@@ -18,8 +18,38 @@ const PROJECT_ALLOWLIST = new Set([
   "old-portfolio",
   "Programatic",
   "ClinicaAsp",
+  "oceanic-ui",
   "winfolio",
 ]);
+
+/**
+ * Per-repo details GitHub doesn't expose (a curated logo, an npm page, extra
+ * tech tags). Merged onto the mapped project by repo `name`.
+ */
+const PROJECT_EXTRAS: Record<
+  string,
+  Partial<Pick<Project, "image" | "npmUrl" | "tech">>
+> = {
+  "oceanic-ui": {
+    image:
+      "https://raw.githubusercontent.com/rjamador/oceanic-ui/main/.github/assets/logo.png",
+    npmUrl: "https://www.npmjs.com/package/oceanic-ui",
+    // GitHub only reports the `language` (TypeScript) and this repo has no
+    // topics; React is the one genuinely missing tag.
+    tech: ["React"],
+  },
+};
+
+/** Merges any curated extras onto a project, de-duping the tech list. */
+function applyExtras(project: Project): Project {
+  const extra = PROJECT_EXTRAS[project.id];
+  if (!extra) return project;
+  return {
+    ...project,
+    ...extra,
+    tech: [...new Set([...project.tech, ...(extra.tech ?? [])])],
+  };
+}
 
 /**
  * Fetches the user's public GitHub repos, validates them, and maps them to the
@@ -52,6 +82,7 @@ export async function fetchProjects(): Promise<Project[]> {
         !repo.fork && !repo.archived && PROJECT_ALLOWLIST.has(repo.name),
     )
     .map(mapRepoToProject)
+    .map(applyExtras)
     .sort((a, b) => b.stars - a.stars);
 
   // Flag the top-starred projects (with at least one star) as featured.

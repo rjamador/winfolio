@@ -31,6 +31,10 @@ export const projectSchema = z.object({
   tech: z.array(z.string()),
   url: z.url().optional(),
   repoUrl: z.url(),
+  /** npm package page, for published libraries. */
+  npmUrl: z.url().optional(),
+  /** Curated logo/preview shown on the project detail view. */
+  image: z.url().optional(),
   stars: z.number().int(),
   forks: z.number().int(),
   language: z.string().nullable(),
