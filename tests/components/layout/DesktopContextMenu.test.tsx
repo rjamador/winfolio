@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
-import { SettingsProvider } from '@/components/layout/SettingsProvider'
+import { SettingsProvider } from '@/providers/SettingsProvider'
 import { DesktopContextMenu } from '@/components/layout/DesktopContextMenu'
 
 describe('DesktopContextMenu', () => {

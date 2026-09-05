@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { SettingsProvider } from '@/components/layout/SettingsProvider'
+import { SettingsProvider } from '@/providers/SettingsProvider'
 import { OldPortfolioWindow } from '@/features/old-portfolio/components/OldPortfolioWindow'
 
 describe('OldPortfolioWindow', () => {

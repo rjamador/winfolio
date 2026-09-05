@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
-import { useSettings, type Locale } from '@/components/layout/settings'
+import { useSettings, type Locale } from '@/providers/settings'
 import { messages, type MessageKey } from './messages'
 
 export type { Locale }
-export { detectLocale } from '@/components/layout/settings'
+export { detectLocale } from '@/providers/settings'
 
 export const LOCALES: Locale[] = ['en', 'es']
 

@@ -2,7 +2,7 @@ import {
   INITIAL_STATE,
   windowManagerReducer,
   type WindowState,
-} from '@/components/layout/windowManager'
+} from '@/providers/windowManager'
 
 const baseWindow: Omit<WindowState, 'zIndex'> = {
   id: 'about',

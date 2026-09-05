@@ -5,7 +5,7 @@ import {
   WIN95_SWATCHES,
   type Locale,
   type TextSize,
-} from '@/components/layout/settings'
+} from '@/providers/settings'
 import { useT } from '@/i18n'
 import type { MessageKey } from '@/i18n/messages'
 

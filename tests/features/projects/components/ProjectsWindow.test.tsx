@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter } from 'react-router-dom'
 import { render, screen } from '@testing-library/react'
 import type { ReactNode } from 'react'
-import { SettingsProvider } from '@/components/layout/SettingsProvider'
+import { SettingsProvider } from '@/providers/SettingsProvider'
 import { ProjectsWindow } from '@/features/projects/components/ProjectsWindow'
 
 function wrap(ui: ReactNode) {

@@ -1,7 +1,7 @@
 import { afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { SettingsProvider } from '@/components/layout/SettingsProvider'
+import { SettingsProvider } from '@/providers/SettingsProvider'
 import { SettingsWindow } from '@/features/settings/components/SettingsWindow'
 
 afterEach(() => localStorage.clear())

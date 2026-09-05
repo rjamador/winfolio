@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react'
-import { SettingsProvider } from '@/components/layout/SettingsProvider'
+import { SettingsProvider } from '@/providers/SettingsProvider'
 import { BootScreen } from '@/components/layout/BootScreen'
 
 describe('BootScreen', () => {

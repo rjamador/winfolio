@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { SettingsProvider } from '@/components/layout/SettingsProvider'
+import { SettingsProvider } from '@/providers/SettingsProvider'
 import { ResumeWindow } from '@/features/resume/components/ResumeWindow'
 
 describe('ResumeWindow', () => {

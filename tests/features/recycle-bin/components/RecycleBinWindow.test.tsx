@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { SettingsProvider } from '@/components/layout/SettingsProvider'
+import { SettingsProvider } from '@/providers/SettingsProvider'
 import { RecycleBinWindow } from '@/features/recycle-bin'
 
 describe('RecycleBinWindow', () => {

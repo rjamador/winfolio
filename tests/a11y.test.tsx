@@ -9,7 +9,7 @@ import { ProjectsWindow } from '@/features/projects'
 import { StackWindow } from '@/features/stack'
 import { ExperienceWindow } from '@/features/experience'
 import { SettingsWindow } from '@/features/settings'
-import { SettingsProvider } from '@/components/layout/SettingsProvider'
+import { SettingsProvider } from '@/providers/SettingsProvider'
 import { routes } from '@/routes/router'
 
 // Scope to real WCAG A/AA failures (not best-practice noise). color-contrast is

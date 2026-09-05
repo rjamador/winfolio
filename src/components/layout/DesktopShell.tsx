@@ -23,7 +23,7 @@ import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useTaskbarClock } from "@/hooks/useTaskbarClock";
 import { useT } from "@/i18n";
 import type { MessageKey } from "@/i18n/messages";
-import { useWindowManager, type WindowState } from "./windowManager";
+import { useWindowManager, type WindowState } from "@/providers/windowManager";
 
 // Feature window bodies are lazy-loaded so each ships as its own chunk.
 const AboutWindow = lazy(() =>

@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react'
-import { SettingsProvider } from '@/components/layout/SettingsProvider'
+import { SettingsProvider } from '@/providers/SettingsProvider'
 import { SystemTray } from '@/components/layout/SystemTray'
 
 describe('SystemTray', () => {

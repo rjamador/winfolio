@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import {
   loadSettings,
   saveSettings,
@@ -18,11 +18,18 @@ import {
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState(loadSettings)
 
+  // Apply prefs to the document root before paint so there's no flash of the
+  // previous color/size (the color picker updates this live as it's dragged).
   useLayoutEffect(() => {
     const root = document.documentElement
     root.style.setProperty('--w95-desktop', settings.bgColor)
     root.style.setProperty('--w95-font-scale', String(TEXT_SCALE[settings.textSize]))
     root.lang = settings.locale
+  }, [settings])
+
+  // Persist off the critical path — no need to block paint on localStorage I/O
+  // (and the color picker fires this on every drag tick).
+  useEffect(() => {
     saveSettings(settings)
   }, [settings])
 
