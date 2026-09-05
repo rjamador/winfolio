@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { PixelIcon } from '@/components/win95'
+import { ExternalLink, PixelIcon, Pill } from '@/components/win95'
 import { useClock } from '@/hooks/useClock'
 import { GITHUB_USERNAME } from '@/lib/config'
 import { useT } from '@/i18n'
@@ -61,15 +61,10 @@ export function AboutWindow() {
       <ul className="flex flex-wrap gap-3">
         {LINKS.map((link) => (
           <li key={link.label}>
-            <a
-              href={link.href}
-              target="_blank"
-              rel="noreferrer"
-              className="focus-ring inline-flex items-center gap-1 text-w95-titlebar underline"
-            >
+            <ExternalLink href={link.href} className="inline-flex items-center gap-1">
               {link.label}
               <PixelIcon name="external-link" />
-            </a>
+            </ExternalLink>
           </li>
         ))}
       </ul>
@@ -78,9 +73,7 @@ export function AboutWindow() {
         <h3 className="mb-1 font-bold">{t('about.skillsHeading')}</h3>
         <ul className="flex flex-wrap gap-1">
           {SKILL_KEYS.map((key) => (
-            <li key={key} className="bevel-raised bg-w95-bg px-2 py-0.5">
-              {t(key)}
-            </li>
+            <Pill key={key}>{t(key)}</Pill>
           ))}
         </ul>
       </div>

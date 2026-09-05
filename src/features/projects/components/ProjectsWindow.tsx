@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { Button95, PixelIcon, Win95Loader } from '@/components/win95'
+import { Button95, ExternalLink, PixelIcon, Pill, Win95Loader } from '@/components/win95'
 import { useT } from '@/i18n'
 import { useProject, useProjects } from '../hooks/useProjects'
 import type { Project } from '../api/schemas'
@@ -30,7 +30,7 @@ function ProjectList() {
           <button
             type="button"
             onClick={() => navigate(`/projects/${project.id}`)}
-            className="focus-ring flex w-full items-center justify-between gap-2 px-2 py-1 text-left hover:bg-w95-titlebar hover:text-w95-titlebar-text"
+            className="win95-row-hover focus-ring flex w-full items-center justify-between gap-2 px-2 py-1 text-left"
           >
             <span className="flex min-w-0 items-center gap-1 truncate">
               {project.featured && <PixelIcon name="star" />}
@@ -87,9 +87,7 @@ function TechList({ tech }: { tech: string[] }) {
   return (
     <ul className="flex flex-wrap gap-1">
       {tech.map((item) => (
-        <li key={item} className="bevel-raised bg-w95-bg px-2 py-0.5">
-          {item}
-        </li>
+        <Pill key={item}>{item}</Pill>
       ))}
     </ul>
   )
@@ -100,25 +98,9 @@ function Links({ project }: { project: Project }) {
   if (!project.url && !project.repoUrl) return null
   return (
     <div className="flex gap-3">
-      {project.url && (
-        <a
-          href={project.url}
-          target="_blank"
-          rel="noreferrer"
-          className="focus-ring text-w95-titlebar underline"
-        >
-          {t('projects.liveSite')}
-        </a>
-      )}
+      {project.url && <ExternalLink href={project.url}>{t('projects.liveSite')}</ExternalLink>}
       {project.repoUrl && (
-        <a
-          href={project.repoUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="focus-ring text-w95-titlebar underline"
-        >
-          {t('projects.source')}
-        </a>
+        <ExternalLink href={project.repoUrl}>{t('projects.source')}</ExternalLink>
       )}
     </div>
   )

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button95, PixelIcon } from '@/components/win95'
+import { Button95, ExternalLink, PixelIcon } from '@/components/win95'
 import { useT } from '@/i18n'
 
 const SITE_URL = 'https://ramador.vercel.app/'
@@ -55,14 +55,9 @@ export function OldPortfolioWindow() {
         />
       </div>
 
-      <a
-        href={SITE_URL}
-        target="_blank"
-        rel="noreferrer"
-        className="focus-ring self-start text-w95-titlebar underline"
-      >
+      <ExternalLink href={SITE_URL} className="self-start">
         {t('oldPortfolio.openExternal')}
-      </a>
+      </ExternalLink>
     </div>
   )
 }

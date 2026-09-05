@@ -1,3 +1,4 @@
+import { Pill } from '@/components/win95'
 import { useT, type Locale } from '@/i18n'
 
 type Role = {
@@ -93,9 +94,7 @@ export function ExperienceWindow() {
           </ul>
           <ul className="mt-1 flex flex-wrap gap-1">
             {role.tech.map((tech) => (
-              <li key={tech} className="bevel-raised bg-w95-bg px-2 py-0.5">
-                {tech}
-              </li>
+              <Pill key={tech}>{tech}</Pill>
             ))}
           </ul>
         </li>

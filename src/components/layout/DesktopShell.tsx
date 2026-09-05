@@ -558,7 +558,7 @@ export function DesktopShell() {
                 <button
                   type="button"
                   onClick={() => openApp(app)}
-                  className="focus-ring flex w-full items-center gap-2 px-3 py-1 text-left hover:bg-w95-titlebar hover:text-w95-titlebar-text"
+                  className="win95-row-hover focus-ring flex w-full items-center gap-2 px-3 py-1 text-left"
                 >
                   <PixelIcon name={app.icon} />
                   {t(titleKey(app.id))}

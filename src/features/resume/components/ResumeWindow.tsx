@@ -1,3 +1,4 @@
+import { ExternalLink } from '@/components/win95'
 import { useT } from '@/i18n'
 
 const FILE_ID = '1mJrdO_UcnYVtZuyoTzntinpK63TdIqqh'
@@ -17,14 +18,9 @@ export function ResumeWindow() {
         src={PREVIEW_URL}
         className="bevel-sunken min-h-64 w-full flex-1 bg-w95-light"
       />
-      <a
-        href={VIEW_URL}
-        target="_blank"
-        rel="noreferrer"
-        className="focus-ring self-start text-w95-titlebar underline"
-      >
+      <ExternalLink href={VIEW_URL} className="self-start">
         {t('resume.open')}
-      </a>
+      </ExternalLink>
     </div>
   )
 }

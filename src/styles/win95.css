@@ -168,6 +168,16 @@ button.bevel-no-press:active {
   box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.6);
 }
 
+/* --- List rows (menus) ------------------------------------------------------ */
+
+/* Shared hover treatment for selectable menu-style rows (Start menu, desktop
+   right-click menu, project list). Each caller keeps its own layout classes
+   (padding/gap/alignment); only this repeated visual is centralized. */
+.win95-row-hover:hover {
+  background: var(--w95-titlebar);
+  color: var(--w95-titlebar-text);
+}
+
 /* --- Touch targets --------------------------------------------------------- */
 
 /* On touch devices, grow the tiny controls to at least 24px (WCAG 2.5.8 AA)

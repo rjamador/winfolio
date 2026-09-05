@@ -47,7 +47,7 @@ export function DesktopContextMenu({
   };
 
   const itemClass =
-    "focus-ring flex w-full px-4 py-1 text-left text-w95 hover:bg-w95-titlebar hover:text-w95-titlebar-text";
+    "win95-row-hover focus-ring flex w-full px-4 py-1 text-left text-w95";
 
   return (
     <div
