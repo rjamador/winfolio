@@ -365,20 +365,38 @@ export function DesktopShell() {
 
   // Mobile: the carousel is a horizontal scroll-snap strip (one window per
   // full-screen page). Swiping is the primary way to switch apps there, so an
-  // IntersectionObserver keeps focus (and thus the active title bar + pressed
-  // Taskbar button) synced to whichever page is actually in view, not just to
-  // the last one explicitly tapped.
+  // IntersectionObserver keeps focus (active title bar + pressed Taskbar
+  // button) and the URL synced to whichever page is actually in view, not
+  // just to the last one explicitly tapped.
+  //
+  // Keyed off the set of open window ids (not `wm.windows` itself, which gets
+  // a new array — and thus a new identity — on every focus/move/resize) and
+  // off `location.pathname` (not the `pathFor` helper, a new function every
+  // render). Depending on either unstable value would reconnect the observer
+  // on every dispatch this effect itself causes — and a fresh observer always
+  // re-sends its initial notification for whatever is currently in view, so
+  // that reconnect would refire the callback and dispatch again, forever.
+  const mobileWindowIds = wm.windows
+    .filter((w) => !w.minimized)
+    .map((w) => w.id)
+    .join(",");
   useEffect(() => {
     if (isDesktop) return;
     const root = carouselRef.current;
     if (!root) return;
+    const route = parseRoute(location.pathname);
     const observer = new IntersectionObserver(
       (entries) => {
-        const id = entries.find((entry) => entry.isIntersecting)?.target.id.replace(
-          /^window-/,
-          "",
-        );
-        if (id) focusWindowInView(id);
+        const id = entries
+          .find((entry) => entry.isIntersecting)
+          ?.target.id.replace(/^window-/, "");
+        if (!id) return;
+        focusWindowInView(id);
+        const path =
+          id === "projects" && route.section === "projects" && route.id
+            ? `/projects/${route.id}`
+            : `/${id}`;
+        navigate(path, { replace: true });
       },
       { root, threshold: 0.6 },
     );
@@ -386,7 +404,7 @@ export function DesktopShell() {
       .querySelectorAll("[id^='window-']")
       .forEach((page) => observer.observe(page));
     return () => observer.disconnect();
-  }, [wm.windows, isDesktop, focusWindowInView]);
+  }, [mobileWindowIds, isDesktop, focusWindowInView, navigate, location.pathname]);
 
   // Permanent safe area: when the viewport shrinks, nudge any window that now
   // falls outside the desktop back into view. Only out-of-bounds windows move,
