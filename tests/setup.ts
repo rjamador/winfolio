@@ -30,3 +30,68 @@ if (!window.matchMedia) {
     dispatchEvent: () => false,
   })
 }
+
+// jsdom has the <dialog> element's `open` attribute reflection, but not the
+// imperative showModal()/close() API or the native Escape-to-close/Tab-trap
+// behavior a real browser gives a modal dialog for free. Win95's Dialog relies
+// on all of it, so give tests a minimal but faithful stand-in.
+if (!window.HTMLDialogElement.prototype.showModal) {
+  const FOCUSABLE =
+    'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+
+  const openDialogs: HTMLDialogElement[] = []
+  const previouslyFocused = new WeakMap<HTMLDialogElement, HTMLElement | null>()
+
+  const topDialog = () => {
+    while (openDialogs.length && !openDialogs[openDialogs.length - 1]!.isConnected) {
+      openDialogs.pop()
+    }
+    return openDialogs[openDialogs.length - 1]
+  }
+
+  window.HTMLDialogElement.prototype.showModal = function (this: HTMLDialogElement) {
+    previouslyFocused.set(this, document.activeElement as HTMLElement | null)
+    this.setAttribute('open', '')
+    openDialogs.push(this)
+    ;(this.querySelector<HTMLElement>(FOCUSABLE) ?? this).focus()
+  }
+
+  window.HTMLDialogElement.prototype.close = function (
+    this: HTMLDialogElement,
+    returnValue?: string,
+  ) {
+    if (!this.hasAttribute('open')) return
+    if (returnValue !== undefined) this.returnValue = returnValue
+    this.removeAttribute('open')
+    const index = openDialogs.indexOf(this)
+    if (index !== -1) openDialogs.splice(index, 1)
+    this.dispatchEvent(new window.Event('close'))
+    previouslyFocused.get(this)?.focus()
+  }
+
+  document.addEventListener('keydown', (e) => {
+    const dialog = topDialog()
+    if (!dialog) return
+
+    if (e.key === 'Escape') {
+      const cancelEvent = new window.Event('cancel', { cancelable: true })
+      dialog.dispatchEvent(cancelEvent)
+      if (!cancelEvent.defaultPrevented) dialog.close()
+      return
+    }
+
+    if (e.key === 'Tab') {
+      const items = Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE))
+      if (items.length === 0) return
+      const first = items[0]!
+      const last = items[items.length - 1]!
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+  })
+}

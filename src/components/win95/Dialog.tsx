@@ -10,80 +10,62 @@ type DialogProps = {
   footer?: React.ReactNode
 }
 
-const FOCUSABLE =
-  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-
 /**
- * Modal dialog with a Win95 title bar. `role="dialog"` + `aria-modal`,
- * labelled by its title, Escape to close, focus trapped while open, and focus
- * restored to the previously focused element on close. Renders nothing while
- * closed.
+ * Modal dialog with a Win95 title bar, built on the native `<dialog>` element:
+ * `showModal()`/`close()` give us the top-layer backdrop, focus trap, Escape
+ * handling, and focus restore for free. `role="dialog"` + `aria-modal` are
+ * kept explicit for older AT/browser combinations that don't infer them.
  */
 export function Dialog({ open, title, onClose, children, footer }: DialogProps) {
-  const panelRef = useRef<HTMLDivElement>(null)
+  const dialogRef = useRef<HTMLDialogElement>(null)
+  const openRef = useRef(open)
   const titleId = useId()
   const bodyId = useId()
 
+  // Keep openRef in sync, and — declared first — ahead of the effect below in
+  // the same commit's effect order, so it already reflects a caller-driven
+  // close before that effect (possibly) synchronously fires "close" below.
   useEffect(() => {
-    if (!open) return
+    openRef.current = open
+  }, [open])
 
-    const previouslyFocused = document.activeElement as HTMLElement | null
+  // Sync React's `open` prop to the imperative dialog API.
+  useEffect(() => {
+    const dialog = dialogRef.current
+    if (!dialog) return
+    if (open && !dialog.open) dialog.showModal()
+    if (!open && dialog.open) dialog.close()
+  }, [open])
 
-    // Move focus into the dialog (first focusable, else the panel itself).
-    const focusables = panelRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE)
-    ;(focusables && focusables.length > 0 ? focusables[0] : panelRef.current)?.focus()
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose()
-        return
-      }
-      if (e.key !== 'Tab' || !panelRef.current) return
-
-      const items = panelRef.current.querySelectorAll<HTMLElement>(FOCUSABLE)
-      if (items.length === 0) {
-        e.preventDefault()
-        return
-      }
-      const first = items[0]!
-      const last = items[items.length - 1]!
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault()
-        last.focus()
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault()
-        first.focus()
-      }
+  // The dialog can also close itself natively (Escape triggers the default
+  // "cancel" action). Only forward that to `onClose` when we didn't already
+  // initiate the close above (i.e. `open` was still true) — otherwise a
+  // caller-driven close (e.g. an OK button setting `open` to false) would
+  // fire `onClose` a second time.
+  useEffect(() => {
+    const dialog = dialogRef.current
+    if (!dialog) return
+    const handleClose = () => {
+      if (openRef.current) onClose()
     }
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-      previouslyFocused?.focus()
-    }
-  }, [open, onClose])
-
-  if (!open) return null
+    dialog.addEventListener('close', handleClose)
+    return () => dialog.removeEventListener('close', handleClose)
+  }, [onClose])
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20">
-      <div
-        ref={panelRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        aria-describedby={bodyId}
-        tabIndex={-1}
-        className="bevel-raised min-w-64 max-w-md bg-w95-bg p-0.5 outline-none"
-      >
-        <TitleBar title={title} titleId={titleId} onClose={onClose} />
-        <div id={bodyId} className="px-3 py-4 text-w95">
-          {children}
-        </div>
-        {footer && (
-          <div className="flex justify-center gap-2 px-3 pb-3">{footer}</div>
-        )}
+    <dialog
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      aria-describedby={bodyId}
+      className="bevel-raised m-auto min-w-64 max-w-md bg-w95-bg p-0.5 outline-none backdrop:bg-black/20"
+    >
+      <TitleBar title={title} titleId={titleId} onClose={() => dialogRef.current?.close()} />
+      <div id={bodyId} className="px-3 py-4 text-w95">
+        {children}
       </div>
-    </div>
+      {footer && <div className="flex justify-center gap-2 px-3 pb-3">{footer}</div>}
+    </dialog>
   )
 }
