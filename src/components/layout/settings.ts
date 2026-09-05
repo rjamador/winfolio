@@ -14,7 +14,7 @@ export const settingsSchema = z.object({
   bgColor: z
     .string()
     .regex(/^#[0-9a-fA-F]{6}$/)
-    .default('#008080'),
+    .default('#000080'),
   /** Base text-size preset. */
   textSize: z.enum(['sm', 'md', 'lg']).default('md'),
   /** UI language. */

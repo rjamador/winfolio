@@ -81,7 +81,6 @@ const EXPERIENCE: Record<Locale, Role[]> = {
   ],
 }
 
-/** Work history. (User-facing content.) */
 export function ExperienceWindow() {
   const { locale } = useT()
   const roles = EXPERIENCE[locale]
