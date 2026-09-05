@@ -147,6 +147,17 @@ button.bevel-no-press:active {
   background: var(--w95-bg);
 }
 
+/* Mobile window carousel: swipe between full-screen windows with no visible
+   scrollbar — the Taskbar's window buttons already serve as the page/switcher
+   indicator. */
+.win95-carousel {
+  scrollbar-width: none;
+}
+
+.win95-carousel::-webkit-scrollbar {
+  display: none;
+}
+
 /* --- Desktop icons --------------------------------------------------------- */
 
 /* White icons sit on a user-chosen desktop color; a dark shadow keeps the label

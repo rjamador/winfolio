@@ -272,12 +272,13 @@ export function DesktopShell() {
 
   const currentRoute = parseRoute(location.pathname);
 
-  // Stable open action + a ref to the latest windows, so the URL→window effect
-  // depends only on the pathname (not on window-state changes, which would make
-  // it fight user focus).
-  const { openWindow, moveWindow } = wm;
+  // Stable actions + a ref to the latest windows, so effects can depend on just
+  // these functions instead of the whole `wm` object (which changes identity on
+  // every window move/resize/focus and would make effects over-fire).
+  const { openWindow, moveWindow, focusWindow: focusWindowInView } = wm;
   const windowsRef = useRef(wm.windows);
   const desktopRef = useRef<HTMLDivElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     windowsRef.current = wm.windows;
   }, [wm.windows]);
@@ -345,9 +346,10 @@ export function DesktopShell() {
     openWindow(buildPayload(app, pos.x, pos.y));
   }, [location.pathname, openWindow]);
 
-  // On mobile, scroll the target window into view after it appears in the DOM.
-  // Uses a ref (not state) to avoid setState-in-effect. wm.windows in the deps
-  // guarantees the effect re-fires once a newly added window is committed to DOM.
+  // On mobile, scroll the target window's carousel page into view once it
+  // appears in the DOM (e.g. a Taskbar tap or icon launch). Uses a ref (not
+  // state) to avoid setState-in-effect. wm.windows in the deps guarantees the
+  // effect re-fires once a newly added/restored window is committed to DOM.
   useEffect(() => {
     const id = scrollTargetRef.current;
     if (!id || isDesktop) return;
@@ -356,9 +358,35 @@ export function DesktopShell() {
     scrollTargetRef.current = null;
     el.scrollIntoView?.({
       behavior: prefersReducedMotion ? "instant" : "smooth",
-      block: "start",
+      inline: "start",
+      block: "nearest",
     });
   }, [wm.windows, isDesktop, prefersReducedMotion]);
+
+  // Mobile: the carousel is a horizontal scroll-snap strip (one window per
+  // full-screen page). Swiping is the primary way to switch apps there, so an
+  // IntersectionObserver keeps focus (and thus the active title bar + pressed
+  // Taskbar button) synced to whichever page is actually in view, not just to
+  // the last one explicitly tapped.
+  useEffect(() => {
+    if (isDesktop) return;
+    const root = carouselRef.current;
+    if (!root) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const id = entries.find((entry) => entry.isIntersecting)?.target.id.replace(
+          /^window-/,
+          "",
+        );
+        if (id) focusWindowInView(id);
+      },
+      { root, threshold: 0.6 },
+    );
+    root
+      .querySelectorAll("[id^='window-']")
+      .forEach((page) => observer.observe(page));
+    return () => observer.disconnect();
+  }, [wm.windows, isDesktop, focusWindowInView]);
 
   // Permanent safe area: when the viewport shrinks, nudge any window that now
   // falls outside the desktop back into view. Only out-of-bounds windows move,
@@ -450,17 +478,16 @@ export function DesktopShell() {
     <div className="flex h-dvh flex-col overflow-hidden bg-w95-desktop">
       {/*
         Desktop: icons + windows. On desktop, windows float (react-rnd, absolute)
-        over a column of icons. On mobile, icons collapse to a launcher row and
-        windows stack full-bleed in a scrollable column.
+        over a column of icons. On mobile, icons collapse to a launcher row that
+        stays pinned above a swipeable, full-screen carousel of windows (see
+        below) — the Taskbar doubles as its app switcher.
       */}
       <div
         ref={desktopRef}
         onContextMenu={handleDesktopContextMenu}
         className={clsx(
           "relative flex-1",
-          isDesktop
-            ? "overflow-hidden"
-            : "flex flex-col gap-2 overflow-auto p-2",
+          isDesktop ? "overflow-hidden" : "flex flex-col overflow-hidden",
         )}
       >
         <div
@@ -469,10 +496,11 @@ export function DesktopShell() {
             // Desktop: bound the column to the desktop height (the area above the
             // taskbar) so icons wrap into a new column instead of sliding under
             // the taskbar as the viewport shrinks. `content-start` keeps wrapped
-            // columns packed to the left.
+            // columns packed to the left. Mobile: a shrink-0 launcher row so it
+            // never gets squeezed by the carousel below it.
             isDesktop
               ? "flex h-full flex-col flex-wrap content-start p-2"
-              : "flex flex-row flex-wrap",
+              : "flex shrink-0 flex-row flex-wrap p-2",
             // A one-frame blink on "Refresh" (F5 desktop redraw nod).
             refreshing && "opacity-0",
           )}
@@ -498,32 +526,67 @@ export function DesktopShell() {
           ))}
         </div>
 
-        {wm.windows
-          .filter((w) => !w.minimized)
-          .map((w) => (
-            <Window
-              key={w.id}
-              id={`window-${w.id}`}
-              draggable
-              title={t(titleKey(w.id))}
-              icon={w.icon ? <PixelIcon name={w.icon} /> : undefined}
-              active={wm.focusedId === w.id}
-              x={w.x}
-              y={w.y}
-              width={w.width}
-              height={w.height}
-              zIndex={w.zIndex}
-              onFocus={() => focusWindow(w.id)}
-              onMinimize={() => minimizeWindow(w.id)}
-              onClose={() => closeWindow(w.id)}
-              onDragStop={(x, y) => wm.moveWindow(w.id, x, y)}
-              onResizeStop={(width, height, x, y) =>
-                wm.resizeWindow(w.id, width, height, x, y)
-              }
-            >
-              <WindowBody id={w.id} selectedId={currentRoute.id} />
-            </Window>
-          ))}
+        {isDesktop ? (
+          wm.windows
+            .filter((w) => !w.minimized)
+            .map((w) => (
+              <Window
+                key={w.id}
+                id={`window-${w.id}`}
+                draggable
+                title={t(titleKey(w.id))}
+                icon={w.icon ? <PixelIcon name={w.icon} /> : undefined}
+                active={wm.focusedId === w.id}
+                x={w.x}
+                y={w.y}
+                width={w.width}
+                height={w.height}
+                zIndex={w.zIndex}
+                onFocus={() => focusWindow(w.id)}
+                onMinimize={() => minimizeWindow(w.id)}
+                onClose={() => closeWindow(w.id)}
+                onDragStop={(x, y) => wm.moveWindow(w.id, x, y)}
+                onResizeStop={(width, height, x, y) =>
+                  wm.resizeWindow(w.id, width, height, x, y)
+                }
+              >
+                <WindowBody id={w.id} selectedId={currentRoute.id} />
+              </Window>
+            ))
+        ) : (
+          <div
+            ref={carouselRef}
+            className={clsx(
+              "win95-carousel flex flex-1 overflow-x-auto overflow-y-hidden overscroll-x-contain",
+              !prefersReducedMotion && "snap-x snap-mandatory",
+            )}
+          >
+            {wm.windows
+              .filter((w) => !w.minimized)
+              .map((w) => (
+                <div
+                  key={w.id}
+                  id={`window-${w.id}`}
+                  className={clsx(
+                    "h-full w-full shrink-0 p-2",
+                    !prefersReducedMotion && "snap-start snap-always",
+                  )}
+                >
+                  <Window
+                    title={t(titleKey(w.id))}
+                    icon={w.icon ? <PixelIcon name={w.icon} /> : undefined}
+                    active={wm.focusedId === w.id}
+                    className="h-full"
+                    onFocus={() => focusWindow(w.id)}
+                    onMinimize={() => minimizeWindow(w.id)}
+                    onClose={() => closeWindow(w.id)}
+                  >
+                    <WindowBody id={w.id} selectedId={currentRoute.id} />
+                  </Window>
+                </div>
+              ))}
+          </div>
+        )}
 
         {/* Routed content (e.g. the themed 404) renders over the desktop. */}
         <Outlet />

@@ -31,6 +31,25 @@ if (!window.matchMedia) {
   })
 }
 
+// jsdom has no IntersectionObserver (used by DesktopShell's mobile carousel to
+// sync focus to the visible window). Tests here don't assert on intersection
+// behavior, so a no-op stub is enough to keep it from being `undefined`.
+if (!window.IntersectionObserver) {
+  class NoOpIntersectionObserver implements IntersectionObserver {
+    readonly root = null;
+    readonly rootMargin = "";
+    readonly scrollMargin = "";
+    readonly thresholds: ReadonlyArray<number> = [];
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+    takeRecords(): IntersectionObserverEntry[] {
+      return [];
+    }
+  }
+  window.IntersectionObserver = NoOpIntersectionObserver;
+}
+
 // jsdom has the <dialog> element's `open` attribute reflection, but not the
 // imperative showModal()/close() API or the native Escape-to-close/Tab-trap
 // behavior a real browser gives a modal dialog for free. Win95's Dialog relies
