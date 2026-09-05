@@ -17,6 +17,7 @@ const SKILL_KEYS: MessageKey[] = [
   'about.skill.api',
   'about.skill.mobile',
   'about.skill.uiux',
+  'about.skill.designsystems',
   'about.skill.git',
   'about.skill.patterns',
 ]

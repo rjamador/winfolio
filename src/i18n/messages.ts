@@ -62,11 +62,12 @@ const en = {
   "about.role": "Systems Engineer",
   "about.tagline": "Designing modern, functional web experiences.",
   "about.p1":
-    "My work spans the full stack — from crafting clean, minimalist interfaces to building robust backends and integrating third-party APIs that bring products to life.",
+    "My work spans the full stack — from building design systems and crafting clean, minimalist interfaces to standing up robust backends and integrating third-party APIs that bring products to life.",
   "about.p2":
     "My technical foundation includes UI/UX design principles, RESTful and external API integration, version control with Git, and a strong grasp of design patterns that keep codebases maintainable and scalable.",
   "about.skillsHeading": "Skills",
   "about.skill.uiux": "UI/UX design",
+  "about.skill.designsystems": "Design systems",
   "about.skill.git": "Git & version control",
   "about.skill.patterns": "Design patterns",
   "about.skill.web": "Web development",
@@ -140,11 +141,12 @@ const es: Record<MessageKey, string> = {
   "about.role": "Ingeniero de Sistemas",
   "about.tagline": "Diseñando experiencias web modernas y funcionales.",
   "about.p1":
-    "Mi trabajo abarca el stack completo: desde crear interfaces limpias y minimalistas hasta desarrollar backends sólidos e integrar APIs externas que dan vida a los productos.",
+    "Mi trabajo abarca el stack completo: desde construir sistemas de diseño y crear interfaces limpias y minimalistas hasta desarrollar backends sólidos e integrar APIs externas que dan vida a los productos.",
   "about.p2":
     "Mi base técnica incluye principios de diseño UI/UX, integración de APIs REST y externas, control de versiones con Git y un sólido conocimiento de patrones de diseño que mantienen el código escalable y mantenible.",
   "about.skillsHeading": "Habilidades",
   "about.skill.uiux": "Diseño UI/UX",
+  "about.skill.designsystems": "Sistemas de diseño",
   "about.skill.git": "Git y control de versiones",
   "about.skill.patterns": "Patrones de diseño",
   "about.skill.web": "Desarrollo web",

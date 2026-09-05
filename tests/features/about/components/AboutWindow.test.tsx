@@ -20,6 +20,7 @@ describe('AboutWindow', () => {
       screen.getByRole('heading', { level: 2, name: 'Roberto Amador' }),
     ).toBeInTheDocument()
     expect(screen.getByText('UI/UX design')).toBeInTheDocument()
+    expect(screen.getByText('Design systems')).toBeInTheDocument()
     expect(screen.getByText('Managua, Nicaragua')).toBeInTheDocument()
   })
 
