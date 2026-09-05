@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useSettings, type Locale } from '@/components/layout/settings'
 import { messages, type MessageKey } from './messages'
 
@@ -14,5 +15,10 @@ export function translate(locale: Locale, key: MessageKey): string {
 /** Hook returning the current locale + a bound `t()` translator. */
 export function useT(): { locale: Locale; t: (key: MessageKey) => string } {
   const { locale } = useSettings()
-  return { locale, t: (key) => translate(locale, key) }
+  // Stable identity per locale so `t` is safe to pass to memoized children /
+  // effect deps without re-triggering them every render.
+  return useMemo(
+    () => ({ locale, t: (key: MessageKey) => translate(locale, key) }),
+    [locale],
+  )
 }

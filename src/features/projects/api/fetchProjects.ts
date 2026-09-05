@@ -92,9 +92,3 @@ export async function fetchProjects(): Promise<Project[]> {
 
   return projects;
 }
-
-/** Returns a single project by id (repo name), or null if not found. */
-export async function fetchProject(id: string): Promise<Project | null> {
-  const all = await fetchProjects();
-  return all.find((p) => p.id === id) ?? null;
-}

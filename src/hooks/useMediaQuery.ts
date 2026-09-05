@@ -1,4 +1,4 @@
-import { useCallback, useSyncExternalStore } from 'react'
+import { useCallback, useMemo, useSyncExternalStore } from 'react'
 
 /**
  * Returns true while the given media query matches, staying in sync as the
@@ -6,16 +6,19 @@ import { useCallback, useSyncExternalStore } from 'react'
  * setState-in-effect and no tearing.
  */
 export function useMediaQuery(query: string): boolean {
+  // One MediaQueryList per mount instead of a fresh `window.matchMedia(query)`
+  // allocation on every render and every snapshot read.
+  const mql = useMemo(() => window.matchMedia(query), [query])
+
   const subscribe = useCallback(
     (onChange: () => void) => {
-      const mql = window.matchMedia(query)
       mql.addEventListener('change', onChange)
       return () => mql.removeEventListener('change', onChange)
     },
-    [query],
+    [mql],
   )
 
-  const getSnapshot = () => window.matchMedia(query).matches
+  const getSnapshot = useCallback(() => mql.matches, [mql])
 
   return useSyncExternalStore(subscribe, getSnapshot)
 }
