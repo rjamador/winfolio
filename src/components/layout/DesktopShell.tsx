@@ -17,6 +17,7 @@ import { ShutDownScreen } from "@/components/layout/ShutDownScreen";
 import { DesktopContextMenu } from "@/components/layout/DesktopContextMenu";
 import { DateTimeDialog } from "@/components/layout/DateTimeDialog";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useTaskbarClock } from "@/hooks/useTaskbarClock";
 import { useT } from "@/i18n";
 import type { MessageKey } from "@/i18n/messages";
@@ -251,9 +252,7 @@ export function DesktopShell() {
   const navigate = useNavigate();
   const location = useLocation();
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const prefersReducedMotion = useMediaQuery(
-    "(prefers-reduced-motion: reduce)",
-  );
+  const prefersReducedMotion = usePrefersReducedMotion();
   const [startOpen, setStartOpen] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
   // Easter-egg UI state: shutdown flow, the date/time dialog, and the desktop

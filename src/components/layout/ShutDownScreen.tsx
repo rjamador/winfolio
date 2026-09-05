@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useT } from "@/i18n";
 
 const SHUTTING_DOWN_MS = 1500;
@@ -11,9 +12,7 @@ const SHUTTING_DOWN_MS = 1500;
  */
 export function ShutDownScreen() {
   const { t } = useT();
-  const reduceMotion =
-    typeof window !== "undefined" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduceMotion = usePrefersReducedMotion();
   const [phase, setPhase] = useState<"shutting" | "off">(
     reduceMotion ? "off" : "shutting",
   );

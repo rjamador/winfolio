@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { clsx } from "clsx";
 import { ProgressBar } from "@/components/win95";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useT } from "@/i18n";
 
 const DEFAULT_DURATION_MS = 1800;
@@ -23,6 +24,7 @@ export function BootScreen({
   durationMs = DEFAULT_DURATION_MS,
 }: BootScreenProps) {
   const { t } = useT();
+  const prefersReducedMotion = usePrefersReducedMotion();
   const [progress, setProgress] = useState(0);
   const leaving = progress >= 100;
 
@@ -39,12 +41,9 @@ export function BootScreen({
   // Once full, fade out then finish (immediately if reduced-motion).
   useEffect(() => {
     if (progress < 100) return;
-    const reduce = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    const id = setTimeout(onDone, reduce ? 0 : FADE_MS);
+    const id = setTimeout(onDone, prefersReducedMotion ? 0 : FADE_MS);
     return () => clearTimeout(id);
-  }, [progress, onDone]);
+  }, [progress, onDone, prefersReducedMotion]);
 
   return (
     <div
