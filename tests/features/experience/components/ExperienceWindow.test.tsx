@@ -11,21 +11,28 @@ function renderExperience() {
 }
 
 describe('ExperienceWindow', () => {
-  it('renders all roles with their orgs and tech', () => {
+  it('renders every role with its org, location and tech', () => {
     renderExperience()
+
+    // Two roles carry the same "Full-Stack Developer" title (Invercasa + UCA).
     expect(
-      screen.getByRole('heading', { name: 'Full-Stack Developer' }),
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole('heading', { name: 'Front-End Development Leader' }),
-    ).toBeInTheDocument()
+      screen.getAllByRole('heading', { name: 'Full-Stack Developer' }),
+    ).toHaveLength(2)
     expect(
       screen.getByRole('heading', { name: 'Front-End Developer' }),
     ).toBeInTheDocument()
-    expect(screen.getByText(/Grupo Invercasa/)).toBeInTheDocument()
+
+    expect(screen.getByText(/Grupo Invercasa - Casavisión/)).toBeInTheDocument()
     expect(screen.getByText(/Fundación Movicáncer/)).toBeInTheDocument()
-    expect(screen.getByText('Spring Boot')).toBeInTheDocument()
-    // ASP.NET now appears in two roles (Invercasa + UCA).
-    expect(screen.getAllByText('ASP.NET').length).toBeGreaterThan(1)
+    expect(screen.getByText(/Universidad Centroamericana/)).toBeInTheDocument()
+    expect(screen.getAllByText(/Managua, Nicaragua/).length).toBeGreaterThan(1)
+
+    expect(screen.getByText('Fiber')).toBeInTheDocument()
+    expect(screen.getByText('JasperReport')).toBeInTheDocument()
+  })
+
+  it('mentions the Casavisión design system work', () => {
+    renderExperience()
+    expect(screen.getByText(/design system/i)).toBeInTheDocument()
   })
 })
