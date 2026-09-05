@@ -23,8 +23,6 @@
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Preload the boot-splash assets so first paint never shows a font swap
-       or a late-popping logo. -->
     <link
       rel="preload"
       as="font"
@@ -39,29 +37,72 @@
       name="description"
       content="Roberto Amador — Systems Engineer & full-stack developer. A Windows 95–styled portfolio with projects, stack, and experience."
     />
+    <link rel="canonical" href="https://www.ramador.dev/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="author" content="Roberto Amador" />
     <meta
       name="keywords"
       content="Roberto Amador, portfolio, full-stack developer, systems engineer, React, ASP.NET, Windows 95"
     />
     <meta name="theme-color" content="#000080" />
+    <meta name="color-scheme" content="light" />
 
-    <!-- Open Graph -->
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Winfolio 95" />
     <meta property="og:title" content="Roberto Amador — Portfolio" />
     <meta
       property="og:description"
       content="A Windows 95–styled portfolio: projects, stack, and experience."
     />
-    <meta property="og:image" content="/favicon.png" />
+    <meta property="og:url" content="https://www.ramador.dev/" />
+    <meta property="og:locale" content="en_US" />
+    <meta
+      property="og:image"
+      content="https://www.ramador.dev/apple-touch-icon-256x256.png"
+    />
+    <meta property="og:image:width" content="256" />
+    <meta property="og:image:height" content="256" />
+    <meta
+      property="og:image:alt"
+      content="Winfolio 95 icon — a pixel-art desktop shortcut glyph"
+    />
 
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Roberto Amador — Portfolio" />
     <meta
       name="twitter:description"
       content="A Windows 95–styled portfolio: projects, stack, and experience."
     />
+    <meta
+      name="twitter:image"
+      content="https://www.ramador.dev/apple-touch-icon-256x256.png"
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://www.ramador.dev/#website",
+            "url": "https://www.ramador.dev/",
+            "name": "Roberto Amador — Portfolio",
+            "description": "A Windows 95–styled portfolio: projects, stack, and experience.",
+            "inLanguage": "en"
+          },
+          {
+            "@type": "Person",
+            "name": "Roberto Amador",
+            "jobTitle": "Systems Engineer",
+            "url": "https://www.ramador.dev/",
+            "sameAs": [
+              "https://github.com/rjamador",
+              "https://www.linkedin.com/in/roberto-amador-1590a629b/"
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
 
   <body>
