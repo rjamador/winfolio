@@ -1,12 +1,17 @@
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ErrorBoundary } from '@/components/layout/ErrorBoundary'
 import { SettingsProvider } from '@/components/layout/SettingsProvider'
 import { WindowManagerProvider } from '@/components/layout/WindowManagerProvider'
 import { DesktopShell } from '@/components/layout/DesktopShell'
 import { BootScreen } from '@/components/layout/BootScreen'
 import { queryClient } from '@/lib/queryClient'
+
+const ReactQueryDevtools = import.meta.env.DEV
+  ? lazy(() =>
+    import('@tanstack/react-query-devtools').then((m) => ({ default: m.ReactQueryDevtools })),
+  )
+  : null
 
 /** Desktop + first-visit boot splash. */
 function Shell() {
@@ -28,7 +33,11 @@ function App() {
         <SettingsProvider>
           <Shell />
         </SettingsProvider>
-        {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
+        {ReactQueryDevtools && (
+          <Suspense fallback={null}>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </Suspense>
+        )}
       </QueryClientProvider>
     </ErrorBoundary>
   )
