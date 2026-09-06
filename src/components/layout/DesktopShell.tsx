@@ -75,7 +75,7 @@ const APPS: AppDefinition[] = [
     title: "About",
     icon: "user",
     width: 440,
-    height: 360,
+    height: 600,
     autoOpen: true,
   },
   {
@@ -92,7 +92,7 @@ const APPS: AppDefinition[] = [
     icon: "laptop-code",
     width: 380,
     height: 320,
-    autoOpen: true,
+    autoOpen: false,
   },
   {
     id: "experience",
@@ -325,11 +325,14 @@ export function DesktopShell() {
     const deskWidth = desktopRef.current?.clientWidth || window.innerWidth;
     const deskHeight = desktopRef.current?.clientHeight || window.innerHeight;
 
-    const autoOpenApps = APPS.filter(
-      (app) => app.autoOpen && app.id !== "settings",
-    );
-    autoOpenApps.forEach((app, index) => {
-      const { x, y } = gridPosition(index);
+    // Grid slots are fixed by each app's position among all non-Settings
+    // apps — not by index within the auto-open subset — so an app that isn't
+    // auto-open (e.g. Stack) just leaves its slot empty instead of shifting
+    // every app after it into the slot before it.
+    const gridEligibleApps = APPS.filter((app) => app.id !== "settings");
+    const autoOpenApps = gridEligibleApps.filter((app) => app.autoOpen);
+    autoOpenApps.forEach((app) => {
+      const { x, y } = gridPosition(gridEligibleApps.indexOf(app));
       const pos = clampToDesktop(
         x,
         y,

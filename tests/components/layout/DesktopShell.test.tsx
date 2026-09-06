@@ -15,17 +15,17 @@ describe('DesktopShell', () => {
   it('opens the content windows + Settings on first load', async () => {
     renderApp()
     const closeButtons = await screen.findAllByRole('button', { name: 'Close' })
-    expect(closeButtons).toHaveLength(5)
+    expect(closeButtons).toHaveLength(4)
   })
 
   it('closes a window via its title-bar close button', async () => {
     const user = userEvent.setup()
     renderApp()
     const closeButtons = await screen.findAllByRole('button', { name: 'Close' })
-    expect(closeButtons).toHaveLength(5)
+    expect(closeButtons).toHaveLength(4)
 
     await user.click(closeButtons[0]!)
-    expect(screen.getAllByRole('button', { name: 'Close' })).toHaveLength(4)
+    expect(screen.getAllByRole('button', { name: 'Close' })).toHaveLength(3)
   })
 
   it('toggles the Start menu open and closed', async () => {
