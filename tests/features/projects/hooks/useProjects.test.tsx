@@ -13,22 +13,50 @@ function makeWrapper() {
 }
 
 describe('useProjects', () => {
-  it('returns only allowlisted repos (forks/archived/non-allowlisted excluded), sorted by stars', async () => {
+  it('returns only allowlisted repos (forks/archived/non-allowlisted excluded)', async () => {
+    const { result } = renderHook(() => useProjects(), { wrapper: makeWrapper() })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+
+    const ids = result.current.data!.map((p) => p.id)
+    // random-side-project (not allowlisted), forked-lib (fork) and
+    // Perfumeria (archived) are dropped; everything else survives.
+    expect(ids).toEqual(
+      expect.arrayContaining([
+        'GymCheck',
+        'old-portfolio',
+        'oceanic-ui',
+        'Coinflow',
+        'winfolio',
+        'Starpay',
+      ]),
+    )
+    expect(ids).not.toEqual(
+      expect.arrayContaining(['random-side-project', 'forked-lib', 'Perfumeria']),
+    )
+  })
+
+  it('puts the curated picks first, in order, ahead of everyone else by stars', async () => {
     const { result } = renderHook(() => useProjects(), { wrapper: makeWrapper() })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
 
     const projects = result.current.data!
-    // GymCheck(7), old-portfolio(4), oceanic-ui(3), Coinflow(1) survive;
-    // random-side-project (not allowlisted), forked-lib (fork) and Perfumeria
-    // (archived) are dropped.
+    // winfolio/oceanic-ui/Starpay/old-portfolio are curated (in that order),
+    // regardless of stars; GymCheck(7) then Coinflow(1) follow by star count.
     expect(projects.map((p) => p.id)).toEqual([
-      'GymCheck',
-      'old-portfolio',
+      'winfolio',
       'oceanic-ui',
+      'Starpay',
+      'old-portfolio',
+      'GymCheck',
       'Coinflow',
     ])
-    expect(projects[0]!.stars).toBe(7)
-    expect(projects[0]!.featured).toBe(true)
+    expect(projects.filter((p) => p.featured).map((p) => p.id)).toEqual([
+      'winfolio',
+      'oceanic-ui',
+      'Starpay',
+      'old-portfolio',
+    ])
+    expect(projects.find((p) => p.id === 'GymCheck')!.featured).toBe(false)
   })
 
   it('merges curated extras (logo, npm, tech) onto the matching project', async () => {

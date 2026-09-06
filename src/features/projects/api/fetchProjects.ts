@@ -6,8 +6,6 @@ import {
   type Project,
 } from "./schemas";
 
-const FEATURED_COUNT = 3;
-
 /** Only these repos (by exact `name`) are surfaced in the Projects window. */
 const PROJECT_ALLOWLIST = new Set([
   "Coinflow",
@@ -21,6 +19,19 @@ const PROJECT_ALLOWLIST = new Set([
   "oceanic-ui",
   "winfolio",
 ]);
+
+/**
+ * Hand-picked highlights, shown first and in this exact order. The best work
+ * isn't always the most-starred or most-recently-touched repo, and a visitor
+ * skimming for a few seconds should see it first regardless.
+ */
+const FEATURED_PROJECT_IDS = ["winfolio", "oceanic-ui", "Starpay", "old-portfolio"];
+
+/** Featured projects sort first, in `FEATURED_PROJECT_IDS` order; everyone else follows, by stars. */
+function featuredRank(id: string): number {
+  const index = FEATURED_PROJECT_IDS.indexOf(id);
+  return index === -1 ? FEATURED_PROJECT_IDS.length : index;
+}
 
 /**
  * Per-repo details GitHub doesn't expose (a curated logo, an npm page, extra
@@ -52,9 +63,10 @@ function applyExtras(project: Project): Project {
 }
 
 /**
- * Fetches the user's public GitHub repos, validates them, and maps them to the
- * internal Project shape: forks/archived are dropped, the list is sorted by stars
- * (then most-recently-updated), and the top-starred few are flagged `featured`.
+ * Fetches the user's public GitHub repos, validates them, and maps them to
+ * the internal Project shape: forks/archived are dropped, the curated
+ * `FEATURED_PROJECT_IDS` are flagged `featured` and sorted first (in that
+ * order), and everyone else follows by star count.
  */
 export async function fetchProjects(): Promise<Project[]> {
   const url = `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100`;
@@ -74,21 +86,21 @@ export async function fetchProjects(): Promise<Project[]> {
 
   const repos = githubRepoListSchema.parse(await response.json());
 
-  // The API already returns repos sorted by `updated` desc; a stable sort by
-  // stars desc therefore keeps the most-recent order within equal star counts.
   const projects = repos
     .filter(
       (repo) =>
         !repo.fork && !repo.archived && PROJECT_ALLOWLIST.has(repo.name),
     )
     .map(mapRepoToProject)
-    .map(applyExtras)
-    .sort((a, b) => b.stars - a.stars);
+    .map(applyExtras);
 
-  // Flag the top-starred projects (with at least one star) as featured.
-  projects.forEach((project, index) => {
-    project.featured = index < FEATURED_COUNT && project.stars > 0;
+  projects.forEach((project) => {
+    project.featured = FEATURED_PROJECT_IDS.includes(project.id);
   });
+
+  projects.sort(
+    (a, b) => featuredRank(a.id) - featuredRank(b.id) || b.stars - a.stars,
+  );
 
   return projects;
 }
