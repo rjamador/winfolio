@@ -34,4 +34,25 @@ describe('Button95', () => {
     await user.click(screen.getByRole('button', { name: 'Nope' }))
     expect(onClick).not.toHaveBeenCalled()
   })
+
+  it('renders a real link, not a button, when given an href', () => {
+    render(
+      <Button95 href="https://example.com/cv.pdf" target="_blank" rel="noreferrer">
+        Download CV
+      </Button95>,
+    )
+    const link = screen.getByRole('link', { name: 'Download CV' })
+    expect(link).toHaveAttribute('href', 'https://example.com/cv.pdf')
+    expect(link).toHaveAttribute('target', '_blank')
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
+  })
+
+  it('drops href on a disabled link, like a disabled button is inert', () => {
+    render(
+      <Button95 href="https://example.com/cv.pdf" disabled>
+        Download CV
+      </Button95>,
+    )
+    expect(screen.queryByRole('link')).not.toBeInTheDocument()
+  })
 })

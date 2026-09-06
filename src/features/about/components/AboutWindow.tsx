@@ -1,7 +1,7 @@
 import { clsx } from 'clsx'
-import { ExternalLink, PixelIcon, Pill } from '@/components/win95'
+import { Button95, ExternalLink, PixelIcon, Pill } from '@/components/win95'
 import { useClock } from '@/hooks/useClock'
-import { GITHUB_USERNAME } from '@/lib/config'
+import { GITHUB_USERNAME, RESUME_DOWNLOAD_URL } from '@/lib/config'
 import { useT } from '@/i18n'
 import type { MessageKey } from '@/i18n/messages'
 import { useGithubUser } from '../hooks/useGithubUser'
@@ -69,6 +69,18 @@ export function AboutWindow() {
           </li>
         ))}
       </ul>
+
+      {/* Google Drive answers this URL with Content-Disposition: attachment,
+          so this is a real download, not just a page open. */}
+      <Button95
+        href={RESUME_DOWNLOAD_URL}
+        target="_blank"
+        rel="noreferrer"
+        className="inline-flex w-fit items-center gap-1 self-start"
+      >
+        <PixelIcon name="download" />
+        {t('about.downloadCv')}
+      </Button95>
 
       <div>
         <h3 className="mb-1 font-bold">{t('about.skillsHeading')}</h3>

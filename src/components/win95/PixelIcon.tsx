@@ -23,6 +23,7 @@ import { Trash } from 'pixelarticons/react/Trash'
 import { AlarmClock } from 'pixelarticons/react/AlarmClock'
 import { Clock } from 'pixelarticons/react/Clock'
 import { Power } from 'pixelarticons/react/Power'
+import { Download } from 'pixelarticons/react/Download'
 
 type IconComponent = ComponentType<SVGProps<SVGSVGElement>>
 
@@ -51,6 +52,7 @@ const ICONS: Record<string, IconComponent> = {
   alarm: AlarmClock,
   clock: Clock,
   power: Power,
+  download: Download,
 }
 
 // Full-color art for icons that have one, at native small size. Only used up

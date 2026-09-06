@@ -78,6 +78,7 @@ const en = {
   "about.birthday": "Birthday",
   "about.location": "Location",
   "about.localTime": "Local time",
+  "about.downloadCv": "Download CV",
 } as const;
 
 export type MessageKey = keyof typeof en;
@@ -140,7 +141,7 @@ const es: Record<MessageKey, string> = {
   "oldPortfolio.loading": "Cargando…",
   "oldPortfolio.frameTitle": "Portafolio anterior (ramador.vercel.app)",
   "oldPortfolio.openExternal": "Abrir en pestaña nueva ↗",
-  "about.role": "Ingeniero de Sistemas",
+  "about.role": "Ingeniero en Sistemas",
   "about.tagline": "Diseñando experiencias web modernas y funcionales.",
   "about.p1":
     "Mi trabajo abarca el stack completo: desde construir sistemas de diseño y crear interfaces limpias y minimalistas hasta desarrollar backends sólidos e integrar APIs externas que dan vida a los productos.",
@@ -158,6 +159,7 @@ const es: Record<MessageKey, string> = {
   "about.birthday": "Cumpleaños",
   "about.location": "Ubicación",
   "about.localTime": "Hora local",
+  "about.downloadCv": "Descargar CV",
 };
 
 export const messages: Record<"en" | "es", Record<MessageKey, string>> = {

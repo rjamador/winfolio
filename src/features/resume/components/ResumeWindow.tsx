@@ -1,9 +1,6 @@
 import { ExternalLink } from '@/components/win95'
+import { RESUME_PREVIEW_URL, RESUME_VIEW_URL } from '@/lib/config'
 import { useT } from '@/i18n'
-
-const FILE_ID = '1mJrdO_UcnYVtZuyoTzntinpK63TdIqqh'
-const PREVIEW_URL = `https://drive.google.com/file/d/${FILE_ID}/preview`
-const VIEW_URL = `https://drive.google.com/file/d/${FILE_ID}/view`
 
 /**
  * Résumé section: embeds the public Google Drive PDF preview (no Google login
@@ -15,10 +12,10 @@ export function ResumeWindow() {
     <div className="flex h-full min-h-72 flex-col gap-2 text-w95">
       <iframe
         title="Résumé (PDF)"
-        src={PREVIEW_URL}
+        src={RESUME_PREVIEW_URL}
         className="bevel-sunken min-h-64 w-full flex-1 bg-w95-light"
       />
-      <ExternalLink href={VIEW_URL} className="self-start">
+      <ExternalLink href={RESUME_VIEW_URL} className="self-start">
         {t('resume.open')}
       </ExternalLink>
     </div>

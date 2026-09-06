@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import type { ReactNode } from 'react'
 import { SettingsProvider } from '@/providers/SettingsProvider'
 import { AboutWindow } from '@/features/about/components/AboutWindow'
+import { RESUME_DOWNLOAD_URL } from '@/lib/config'
 
 function wrap(ui: ReactNode) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
@@ -27,5 +28,13 @@ describe('AboutWindow', () => {
   it('renders the GitHub avatar once loaded', async () => {
     wrap(<AboutWindow />)
     expect(await screen.findByRole('img', { name: 'Roberto Amador' })).toBeInTheDocument()
+  })
+
+  it('links the download-CV button at the resume file', () => {
+    wrap(<AboutWindow />)
+    expect(screen.getByRole('link', { name: 'Download CV' })).toHaveAttribute(
+      'href',
+      RESUME_DOWNLOAD_URL,
+    )
   })
 })
