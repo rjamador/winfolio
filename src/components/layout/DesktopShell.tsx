@@ -218,6 +218,37 @@ function buildPayload(
   };
 }
 
+/**
+ * Width + own padding for one mobile carousel page, based on its position in
+ * the track. Edge pages (first/last) reserve a full peek toward their one
+ * real neighbor and a smaller fixed "edge-gap" toward the empty side; that
+ * edge-gap must be *this element's own* padding (not the container's, not a
+ * margin) — mandatory scroll-snap always collapses a start/end-aligned page
+ * flush against the scroll boundary, scrolling straight past any space that
+ * isn't part of the snapped element's own box. Middle pages get a full peek
+ * on both sides. Every peek-facing side also gets a small fixed px-1 so two
+ * peeking windows don't render bevel-to-bevel. A page that's both first and
+ * last (the only window open) gets a small edge-gap on both sides and no
+ * peek at all.
+ */
+function carouselPageSizeClasses(isFirst: boolean, isLast: boolean): string {
+  if (isFirst && isLast) return "w-full px-[var(--carousel-edge-gap)]";
+  if (isFirst) {
+    return "w-[calc(100%-var(--carousel-peek))] pl-[var(--carousel-edge-gap)] pr-1";
+  }
+  if (isLast) {
+    return "w-[calc(100%-var(--carousel-peek))] pr-[var(--carousel-edge-gap)] pl-1";
+  }
+  return "w-[calc(100%-2*var(--carousel-peek))] px-1";
+}
+
+/** Which edge of the snapport a mobile carousel page aligns to when snapped. */
+function carouselPageSnapClass(isFirst: boolean, isLast: boolean): string {
+  if (isFirst) return "snap-start";
+  if (isLast) return "snap-end";
+  return "snap-center";
+}
+
 /** Renders a feature window body, isolated by an error boundary + lazy Suspense. */
 function WindowBody({
   id,
@@ -608,32 +639,8 @@ export function DesktopShell() {
                   id={`window-${w.id}`}
                   className={clsx(
                     "h-full shrink-0 py-2 transition-opacity duration-150",
-                    // Middle pages show a full peek on both sides, so they
-                    // just need the container's own width minus two peeks.
-                    // The first/last page only has one real neighbor: it
-                    // reserves a full peek toward that side, and a smaller
-                    // fixed "edge-gap" toward the empty side. That edge-gap
-                    // must be *this element's own* padding (not the
-                    // container's, not a margin) — mandatory scroll-snap
-                    // always collapses a start/end-aligned page flush against
-                    // the scroll boundary, scrolling straight past any space
-                    // that isn't part of the snapped element's own box. A page
-                    // that's both first and last (the only window open) gets
-                    // a small edge-gap on both sides and no peek at all.
-                    //
-                    // Every peek-facing side also gets a small fixed px-1 (not
-                    // the full edge-gap) purely so two peeking windows don't
-                    // render bevel-to-bevel — most of the peek stays visible
-                    // window chrome, not blank inset.
-                    isFirst && isLast
-                      ? "w-full px-[var(--carousel-edge-gap)]"
-                      : isFirst
-                        ? "w-[calc(100%-var(--carousel-peek))] pl-[var(--carousel-edge-gap)] pr-1"
-                        : isLast
-                          ? "w-[calc(100%-var(--carousel-peek))] pr-[var(--carousel-edge-gap)] pl-1"
-                          : "w-[calc(100%-2*var(--carousel-peek))] px-1",
-                    !prefersReducedMotion &&
-                      (isFirst ? "snap-start" : isLast ? "snap-end" : "snap-center"),
+                    carouselPageSizeClasses(isFirst, isLast),
+                    !prefersReducedMotion && carouselPageSnapClass(isFirst, isLast),
                     !prefersReducedMotion && "snap-always",
                     // Peeking (non-active) pages dim slightly and ignore
                     // pointer input, so a stray tap on a sliver of the next
