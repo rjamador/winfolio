@@ -20,7 +20,9 @@ import { DesktopContextMenu } from "@/components/layout/DesktopContextMenu";
 import { DateTimeDialog } from "@/components/layout/DateTimeDialog";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { useDesktopClickSound } from "@/hooks/useDesktopClickSound";
 import { useTaskbarClock } from "@/hooks/useTaskbarClock";
+import { playSound } from "@/lib/sounds";
 import { useT } from "@/i18n";
 import type { MessageKey } from "@/i18n/messages";
 import { useWindowManager, type WindowState } from "@/providers/windowManager";
@@ -286,6 +288,7 @@ export function DesktopShell() {
   const location = useLocation();
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const prefersReducedMotion = usePrefersReducedMotion();
+  useDesktopClickSound();
   const [startOpen, setStartOpen] = useState(false);
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
   // Easter-egg UI state: shutdown flow, the date/time dialog, and the desktop
@@ -502,20 +505,28 @@ export function DesktopShell() {
   // entries (pressing Back would otherwise replay them and re-open windows).
   const openApp = (app: AppDefinition) => {
     setStartOpen(false);
+    const alreadyOpen = windowsRef.current.some((w) => w.id === app.id);
+    if (!alreadyOpen) playSound("open");
     navigate(pathFor(app.id), { replace: true });
   };
 
   const focusWindow = (id: string) => {
+    // Un-minimizing a window is a "restore"; a plain refocus is silent.
+    if (windowsRef.current.find((w) => w.id === id)?.minimized) {
+      playSound("restore");
+    }
     wm.focusWindow(id);
     navigate(pathFor(id), { replace: true });
   };
 
   const closeWindow = (id: string) => {
+    playSound("close");
     wm.closeWindow(id);
     if (currentRoute.section === id) navigate("/", { replace: true });
   };
 
   const minimizeWindow = (id: string) => {
+    playSound("minimize");
     wm.minimizeWindow(id);
     if (currentRoute.section === id) navigate("/", { replace: true });
   };
@@ -526,6 +537,7 @@ export function DesktopShell() {
   };
 
   const minimizeAllWindows = () => {
+    if (windowsRef.current.some((w) => !w.minimized)) playSound("minimize");
     windowsRef.current.forEach((w) => wm.minimizeWindow(w.id));
     navigate("/", { replace: true });
   };
@@ -728,6 +740,7 @@ export function DesktopShell() {
                 role="menuitem"
                 onClick={() => {
                   setStartOpen(false);
+                  playSound("ding");
                   setShutdown("confirm");
                 }}
                 className="win95-row-hover focus-ring flex w-full items-center gap-2 px-3 py-1 text-left"
@@ -741,7 +754,10 @@ export function DesktopShell() {
       )}
 
       <Taskbar
-        onStartClick={() => setStartOpen((v) => !v)}
+        onStartClick={() => {
+          if (!startOpen) playSound("menu");
+          setStartOpen((v) => !v);
+        }}
         startActive={startOpen}
         startButtonRef={startButtonRef}
         startLabel={t("taskbar.start")}

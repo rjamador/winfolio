@@ -1,5 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { Button95, PixelIcon } from "@/components/win95";
+import { playSound } from "@/lib/sounds";
 
 type ErrorBoundaryProps = {
   children: ReactNode;
@@ -30,6 +31,7 @@ export class ErrorBoundary extends Component<
   }
 
   override componentDidCatch(error: Error, info: ErrorInfo) {
+    playSound("ding");
     if (import.meta.env.DEV) {
       console.error(
         "ErrorBoundary caught an error:",

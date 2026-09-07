@@ -1,11 +1,13 @@
 import { clsx } from 'clsx'
-import { Fieldset, Radio } from '@/components/win95'
+import { Checkbox, Fieldset, Radio } from '@/components/win95'
 import {
   useSettings,
   WIN95_SWATCHES,
   type Locale,
   type TextSize,
 } from '@/providers/settings'
+import { useSoundEnabled } from '@/hooks/useSoundEnabled'
+import { playSound } from '@/lib/sounds'
 import { useT } from '@/i18n'
 import type { MessageKey } from '@/i18n/messages'
 
@@ -20,10 +22,18 @@ const LANGUAGES: { value: Locale; labelKey: MessageKey }[] = [
   { value: 'es', labelKey: 'settings.spanish' },
 ]
 
-/** Settings: desktop background color, text size, and language. */
+/** Settings: desktop background color, text size, language, and sound. */
 export function SettingsWindow() {
   const { bgColor, textSize, locale, setBgColor, setTextSize, setLocale } = useSettings()
   const { t } = useT()
+
+  // Sound on/off has its own localStorage key (read synchronously by playSound)
+  // and its own shared store, so the taskbar tray toggle stays in sync with this.
+  const [soundOn, setSoundOn] = useSoundEnabled()
+  const toggleSound = (next: boolean) => {
+    setSoundOn(next)
+    if (next) playSound('ding')
+  }
 
   return (
     <div className="flex flex-col gap-3 text-w95">
@@ -88,6 +98,14 @@ export function SettingsWindow() {
             />
           ))}
         </div>
+      </Fieldset>
+
+      <Fieldset legend={t('settings.sound')}>
+        <Checkbox
+          checked={soundOn}
+          onChange={toggleSound}
+          label={t('settings.soundEnabled')}
+        />
       </Fieldset>
     </div>
   )

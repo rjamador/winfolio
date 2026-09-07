@@ -1,11 +1,18 @@
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button95, PixelIcon } from '@/components/win95'
+import { playSound } from '@/lib/sounds'
 import { useT } from '@/i18n'
 
 /** Themed 404 shown for unknown paths, centered over the desktop. */
 export default function NotFound() {
   const navigate = useNavigate()
   const { t } = useT()
+
+  // The alert "ding" when the themed 404 appears.
+  useEffect(() => {
+    playSound('ding')
+  }, [])
 
   return (
     <div className="absolute inset-0 z-[900] flex items-center justify-center p-4">

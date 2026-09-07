@@ -19,6 +19,7 @@ import { ArrowLeft } from 'pixelarticons/react/ArrowLeft'
 import { ArrowRight } from 'pixelarticons/react/ArrowRight'
 import { Reload } from 'pixelarticons/react/Reload'
 import { Volume3 } from 'pixelarticons/react/Volume3'
+import { VolumeX } from 'pixelarticons/react/VolumeX'
 import { Trash } from 'pixelarticons/react/Trash'
 import { AlarmClock } from 'pixelarticons/react/AlarmClock'
 import { Clock } from 'pixelarticons/react/Clock'
@@ -48,6 +49,7 @@ const ICONS: Record<string, IconComponent> = {
   'arrow-right': ArrowRight,
   reload: Reload,
   volume: Volume3,
+  'volume-x': VolumeX,
   trash: Trash,
   alarm: AlarmClock,
   clock: Clock,

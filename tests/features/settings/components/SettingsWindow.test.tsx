@@ -46,6 +46,22 @@ describe('SettingsWindow', () => {
     expect(localStorage.getItem('winfolio:settings')).toContain('#000080')
   })
 
+  it('toggles desktop sounds and persists the preference', async () => {
+    const user = userEvent.setup()
+    renderSettings()
+
+    const sound = screen.getByRole('checkbox', { name: 'Desktop sounds' })
+    expect(sound).toBeChecked() // on by default
+
+    await user.click(sound)
+    expect(sound).not.toBeChecked()
+    expect(localStorage.getItem('winfolio:sound-enabled')).toBe('false')
+
+    await user.click(sound)
+    expect(sound).toBeChecked()
+    expect(localStorage.getItem('winfolio:sound-enabled')).toBe('true')
+  })
+
   it('switches the language and translates the UI', async () => {
     const user = userEvent.setup()
     renderSettings()

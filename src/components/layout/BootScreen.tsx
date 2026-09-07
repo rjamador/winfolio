@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { clsx } from "clsx";
 import { ProgressBar } from "@/components/win95";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { playSound } from "@/lib/sounds";
 import { useT } from "@/i18n";
 
 const DEFAULT_DURATION_MS = 1800;
@@ -38,9 +39,12 @@ export function BootScreen({
     return () => clearInterval(id);
   }, [durationMs]);
 
-  // Once full, fade out then finish (immediately if reduced-motion).
+  // Once full, sound the power-on chime, then fade out and finish (immediately
+  // if reduced-motion). The chime is best-effort: browsers keep audio muted
+  // until the visitor's first interaction, so a truly cold load stays silent.
   useEffect(() => {
     if (progress < 100) return;
+    playSound("startup");
     const id = setTimeout(onDone, prefersReducedMotion ? 0 : FADE_MS);
     return () => clearTimeout(id);
   }, [progress, onDone, prefersReducedMotion]);

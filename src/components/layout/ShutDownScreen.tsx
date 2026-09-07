@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { playSound } from "@/lib/sounds";
 import { useT } from "@/i18n";
 
 const SHUTTING_DOWN_MS = 1500;
@@ -16,6 +17,11 @@ export function ShutDownScreen() {
   const [phase, setPhase] = useState<"shutting" | "off">(
     reduceMotion ? "off" : "shutting",
   );
+
+  // The descending power-off cue, once as the sequence begins.
+  useEffect(() => {
+    playSound("shutdown");
+  }, []);
 
   useEffect(() => {
     if (phase !== "shutting") return;
